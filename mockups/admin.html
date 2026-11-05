@@ -1,0 +1,1975 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GEARS GYM - Cuartel General (Admin Pro)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="/socket.io/socket.io.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&family=Orbitron:wght@700;900&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: #050505; color: #f8fafc; background-image: radial-gradient(circle at 50% 0%, #2a0505 0%, #050505 80%); background-attachment: fixed; }
+        .font-gears { font-family: 'Orbitron', sans-serif; letter-spacing: 0.05em; }
+        .gear-spin { animation: spinSlow 18s linear infinite; }
+        @keyframes spinSlow { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        .pulse-ring { animation: pulse-ring 2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite; }
+        @keyframes pulse-ring {
+            0% { transform: scale(0.9); opacity: 0.8; }
+            50% { transform: scale(1.15); opacity: 0.3; }
+            100% { transform: scale(0.9); opacity: 0.8; }
+        }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #0c0a09; }
+        ::-webkit-scrollbar-thumb { background: #dc2626; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #ef4444; }
+        .tab-content { display: none; animation: fadeIn 0.3s ease-in-out; }
+        .tab-content.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .sidebar-title { color: #525252; font-size: 0.65rem; font-weight: 800; letter-spacing: 0.1em; }
+        .nav-btn { color: #a8a29e; transition: color 0.2s, background-color 0.2s; }
+        .nav-btn:hover, .nav-btn.active { color: #f8fafc; }
+        .nav-btn.active { font-weight: 700; background-color: #3b0707; border: 1px solid #7f1d1d; border-radius: 0.75rem; }
+    </style>
+</head>
+<body class="flex h-[100dvh] w-full overflow-hidden antialiased">
+    <!-- LOGO OFICIAL CRIMSON OMEN (SVG) -->
+    <svg class="hidden" xmlns="http://www.w3.org/2000/svg">
+        <symbol id="crimson-omen" viewBox="0 0 200 200">
+            <g class="origin-center"><path fill="#e11d48" d="M90,4 L110,4 L115,22 L129,26 L142,12 L159,22 L153,40 L164,51 L182,45 L192,62 L178,75 L182,89 L200,94 L200,114 L182,119 L178,133 L192,146 L182,163 L164,157 L153,168 L159,186 L142,196 L129,182 L115,186 L110,200 L90,200 L85,182 L71,178 L58,192 L41,182 L47,164 L36,153 L18,159 L8,142 L22,129 L18,115 L0,110 L0,90 L18,85 L22,71 L8,58 L18,41 L36,47 L47,36 L41,18 L58,8 L71,22 L85,18 Z"/><circle cx="100" cy="100" r="68" fill="#09090b"/><circle cx="100" cy="100" r="60" fill="none" stroke="#e11d48" stroke-width="7"/></g>
+            <path fill="#e11d48" d="M98,44 C66,44 50,67 52,98 C53,112 60,122 67,128 L64,152 C64,160 75,168 98,168 C121,168 132,160 132,152 L129,128 C136,122 143,112 144,98 C146,67 130,44 98,44 Z"/>
+            <polygon points="65,94 89,89 92,107 68,110" fill="#09090b" rx="4"/><polygon points="131,94 107,89 104,107 128,110" fill="#09090b" rx="4"/>
+            <polygon points="96,108 90,127 96,127" fill="#09090b"/><polygon points="100,108 106,127 100,127" fill="#09090b"/>
+            <rect x="73" y="135" width="5" height="20" rx="2" fill="#09090b" transform="rotate(-8 73 135)"/><rect x="83" y="136" width="6" height="25" rx="2" fill="#09090b" transform="rotate(-4 83 136)"/>
+            <rect x="95" y="137" width="6" height="26" rx="2" fill="#09090b"/><rect x="107" y="136" width="6" height="25" rx="2" fill="#09090b" transform="rotate(4 107 136)"/>
+            <rect x="118" y="135" width="5" height="19" rx="2" fill="#09090b" transform="rotate(8 118 135)"/>
+        </symbol>
+    </svg>
+
+    <!-- SIDEBAR DESKTOP -->
+    <aside class="hidden md:flex flex-col w-[280px] bg-[#070707] border-r border-red-900/30 h-full shrink-0 z-20">
+        <div class="p-6 flex items-center gap-4 border-b border-stone-800/50">
+            <div class="w-12 h-12 rounded-xl bg-black border border-red-600 shadow-[0_0_15px_rgba(220,38,38,0.5)] flex items-center justify-center shrink-0">
+                <svg class="w-8 h-8 gear-spin"><use href="#crimson-omen"></use></svg>
+            </div>
+            <div>
+                <p class="text-[9px] text-red-500 font-black tracking-[0.15em] uppercase"><i class="fa-solid fa-skull"></i> Comando Central</p>
+                <h1 class="font-gears font-black text-xl leading-none text-white tracking-wider mt-1">GEARS <span class="text-red-600">GYM</span></h1>
+            </div>
+        </div>
+        
+        <nav class="flex-1 p-5 space-y-1.5 overflow-y-auto" id="desktop-nav">
+            
+            <p class="sidebar-title mt-2 mb-2">MONITOREO</p>
+            <button onclick="switchTab('dashboard')" class="nav-btn active w-full flex items-center gap-4 px-3 py-3 text-sm font-semibold text-left">
+                <i class="fa-solid fa-chart-line w-5 text-center text-red-400"></i> Dashboard General
+            </button>
+            <button onclick="switchTab('comunicaciones')" class="nav-btn w-full flex items-center gap-4 px-3 py-3 text-sm font-semibold text-left">
+                <i class="fa-solid fa-satellite-dish w-5 text-center"></i> Comunicaciones (TV)
+            </button>
+            <button onclick="switchTab('torniquete')" class="nav-btn w-full flex items-center gap-4 px-3 py-3 text-sm font-semibold text-left border-b border-stone-800/50 pb-5 mb-2">
+                <i class="fa-solid fa-door-open w-5 text-center"></i> Control Torniquete
+            </button>
+
+            <p class="sidebar-title mt-4 mb-2">LEGIÓN</p>
+            <button onclick="switchTab('socios')" class="nav-btn w-full flex items-center gap-4 px-3 py-3 text-sm text-left">
+                <i class="fa-solid fa-users w-5 text-center"></i> Pelotón (Socios)
+            </button>
+            <button onclick="openNewMemberModal()" class="w-full flex items-center gap-4 px-3 py-3 text-sm font-semibold text-stone-400 hover:text-white hover:bg-stone-900 rounded-xl transition-all text-left">
+                <i class="fa-solid fa-user-plus w-5 text-center text-red-500"></i> Reclutar Guerrero
+            </button>
+            <button onclick="switchTab('guerreros_activos')" class="nav-btn w-full flex items-center gap-4 px-3 py-3 text-sm font-semibold text-left border-b border-stone-800/50 pb-5 mb-2">
+                <i class="fa-solid fa-map-location-dot w-5 text-center"></i> Aforo en Vivo
+            </button>
+
+            <p class="sidebar-title mt-4 mb-2">OPERACIONES</p>
+            <button onclick="switchTab('tienda')" class="nav-btn w-full flex items-center gap-4 px-3 py-3 text-sm font-semibold text-left">
+                <i class="fa-solid fa-cart-shopping w-5 text-center"></i> Arsenal (Ventas)
+            </button>
+        </nav>
+        
+        <!-- FOOTER COMANDANTE CON SOCKET STATUS -->
+        <div class="p-4 border-t border-stone-800 bg-[#0a0a0a]">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <img src="https://images.unsplash.com/photo-1594381898411-846e7d193883?auto=format&fit=crop&w=100&q=80" class="w-10 h-10 rounded-full border border-red-700/60 object-cover shadow">
+                    <div>
+                        <p class="text-xs font-bold text-white">Comandante</p>
+                        <p class="text-[9px] text-emerald-400 font-bold uppercase tracking-wider flex items-center gap-1.5"><span id="conn-dot" class="w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block animate-ping"></span> <span id="conn-text">Sistema Activo</span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- DRAWER MENÚ LATERAL MOBILE -->
+    <div id="mobile-drawer" class="hidden md:hidden fixed inset-0 z-50">
+        <div class="absolute inset-0 bg-black/80 backdrop-blur-sm" onclick="toggleMobileDrawer()"></div>
+        <aside class="relative w-72 max-w-[82vw] bg-[#070707] border-r border-red-900/40 h-full flex flex-col z-10 shadow-2xl">
+            <div class="p-4 flex items-center justify-between border-b border-stone-800/60">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-black border border-red-600 shadow-[0_0_12px_rgba(220,38,38,0.5)] flex items-center justify-center shrink-0">
+                        <svg class="w-6 h-6 gear-spin"><use href="#crimson-omen"></use></svg>
+                    </div>
+                    <div>
+                        <p class="text-[9px] text-red-500 font-black tracking-widest uppercase"><i class="fa-solid fa-skull"></i> Comando Central</p>
+                        <h2 class="font-gears font-black text-base leading-none text-white mt-0.5">GEARS <span class="text-red-600">GYM</span></h2>
+                    </div>
+                </div>
+                <button onclick="toggleMobileDrawer()" class="w-8 h-8 rounded-lg bg-stone-900 text-stone-400 hover:text-white flex items-center justify-center">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <nav class="flex-1 p-4 space-y-1 overflow-y-auto" id="drawer-nav">
+                <p class="sidebar-title mt-1 mb-2">MONITOREO</p>
+                <button onclick="switchTab('dashboard'); toggleMobileDrawer();" class="drawer-btn w-full flex items-center gap-3.5 px-3 py-2.5 rounded-xl text-sm font-semibold text-white bg-[#3b0707] border border-red-900/60 text-left">
+                    <i class="fa-solid fa-chart-line w-5 text-center text-red-400"></i> Dashboard General
+                </button>
+                <button onclick="switchTab('comunicaciones'); toggleMobileDrawer();" class="drawer-btn w-full flex items-center gap-3.5 px-3 py-2.5 rounded-xl text-sm font-semibold text-stone-300 hover:bg-stone-900 text-left">
+                    <i class="fa-solid fa-satellite-dish w-5 text-center text-stone-400"></i> Comunicaciones (TV)
+                </button>
+                <button onclick="switchTab('torniquete'); toggleMobileDrawer();" class="drawer-btn w-full flex items-center gap-3.5 px-3 py-2.5 rounded-xl text-sm font-semibold text-stone-300 hover:bg-stone-900 text-left">
+                    <i class="fa-solid fa-door-open w-5 text-center text-stone-400"></i> Control Torniquete
+                </button>
+
+                <p class="sidebar-title pt-3 mb-2 border-t border-stone-800/60">LEGIÓN</p>
+                <button onclick="switchTab('socios'); toggleMobileDrawer();" class="drawer-btn w-full flex items-center gap-3.5 px-3 py-2.5 rounded-xl text-sm font-semibold text-stone-300 hover:bg-stone-900 text-left">
+                    <i class="fa-solid fa-users w-5 text-center text-stone-400"></i> Pelotón (Socios)
+                </button>
+                <button onclick="toggleMobileDrawer(); openNewMemberModal();" class="w-full flex items-center gap-3.5 px-3 py-2.5 rounded-xl text-sm font-semibold text-red-400 hover:bg-stone-900 text-left">
+                    <i class="fa-solid fa-user-plus w-5 text-center text-red-500"></i> Reclutar Guerrero
+                </button>
+                <button onclick="switchTab('guerreros_activos'); toggleMobileDrawer();" class="drawer-btn w-full flex items-center gap-3.5 px-3 py-2.5 rounded-xl text-sm font-semibold text-stone-300 hover:bg-stone-900 text-left">
+                    <i class="fa-solid fa-map-location-dot w-5 text-center text-stone-400"></i> Aforo en Vivo
+                </button>
+
+                <p class="sidebar-title pt-3 mb-2 border-t border-stone-800/60">OPERACIONES</p>
+                <button onclick="switchTab('tienda'); toggleMobileDrawer();" class="drawer-btn w-full flex items-center gap-3.5 px-3 py-2.5 rounded-xl text-sm font-semibold text-stone-300 hover:bg-stone-900 text-left">
+                    <i class="fa-solid fa-cart-shopping w-5 text-center text-stone-400"></i> Arsenal (Ventas)
+                </button>
+            </nav>
+            <div class="p-4 border-t border-stone-800 bg-[#0a0a0a] flex items-center gap-3">
+                <img src="https://images.unsplash.com/photo-1594381898411-846e7d193883?auto=format&fit=crop&w=100&q=80" class="w-9 h-9 rounded-full border border-red-700/60 object-cover">
+                <div>
+                    <p class="text-xs font-bold text-white">Comandante</p>
+                    <p class="text-[9px] text-emerald-400 font-bold uppercase tracking-wider">Sistema Conectado</p>
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <!-- MAIN APP -->
+    <main class="flex-1 flex flex-col relative h-full min-w-0 bg-black/40">
+        <!-- HEADER MOBILE -->
+        <header class="md:hidden bg-[#070707]/95 backdrop-blur-md border-b border-red-900/30 px-3.5 py-3 sticky top-0 z-30 flex justify-between items-center shrink-0">
+            <div class="flex items-center gap-2.5">
+                <button onclick="toggleMobileDrawer()" class="w-9 h-9 rounded-lg bg-stone-900 border border-stone-800 text-stone-300 hover:text-white flex items-center justify-center active:scale-95 transition-transform" aria-label="Menú">
+                    <i class="fa-solid fa-bars text-sm"></i>
+                </button>
+                <div class="w-8 h-8 rounded-lg bg-black border border-red-600 shadow-[0_0_10px_rgba(220,38,38,0.5)] flex items-center justify-center p-1 shrink-0"><svg class="w-full h-full gear-spin"><use href="#crimson-omen"></use></svg></div>
+                <div>
+                    <h1 class="font-gears font-black text-sm text-white leading-none">GEARS <span class="text-red-500">GYM</span></h1>
+                    <p class="text-[9px] text-stone-400 font-bold uppercase tracking-wider mt-0.5">Comando Central</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-2">
+                <button onclick="openNewMemberModal()" class="bg-red-600 hover:bg-red-500 active:scale-95 text-white text-[10px] font-black uppercase tracking-wider px-2.5 py-1.5 rounded-lg flex items-center gap-1.5 shadow shadow-red-900/50 transition-all">
+                    <i class="fa-solid fa-user-plus"></i> <span>Reclutar</span>
+                </button>
+                <div class="flex items-center gap-1.5 bg-stone-900/90 border border-stone-800 px-2 py-1.5 rounded-lg">
+                    <span id="conn-dot-mob" class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
+                </div>
+            </div>
+        </header>
+
+        <div class="flex-1 overflow-y-auto overflow-x-hidden w-full pb-28 md:pb-8">
+            
+            <!-- ===================================== -->
+            <!-- TAB 1: DASHBOARD GENERAL (CENTRO MANDO) -->
+            <!-- ===================================== -->
+            <div id="tab-dashboard" class="tab-content active p-3.5 sm:p-5 md:p-8 max-w-7xl mx-auto space-y-5 md:space-y-6">
+                <!-- CABECERA CON FECHA Y HORA EN VIVO -->
+                <div class="flex flex-row justify-between items-start sm:items-end gap-2">
+                    <div>
+                        <h2 class="text-xl sm:text-2xl md:text-3xl font-black text-white leading-tight">Base de Operaciones</h2>
+                        <p class="text-stone-400 text-xs sm:text-sm mt-0.5">Resumen financiero, control biométrico y aforo en tiempo real.</p>
+                    </div>
+                    <div class="text-right shrink-0 bg-stone-900/60 sm:bg-transparent border border-stone-800/80 sm:border-0 px-2.5 py-1.5 sm:p-0 rounded-xl">
+                        <p id="live-date" class="text-[10px] sm:text-xs text-stone-400 font-bold uppercase tracking-wider"></p>
+                        <p id="live-clock" class="font-gears text-sm sm:text-xl md:text-2xl font-black text-white leading-none mt-0.5">12:00 PM</p>
+                    </div>
+                </div>
+
+                <!-- REJILLA DE MÉTRICAS OPERATIVAS (4 CARDS) -->
+                <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+                    <div class="bg-stone-900/80 border border-emerald-900/50 p-3.5 sm:p-5 rounded-2xl relative overflow-hidden group">
+                        <i class="fa-solid fa-sack-dollar absolute -right-2 -bottom-2 text-5xl sm:text-7xl text-emerald-500/10 group-hover:text-emerald-500/20 transition-all pointer-events-none"></i>
+                        <p class="text-[9px] sm:text-[10px] text-stone-400 uppercase font-black tracking-wider">Ingresos Hoy</p>
+                        <p class="font-gears text-xl sm:text-2xl md:text-3xl font-black text-emerald-400 mt-1">$<span id="metric-cash">1,420</span></p>
+                        <p class="text-[9px] sm:text-[10px] text-emerald-500 mt-1.5 sm:mt-2 font-bold"><i class="fa-solid fa-arrow-trend-up"></i> +12% vs ayer</p>
+                    </div>
+
+                    <div class="bg-stone-900/80 border border-stone-800 p-3.5 sm:p-5 rounded-2xl relative overflow-hidden group">
+                        <i class="fa-solid fa-person-walking-arrow-right absolute -right-2 -bottom-2 text-5xl sm:text-7xl text-white/5 group-hover:text-white/10 transition-all pointer-events-none"></i>
+                        <div class="flex justify-between items-center">
+                            <p class="text-[9px] sm:text-[10px] text-stone-400 uppercase font-black tracking-wider">Accesos Torniquete</p>
+                            <div class="flex gap-1 z-10">
+                                <button onclick="adjustCounter(-1)" class="w-5 h-5 rounded bg-stone-800 hover:bg-stone-700 text-stone-300 text-[10px] font-bold flex items-center justify-center cursor-pointer" title="Restar 1 al contador TV">-</button>
+                                <button onclick="adjustCounter(1)" class="w-5 h-5 rounded bg-stone-800 hover:bg-stone-700 text-stone-300 text-[10px] font-bold flex items-center justify-center cursor-pointer" title="Sumar 1 al contador TV">+</button>
+                            </div>
+                        </div>
+                        <p class="font-gears text-xl sm:text-2xl md:text-3xl font-black text-white mt-1" id="metric-entries">42</p>
+                        <p class="text-[9px] sm:text-[10px] text-amber-500 mt-1.5 sm:mt-2 font-bold"><i class="fa-solid fa-fire"></i> Sincronizado con TV</p>
+                    </div>
+
+                    <div class="bg-stone-900/80 border border-stone-800 p-3.5 sm:p-5 rounded-2xl relative overflow-hidden group">
+                        <i class="fa-solid fa-users absolute -right-2 -bottom-2 text-5xl sm:text-7xl text-white/5 group-hover:text-white/10 transition-all pointer-events-none"></i>
+                        <p class="text-[9px] sm:text-[10px] text-stone-400 uppercase font-black tracking-wider">Guerreros Activos</p>
+                        <p class="font-gears text-xl sm:text-2xl md:text-3xl font-black text-white mt-1" id="metric-members">128</p>
+                        <p class="text-[9px] sm:text-[10px] text-rose-400 mt-1.5 sm:mt-2 font-bold"><i class="fa-solid fa-triangle-exclamation"></i> 9 por vencer</p>
+                    </div>
+
+                    <!-- BOTÓN ACCIÓN RÁPIDA: COBRAR VISITA -->
+                    <button onclick="registerDayVisit()" class="bg-gradient-to-br from-amber-600 via-amber-700 to-amber-900 border border-amber-500 p-3.5 sm:p-5 rounded-2xl flex flex-col justify-center items-center gap-1.5 sm:gap-2 hover:scale-[1.02] active:scale-95 transition-all shadow-lg shadow-amber-900/40 cursor-pointer">
+                        <i class="fa-solid fa-bolt text-xl sm:text-2xl text-white animate-bounce"></i>
+                        <span class="font-black text-white uppercase tracking-wider text-xs sm:text-sm text-center leading-tight">Cobrar Visita<br><span class="text-[9px] sm:text-[10px] block mt-0.5 text-amber-200">+$<span id="quick-visit-price-label">60</span> MXN (Libera Puerta)</span></span>
+                    </button>
+                </div>
+
+                <!-- NUEVO: META DIARIA Y DESGLOSE FINANCIERO EN TIEMPO REAL -->
+                <div class="bg-[#0a0a0a] border border-stone-800 rounded-2xl p-4 sm:p-5">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 mb-3">
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-bullseye text-red-500"></i>
+                            <h3 class="font-gears text-xs sm:text-sm font-black text-white uppercase">Meta Diaria & Desglose de Caja</h3>
+                        </div>
+                        <div class="flex items-center gap-3 w-full sm:w-auto justify-between sm:justify-end">
+                            <span class="text-xs text-stone-400">Meta: <strong class="font-gears text-white">$<span id="daily-goal-label">2,500</span></strong> (<span id="daily-goal-pct" class="text-emerald-400 font-bold">57%</span>)</span>
+                            <button onclick="editDailyGoal()" class="text-[10px] bg-stone-900 hover:bg-stone-800 text-stone-300 border border-stone-700 px-2.5 py-1 rounded-lg font-bold cursor-pointer"><i class="fa-solid fa-pen"></i> Meta</button>
+                        </div>
+                    </div>
+                    <div class="w-full h-2.5 bg-stone-900 rounded-full overflow-hidden mb-3.5 border border-stone-800">
+                        <div id="daily-goal-bar" class="h-full bg-gradient-to-r from-red-600 via-amber-500 to-emerald-500 transition-all duration-500" style="width: 57%"></div>
+                    </div>
+                    <div class="grid grid-cols-3 gap-2 sm:gap-4 text-center">
+                        <div class="bg-stone-900/60 border border-stone-800/80 rounded-xl p-2 sm:p-2.5">
+                            <p class="text-[9px] sm:text-[10px] text-stone-400 uppercase font-bold">Membresías</p>
+                            <p class="font-gears text-xs sm:text-base font-black text-white mt-0.5">$<span id="breakdown-memberships">1,150</span></p>
+                        </div>
+                        <div class="bg-stone-900/60 border border-stone-800/80 rounded-xl p-2 sm:p-2.5">
+                            <p class="text-[9px] sm:text-[10px] text-stone-400 uppercase font-bold">Visitas Día</p>
+                            <p class="font-gears text-xs sm:text-base font-black text-amber-400 mt-0.5">$<span id="breakdown-visits">180</span></p>
+                        </div>
+                        <div class="bg-stone-900/60 border border-stone-800/80 rounded-xl p-2 sm:p-2.5">
+                            <p class="text-[9px] sm:text-[10px] text-stone-400 uppercase font-bold">Arsenal / Tienda</p>
+                            <p class="font-gears text-xs sm:text-base font-black text-emerald-400 mt-0.5">$<span id="breakdown-store">90</span></p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SECCIÓN ESTADOS CONECTADOS Y ARSENAL RÁPIDO -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
+                    <div class="lg:col-span-2 space-y-4">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                            <div class="bg-stone-900/90 border border-stone-800 p-4 sm:p-5 rounded-2xl flex flex-col justify-between">
+                                <div class="flex justify-between items-start">
+                                    <p class="text-[10px] text-stone-400 uppercase font-black tracking-wider">Monitor Recepción (TV)</p>
+                                    <button onclick="switchTab('comunicaciones')" class="text-[10px] text-red-400 hover:text-white font-bold cursor-pointer"><i class="fa-solid fa-sliders"></i> Editar TV</button>
+                                </div>
+                                <div class="flex items-center gap-3 mt-2.5 sm:mt-3">
+                                    <div class="w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-emerald-950 text-emerald-500 border border-emerald-800/40 flex items-center justify-center text-lg sm:text-xl shrink-0"><i class="fa-solid fa-tv"></i></div>
+                                    <div><p class="font-bold text-white text-xs sm:text-sm">Estado: Conectado a Servidor</p><p class="text-[11px] sm:text-xs text-emerald-400">Cartelera y popups en vivo</p></div>
+                                </div>
+                                <div class="mt-3 pt-2.5 border-t border-stone-800 flex flex-wrap gap-1.5">
+                                    <button onclick="remoteNextPromo()" class="flex-1 bg-stone-800 hover:bg-stone-700 active:scale-95 text-white text-[10px] font-bold py-1.5 px-2 rounded-lg cursor-pointer"><i class="fa-solid fa-forward"></i> Sig. Promo TV</button>
+                                    <button onclick="remoteSelectTariff(0)" class="bg-stone-800 hover:bg-red-900/60 text-stone-300 text-[10px] font-bold py-1.5 px-2 rounded-lg cursor-pointer" title="Resaltar Tarifa 1 en TV">T1</button>
+                                    <button onclick="remoteSelectTariff(1)" class="bg-stone-800 hover:bg-red-900/60 text-stone-300 text-[10px] font-bold py-1.5 px-2 rounded-lg cursor-pointer" title="Resaltar Tarifa 2 en TV">T2</button>
+                                    <button onclick="remoteSelectTariff(2)" class="bg-stone-800 hover:bg-red-900/60 text-stone-300 text-[10px] font-bold py-1.5 px-2 rounded-lg cursor-pointer" title="Resaltar Tarifa 3 en TV">T3</button>
+                                    <button onclick="remoteSelectTariff(3)" class="bg-stone-800 hover:bg-red-900/60 text-stone-300 text-[10px] font-bold py-1.5 px-2 rounded-lg cursor-pointer" title="Resaltar Tarifa 4 en TV">T4</button>
+                                </div>
+                            </div>
+                            <div class="bg-stone-900/90 border border-stone-800 p-4 sm:p-5 rounded-2xl flex flex-col justify-between">
+                                <div class="flex justify-between items-start">
+                                    <p class="text-[10px] text-stone-400 uppercase font-black tracking-wider">Torniquete & Sensor R503</p>
+                                    <button onclick="manualOverrideOpen()" class="text-[10px] text-emerald-400 hover:text-white font-bold cursor-pointer"><i class="fa-solid fa-unlock"></i> Abrir 5s</button>
+                                </div>
+                                <div class="flex items-center gap-3 mt-2.5 sm:mt-3">
+                                    <div id="dash-turnstile-icon-box" class="w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-emerald-950 text-emerald-500 border border-emerald-800/40 flex items-center justify-center text-lg sm:text-xl shrink-0"><i id="dash-turnstile-icon" class="fa-solid fa-door-closed"></i></div>
+                                    <div><p id="dash-turnstile-status" class="font-bold text-white text-xs sm:text-sm">Estado: Armado</p><p id="dash-turnstile-sub" class="text-[11px] sm:text-xs text-emerald-400">Lector biométrico listo</p></div>
+                                </div>
+                                <div class="mt-3 pt-2.5 border-t border-stone-800 flex gap-1.5">
+                                    <button onclick="emitScan('active')" class="flex-1 bg-emerald-950/50 hover:bg-emerald-900/60 border border-emerald-800/50 text-emerald-300 text-[10px] font-bold py-1.5 rounded-lg cursor-pointer">Sim. Activo</button>
+                                    <button onclick="emitScan('warning')" class="flex-1 bg-amber-950/50 hover:bg-amber-900/60 border border-amber-800/50 text-amber-300 text-[10px] font-bold py-1.5 rounded-lg cursor-pointer">Sim. Aviso</button>
+                                    <button onclick="emitScan('expired')" class="flex-1 bg-rose-950/50 hover:bg-rose-900/60 border border-rose-800/50 text-rose-300 text-[10px] font-bold py-1.5 rounded-lg cursor-pointer">Sim. Vencido</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- FEED RÁPIDO DE ACCESOS -->
+                        <div class="bg-[#0a0a0a] border border-stone-800 rounded-2xl p-4 sm:p-5">
+                            <div class="flex justify-between items-center mb-3">
+                                <h3 class="font-gears text-xs sm:text-sm font-black text-white uppercase"><i class="fa-solid fa-tower-observation text-red-500"></i> Radar Reciente de Accesos</h3>
+                                <button onclick="switchTab('torniquete')" class="text-xs text-red-400 font-bold hover:text-white transition-colors shrink-0 cursor-pointer">Controles <i class="fa-solid fa-arrow-right"></i></button>
+                            </div>
+                            <div id="dash-access-feed" class="space-y-2">
+                                <p class="text-xs text-stone-500 italic">Esperando lecturas del torniquete...</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ARSENAL RÁPIDO DE MOSTRADOR (CON EXISTENCIAS Y +1 STOCK) -->
+                    <div class="bg-[#0a0a0a] border border-stone-800 rounded-2xl p-4 sm:p-5 flex flex-col">
+                        <div class="flex justify-between items-center mb-3">
+                            <h3 class="font-gears text-xs sm:text-sm font-black text-white uppercase"><i class="fa-solid fa-box-open text-red-500"></i> Arsenal Rápido</h3>
+                            <button onclick="openProductModal()" class="text-[10px] bg-red-600/20 hover:bg-red-600/40 text-red-400 border border-red-500/30 px-2 py-1 rounded-lg font-bold cursor-pointer"><i class="fa-solid fa-plus"></i> Item</button>
+                        </div>
+                        <div id="dash-arsenal-list" class="space-y-2.5 sm:space-y-3 flex-1">
+                            <!-- Se llena dinámicamente pero conserva los 3 principales y su stock -->
+                        </div>
+                        <button onclick="switchTab('tienda')" class="w-full mt-3 bg-stone-900 hover:bg-stone-800 text-stone-300 font-bold text-xs py-2.5 rounded-xl border border-stone-800 text-center transition-colors cursor-pointer">Inventario y Ventas <i class="fa-solid fa-arrow-right text-[10px]"></i></button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===================================== -->
+            <!-- TAB 2: ARSENAL / TIENDA E INVENTARIO  -->
+            <!-- ===================================== -->
+            <div id="tab-tienda" class="tab-content p-3.5 sm:p-5 md:p-8 max-w-7xl mx-auto space-y-5 md:space-y-6">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-3">
+                    <div>
+                        <h2 class="text-xl sm:text-2xl md:text-3xl font-black text-white">Arsenal (Ventas e Inventario)</h2>
+                        <p class="text-stone-400 text-xs sm:text-sm">Venta rápida en mostrador, control de existencias (+Stock), precios editables y alta de nuevos artículos.</p>
+                    </div>
+                    <div class="flex flex-wrap items-center gap-2 w-full md:w-auto">
+                        <button onclick="openProductModal()" class="flex-1 sm:flex-initial bg-red-600 hover:bg-red-500 active:scale-95 text-white font-bold text-xs px-3.5 py-2.5 rounded-xl flex items-center justify-center gap-1.5 shadow-lg shadow-red-900/40 cursor-pointer">
+                            <i class="fa-solid fa-plus"></i> Nuevo Producto
+                        </button>
+                        <button onclick="restockAll(10)" class="flex-1 sm:flex-initial bg-stone-900 hover:bg-stone-800 active:scale-95 border border-stone-700 text-stone-200 font-bold text-xs px-3.5 py-2.5 rounded-xl flex items-center justify-center gap-1.5 cursor-pointer">
+                            <i class="fa-solid fa-boxes-packing text-amber-400"></i> +10 Stock a Todo
+                        </button>
+                        <div class="w-full sm:w-auto bg-emerald-950/40 border border-emerald-900/50 px-4 py-2 rounded-xl flex sm:block justify-between items-center text-right">
+                            <p class="text-[10px] text-stone-400 uppercase font-bold">Caja Actual</p>
+                            <p class="font-gears font-black text-emerald-400 text-lg md:text-xl">$<span id="pos-cash">1,420</span></p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- REJILLA DE PRODUCTOS CON STOCK Y CONTROLES DE EXISTENCIAS -->
+                <div id="arsenal-grid-container" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3.5 sm:gap-4">
+                    <!-- Renderizado dinámico con Vender, +1 Stock, +5 Stock y Editar -->
+                </div>
+
+                <!-- BITÁCORA DE VENTAS Y MOVIMIENTOS DE INVENTARIO -->
+                <div class="bg-[#0a0a0a] border border-stone-800 rounded-2xl p-4 sm:p-5">
+                    <div class="flex justify-between items-center mb-3">
+                        <h3 class="font-gears text-xs sm:text-sm font-black text-white uppercase"><i class="fa-solid fa-receipt text-emerald-400 mr-1"></i> Bitácora de Ventas y Reabastecimiento</h3>
+                        <span id="arsenal-total-items-badge" class="text-[10px] font-gears bg-stone-900 border border-stone-800 text-stone-300 px-2.5 py-1 rounded-lg">Stock Total: 0 uds</span>
+                    </div>
+                    <div id="store-sales-log" class="space-y-2 max-h-52 overflow-y-auto">
+                        <p class="text-xs text-stone-500 italic">Aquí se registrarán las ventas y entradas de mercancía en tiempo real...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===================================== -->
+            <!-- TAB 3: COMUNICACIONES Y EDITOR MONITOR TV -->
+            <!-- ===================================== -->
+            <div id="tab-comunicaciones" class="tab-content p-3.5 sm:p-5 md:p-8 max-w-6xl mx-auto space-y-5 md:space-y-6">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-3">
+                    <div>
+                        <h2 class="text-xl sm:text-2xl md:text-3xl font-black text-white">Comunicaciones y Control Total de TV</h2>
+                        <p class="text-stone-400 text-xs sm:text-sm">Modifica en vivo las promos, precios de las 4 tarifas, textos, música, aforo y fondo del Monitor TV.</p>
+                    </div>
+                    <div class="flex flex-wrap gap-2 w-full sm:w-auto">
+                        <button onclick="remoteNextPromo()" class="flex-1 sm:flex-initial bg-stone-900 hover:bg-stone-800 border border-stone-700 text-white text-xs font-bold px-3.5 py-2.5 rounded-xl flex items-center justify-center gap-2 cursor-pointer">
+                            <i class="fa-solid fa-rotate text-red-500"></i> Rotar Promo en TV
+                        </button>
+                        <button onclick="setCustomCounter()" class="flex-1 sm:flex-initial bg-stone-900 hover:bg-stone-800 border border-stone-700 text-amber-400 text-xs font-bold px-3.5 py-2.5 rounded-xl flex items-center justify-center gap-2 cursor-pointer">
+                            <i class="fa-solid fa-users-gear"></i> Ajustar Aforo TV
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 1. TRANSMISOR RÁPIDO DE PROMO / ALERTA PRINCIPAL (ORIGINAL + MEJORADO) -->
+                <div class="bg-[#0a0a0a] border border-stone-800/80 rounded-2xl p-4 sm:p-6 shadow-2xl">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 mb-4">
+                        <h3 class="font-gears text-sm sm:text-base font-black text-white"><i class="fa-solid fa-satellite-dish text-red-500"></i> Transmisor de Banner Principal a TV</h3>
+                        <div class="flex flex-wrap gap-1.5">
+                            <span class="text-[10px] text-stone-500 font-bold self-center mr-1">Resaltar en TV:</span>
+                            <button onclick="remoteSelectTariff(0)" class="bg-stone-900 hover:bg-red-900/50 border border-stone-700 text-stone-200 text-[10px] font-bold px-2.5 py-1 rounded-lg cursor-pointer">1. Mensual</button>
+                            <button onclick="remoteSelectTariff(1)" class="bg-stone-900 hover:bg-red-900/50 border border-stone-700 text-stone-200 text-[10px] font-bold px-2.5 py-1 rounded-lg cursor-pointer">2. Dúo</button>
+                            <button onclick="remoteSelectTariff(2)" class="bg-stone-900 hover:bg-red-900/50 border border-stone-700 text-stone-200 text-[10px] font-bold px-2.5 py-1 rounded-lg cursor-pointer">3. Quincena</button>
+                            <button onclick="remoteSelectTariff(3)" class="bg-stone-900 hover:bg-red-900/50 border border-stone-700 text-stone-200 text-[10px] font-bold px-2.5 py-1 rounded-lg cursor-pointer">4. Visita</button>
+                        </div>
+                    </div>
+                    <div class="space-y-3.5">
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                            <div>
+                                <label class="text-[10px] font-bold text-stone-500 uppercase block mb-1">Etiqueta Superior (Badge)</label>
+                                <input id="alert-badge-input" type="text" placeholder="Ej. PROMOCIÓN DESTACADA" class="w-full bg-[#111] border border-stone-800 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm text-white focus:outline-none focus:border-red-500 font-bold uppercase">
+                            </div>
+                            <div class="sm:col-span-2">
+                                <label class="text-[10px] font-bold text-stone-500 uppercase block mb-1">Título del Mensaje</label>
+                                <input id="alert-title-input" type="text" placeholder="Ej. PROMOCIÓN RELÁMPAGO" class="w-full bg-[#111] border border-stone-800 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm text-white focus:outline-none focus:border-red-500 font-gears uppercase">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="text-[10px] font-bold text-stone-500 uppercase block mb-1">Cuerpo del Mensaje</label>
+                            <textarea id="alert-msg-input" rows="2" placeholder="Ej. El día de hoy las toallas están a mitad de precio..." class="w-full bg-[#111] border border-stone-800 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm text-white focus:outline-none focus:border-red-500 resize-none"></textarea>
+                        </div>
+                        <div class="pt-1 flex gap-2.5 sm:gap-3">
+                            <button onclick="sendAlertToMonitor()" class="flex-1 bg-red-700 hover:bg-red-600 active:scale-[0.99] text-white font-bold py-3 px-4 rounded-xl uppercase tracking-widest text-xs flex justify-center items-center gap-2 shadow-lg shadow-red-900/50 cursor-pointer transition-all">
+                                <i class="fa-solid fa-paper-plane"></i> Lanzar al Monitor Ahora
+                            </button>
+                            <button onclick="fillExampleAlert()" class="bg-stone-800 hover:bg-stone-700 active:scale-95 text-white px-4 py-3 rounded-xl cursor-pointer shrink-0" title="Rellenar ejemplo"><i class="fa-solid fa-wand-magic-sparkles"></i></button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. EDITOR DE PRECIOS Y PROMOS DE LAS 4 TARJETAS DE TARIFAS EN TV -->
+                <div class="bg-[#0a0a0a] border border-stone-800/80 rounded-2xl p-4 sm:p-6 shadow-2xl">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 mb-4">
+                        <div>
+                            <h3 class="font-gears text-sm sm:text-base font-black text-white"><i class="fa-solid fa-tags text-amber-500"></i> Editor de Precios y Tarifas Oficiales (Monitor TV)</h3>
+                            <p class="text-xs text-stone-400">Cambia precios, nombres, subtítulos y la descripción que muestra cada tarjeta cuando se selecciona en la TV.</p>
+                        </div>
+                        <div class="w-full sm:w-64">
+                            <input id="tv-tariffs-header-input" type="text" value="TARIFAS OFICIALES (CLIC PARA VER)" class="w-full bg-[#111] border border-stone-800 rounded-xl px-3 py-2 text-xs text-stone-200 font-bold uppercase focus:outline-none focus:border-red-500" title="Título de la sección de tarifas">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <!-- Tarjeta 1 -->
+                        <div class="bg-stone-900/60 border border-stone-800 rounded-xl p-3.5 space-y-2.5">
+                            <div class="flex justify-between items-center">
+                                <span class="text-[10px] font-gears font-black text-red-400 uppercase">Tarjeta #1 (Mensualidad)</span>
+                                <button onclick="remoteSelectTariff(0)" class="text-[10px] text-stone-400 hover:text-white cursor-pointer"><i class="fa-solid fa-eye"></i> Enfocar en TV</button>
+                            </div>
+                            <div class="grid grid-cols-3 gap-2">
+                                <div>
+                                    <label class="text-[9px] text-stone-400 uppercase font-bold block mb-0.5">Nombre</label>
+                                    <input id="t0-name" type="text" value="Mensual" class="w-full bg-[#111] border border-stone-800 rounded-lg px-2.5 py-1.5 text-xs text-white font-bold">
+                                </div>
+                                <div>
+                                    <label class="text-[9px] text-stone-400 uppercase font-bold block mb-0.5">Precio TV</label>
+                                    <input id="t0-price" type="text" value="$400" class="w-full bg-[#111] border border-stone-800 rounded-lg px-2.5 py-1.5 text-xs text-emerald-400 font-gears font-black">
+                                </div>
+                                <div>
+                                    <label class="text-[9px] text-stone-400 uppercase font-bold block mb-0.5">Subtítulo</label>
+                                    <input id="t0-sub" type="text" value="30 Días" class="w-full bg-[#111] border border-stone-800 rounded-lg px-2.5 py-1.5 text-xs text-stone-300">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="text-[9px] text-stone-400 uppercase font-bold block mb-0.5">Título Banner al Seleccionar</label>
+                                <input id="t0-ptitle" type="text" value="MENSUALIDAD — $400 MXN" class="w-full bg-[#111] border border-stone-800 rounded-lg px-2.5 py-1.5 text-xs text-white font-gears">
+                            </div>
+                            <div>
+                                <label class="text-[9px] text-stone-400 uppercase font-bold block mb-0.5">Descripción Promo al Seleccionar</label>
+                                <input id="t0-pdesc" type="text" value="Acceso total ilimitado por 30 días a todas las áreas de pesas, cardio, funcional y vestidores. ¡Sin costo de inscripción!" class="w-full bg-[#111] border border-stone-800 rounded-lg px-2.5 py-1.5 text-xs text-stone-300">
+                            </div>
+                        </div>
+
+                        <!-- Tarjeta 2 -->
+                        <div class="bg-stone-900/60 border border-stone-800 rounded-xl p-3.5 space-y-2.5">
+                            <div class="flex justify-between items-center">
+                                <span class="text-[10px] font-gears font-black text-red-400 uppercase">Tarjeta #2 (Promo Dúo)</span>
+                                <button onclick="remoteSelectTariff(1)" class="text-[10px] text-stone-400 hover:text-white cursor-pointer"><i class="fa-solid fa-eye"></i> Enfocar en TV</button>
+                            </div>
+                            <div class="grid grid-cols-3 gap-2">
+                                <div>
+                                    <label class="text-[9px] text-stone-400 uppercase font-bold block mb-0.5">Nombre</label>
+                                    <input id="t1-name" type="text" value="Promo Dúo" class="w-full bg-[#111] border border-stone-800 rounded-lg px-2.5 py-1.5 text-xs text-white font-bold">
+                                </div>
+                                <div>
+                                    <label class="text-[9px] text-stone-400 uppercase font-bold block mb-0.5">Precio TV</label>
+                                    <input id="t1-price" type="text" value="2x$700" class="w-full bg-[#111] border border-stone-800 rounded-lg px-2.5 py-1.5 text-xs text-emerald-400 font-gears font-black">
+                                </div>
+                                <div>
+                                    <label class="text-[9px] text-stone-400 uppercase font-bold block mb-0.5">Subtítulo</label>
+                                    <input id="t1-sub" type="text" value="Guerreros" class="w-full bg-[#111] border border-stone-800 rounded-lg px-2.5 py-1.5 text-xs text-stone-300">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="text-[9px] text-stone-400 uppercase font-bold block mb-0.5">Título Banner al Seleccionar</label>
+                                <input id="t1-ptitle" type="text" value="PROMO DÚO: 2 X $700" class="w-full bg-[#111] border border-stone-800 rounded-lg px-2.5 py-1.5 text-xs text-white font-gears">
+                            </div>
+                            <div>
+                                <label class="text-[9px] text-stone-400 uppercase font-bold block mb-0.5">Descripción Promo al Seleccionar</label>
+                                <input id="t1-pdesc" type="text" value="Entrena con tu compañero de batalla. Inscríbanse juntos este mes y paguen solo $350 cada uno. ¡Acceso total e ilimitado!" class="w-full bg-[#111] border border-stone-800 rounded-lg px-2.5 py-1.5 text-xs text-stone-300">
+                            </div>
+                        </div>
+
+                        <!-- Tarjeta 3 -->
+                        <div class="bg-stone-900/60 border border-stone-800 rounded-xl p-3.5 space-y-2.5">
+                            <div class="flex justify-between items-center">
+                                <span class="text-[10px] font-gears font-black text-red-400 uppercase">Tarjeta #3 (Quincena)</span>
+                                <button onclick="remoteSelectTariff(2)" class="text-[10px] text-stone-400 hover:text-white cursor-pointer"><i class="fa-solid fa-eye"></i> Enfocar en TV</button>
+                            </div>
+                            <div class="grid grid-cols-3 gap-2">
+                                <div>
+                                    <label class="text-[9px] text-stone-400 uppercase font-bold block mb-0.5">Nombre</label>
+                                    <input id="t2-name" type="text" value="Quincena" class="w-full bg-[#111] border border-stone-800 rounded-lg px-2.5 py-1.5 text-xs text-white font-bold">
+                                </div>
+                                <div>
+                                    <label class="text-[9px] text-stone-400 uppercase font-bold block mb-0.5">Precio TV</label>
+                                    <input id="t2-price" type="text" value="$250" class="w-full bg-[#111] border border-stone-800 rounded-lg px-2.5 py-1.5 text-xs text-emerald-400 font-gears font-black">
+                                </div>
+                                <div>
+                                    <label class="text-[9px] text-stone-400 uppercase font-bold block mb-0.5">Subtítulo</label>
+                                    <input id="t2-sub" type="text" value="15 Días" class="w-full bg-[#111] border border-stone-800 rounded-lg px-2.5 py-1.5 text-xs text-stone-300">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="text-[9px] text-stone-400 uppercase font-bold block mb-0.5">Título Banner al Seleccionar</label>
+                                <input id="t2-ptitle" type="text" value="PLAN QUINCENAL — $250 MXN" class="w-full bg-[#111] border border-stone-800 rounded-lg px-2.5 py-1.5 text-xs text-white font-gears">
+                            </div>
+                            <div>
+                                <label class="text-[9px] text-stone-400 uppercase font-bold block mb-0.5">Descripción Promo al Seleccionar</label>
+                                <input id="t2-pdesc" type="text" value="15 días continuos de entrenamiento pesado sin compromisos largos. Ideal para mantener el ritmo a mitad de mes." class="w-full bg-[#111] border border-stone-800 rounded-lg px-2.5 py-1.5 text-xs text-stone-300">
+                            </div>
+                        </div>
+
+                        <!-- Tarjeta 4 -->
+                        <div class="bg-stone-900/60 border border-stone-800 rounded-xl p-3.5 space-y-2.5">
+                            <div class="flex justify-between items-center">
+                                <span class="text-[10px] font-gears font-black text-amber-400 uppercase">Tarjeta #4 (Visita / Pase Día)</span>
+                                <button onclick="remoteSelectTariff(3)" class="text-[10px] text-stone-400 hover:text-white cursor-pointer"><i class="fa-solid fa-eye"></i> Enfocar en TV</button>
+                            </div>
+                            <div class="grid grid-cols-3 gap-2">
+                                <div>
+                                    <label class="text-[9px] text-stone-400 uppercase font-bold block mb-0.5">Nombre</label>
+                                    <input id="t3-name" type="text" value="Visita" class="w-full bg-[#111] border border-stone-800 rounded-lg px-2.5 py-1.5 text-xs text-white font-bold">
+                                </div>
+                                <div>
+                                    <label class="text-[9px] text-stone-400 uppercase font-bold block mb-0.5">Precio TV</label>
+                                    <input id="t3-price" type="text" value="$60" class="w-full bg-[#111] border border-stone-800 rounded-lg px-2.5 py-1.5 text-xs text-emerald-400 font-gears font-black">
+                                </div>
+                                <div>
+                                    <label class="text-[9px] text-stone-400 uppercase font-bold block mb-0.5">Subtítulo</label>
+                                    <input id="t3-sub" type="text" value="Por Día" class="w-full bg-[#111] border border-stone-800 rounded-lg px-2.5 py-1.5 text-xs text-stone-300">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="text-[9px] text-stone-400 uppercase font-bold block mb-0.5">Título Banner al Seleccionar</label>
+                                <input id="t3-ptitle" type="text" value="PASE POR DÍA (VISITA) — $60" class="w-full bg-[#111] border border-stone-800 rounded-lg px-2.5 py-1.5 text-xs text-white font-gears">
+                            </div>
+                            <div>
+                                <label class="text-[9px] text-stone-400 uppercase font-bold block mb-0.5">Descripción Promo al Seleccionar</label>
+                                <input id="t3-pdesc" type="text" value="¿Vienes de visita o quieres probar el arsenal de GEARS GYM? Entrena hoy mismo sin límite de tiempo por solo $60 MXN." class="w-full bg-[#111] border border-stone-800 rounded-lg px-2.5 py-1.5 text-xs text-stone-300">
+                            </div>
+                        </div>
+                    </div>
+
+                    <button onclick="saveTariffsToTV()" class="w-full mt-4 bg-amber-600 hover:bg-amber-500 active:scale-[0.99] text-white font-black py-3 rounded-xl uppercase tracking-widest text-xs flex justify-center items-center gap-2 shadow-lg shadow-amber-900/40 cursor-pointer transition-all">
+                        <i class="fa-solid fa-floppy-disk"></i> Actualizar Precios y Tarifas en Monitor TV
+                    </button>
+                </div>
+
+                <!-- 3. EDITOR DE ELEMENTOS VISUALES, MÚSICA, LECTOR Y PIE DE PÁGINA EN TV -->
+                <div class="bg-[#0a0a0a] border border-stone-800/80 rounded-2xl p-4 sm:p-6 shadow-2xl space-y-4">
+                    <div>
+                        <h3 class="font-gears text-sm sm:text-base font-black text-white"><i class="fa-solid fa-tv text-emerald-400"></i> Personalización Total de Interfaz del Monitor TV</h3>
+                        <p class="text-xs text-stone-400">Modifica todos los demás textos visibles en la pantalla del gimnasio: música, barra de huella, tarjetas inferiores, avisos y fondo.</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                        <div>
+                            <label class="text-[10px] font-bold text-stone-500 uppercase block mb-1">Música en Cabecera TV</label>
+                            <input id="tv-music-input" type="text" value="HEAVY WORKOUT MIX" class="w-full bg-[#111] border border-stone-800 rounded-xl px-3 py-2 text-xs text-white font-bold">
+                        </div>
+                        <div>
+                            <label class="text-[10px] font-bold text-stone-500 uppercase block mb-1">Título Barra Lector</label>
+                            <input id="tv-sensor-title-input" type="text" value="COLOCA TU HUELLA PARA ENTRAR" class="w-full bg-[#111] border border-stone-800 rounded-xl px-3 py-2 text-xs text-white font-bold">
+                        </div>
+                        <div>
+                            <label class="text-[10px] font-bold text-stone-500 uppercase block mb-1">Subtítulo Barra Lector</label>
+                            <input id="tv-sensor-sub-input" type="text" value="El torniquete se abrirá automáticamente al validar tu membresía." class="w-full bg-[#111] border border-stone-800 rounded-xl px-3 py-2 text-xs text-stone-300">
+                        </div>
+                        <div>
+                            <label class="text-[10px] font-bold text-stone-500 uppercase block mb-1">Botón Derecho Lector</label>
+                            <input id="tv-sensor-btn-input" type="text" value="PIN O HUELLA" class="w-full bg-[#111] border border-stone-800 rounded-xl px-3 py-2 text-xs text-red-400 font-gears font-bold">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <div class="bg-stone-900/50 border border-stone-800 p-3 rounded-xl space-y-2">
+                            <p class="text-[10px] font-bold text-amber-400 uppercase"><i class="fa-solid fa-bottle-water"></i> Tarjeta Inferior Izquierda (Tienda/Hidratación)</p>
+                            <input id="tv-c1-title-input" type="text" value="HIDRATACIÓN Y SUPLEMENTOS" class="w-full bg-[#111] border border-stone-800 rounded-lg px-3 py-1.5 text-xs text-white font-gears">
+                            <input id="tv-c1-desc-input" type="text" value="Adquiere en recepción tus Scoops de Pre-Entreno, Proteína, Creatina y Agua fría." class="w-full bg-[#111] border border-stone-800 rounded-lg px-3 py-1.5 text-xs text-stone-300">
+                        </div>
+                        <div class="bg-stone-900/50 border border-stone-800 p-3 rounded-xl space-y-2">
+                            <p class="text-[10px] font-bold text-blue-400 uppercase"><i class="fa-solid fa-shield-halved"></i> Tarjeta Inferior Derecha (Reglamento)</p>
+                            <input id="tv-c2-title-input" type="text" value="REGLAMENTO DE LA BASE" class="w-full bg-[#111] border border-stone-800 rounded-lg px-3 py-1.5 text-xs text-white font-gears">
+                            <input id="tv-c2-desc-input" type="text" value="Uso de toalla obligatorio. Descarga las barras y regresa las mancuernas a su lugar." class="w-full bg-[#111] border border-stone-800 rounded-lg px-3 py-1.5 text-xs text-stone-300">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <div>
+                            <label class="text-[10px] font-bold text-stone-500 uppercase block mb-1">Marquesina / Aviso Inferior (Footer TV)</label>
+                            <input id="tv-footer-input" type="text" value="ENTRENAMIENTO PESADO • RESPETA EL EQUIPO • HIDRÁTATE" class="w-full bg-[#111] border border-stone-800 rounded-xl px-3 py-2 text-xs text-white font-bold uppercase">
+                        </div>
+                        <div>
+                            <label class="text-[10px] font-bold text-stone-500 uppercase block mb-1">Imagen de Fondo TV (URL o Preset)</label>
+                            <div class="flex gap-1.5">
+                                <input id="tv-bg-input" type="text" value="https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=1920&q=80" class="flex-1 bg-[#111] border border-stone-800 rounded-xl px-3 py-2 text-xs text-stone-300">
+                                <button onclick="setTvBgPreset('https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=1920&q=80')" class="bg-stone-800 hover:bg-stone-700 text-[10px] text-white font-bold px-2.5 rounded-lg cursor-pointer" title="Fondo Clásico">F1</button>
+                                <button onclick="setTvBgPreset('https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&w=1920&q=80')" class="bg-stone-800 hover:bg-stone-700 text-[10px] text-white font-bold px-2.5 rounded-lg cursor-pointer" title="Fondo Pesas">F2</button>
+                                <button onclick="setTvBgPreset('https://images.unsplash.com/photo-1540497077202-7c8a3999166f?auto=format&fit=crop&w=1920&q=80')" class="bg-stone-800 hover:bg-stone-700 text-[10px] text-white font-bold px-2.5 rounded-lg cursor-pointer" title="Fondo Hardcore">F3</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button onclick="saveFullTvConfig()" class="w-full bg-emerald-600 hover:bg-emerald-500 active:scale-[0.99] text-white font-black py-3 rounded-xl uppercase tracking-widest text-xs flex justify-center items-center gap-2 shadow-lg shadow-emerald-900/40 cursor-pointer transition-all">
+                        <i class="fa-solid fa-satellite-dish"></i> Sincronizar Textos y Fondo con Monitor TV
+                    </button>
+                </div>
+            </div>
+
+            <!-- ===================================== -->
+            <!-- TAB 4: CONTROL AVANZADO DE TORNIQUETE  -->
+            <!-- ===================================== -->
+            <div id="tab-torniquete" class="tab-content p-3.5 sm:p-5 md:p-8 max-w-5xl mx-auto space-y-5 md:space-y-6">
+                <div>
+                    <h2 class="text-xl sm:text-2xl md:text-3xl font-black text-white">Torniquete Defensivo & Radar</h2>
+                    <p class="text-stone-400 text-xs sm:text-sm">Control físico del acceso, bloqueos totales, liberaciones manuales y radar en vivo.</p>
+                </div>
+                
+                <!-- ESTADO VISUAL Y COMANDOS DE ANULACIÓN -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+                    <!-- Estado Visual con Halo -->
+                    <div class="bg-stone-950 border border-stone-800 rounded-3xl p-5 sm:p-8 flex flex-col items-center justify-center text-center relative shadow-2xl">
+                        <div id="turnstile-halo" class="absolute inset-0 bg-emerald-500/10 rounded-3xl opacity-50 transition-colors duration-500"></div>
+                        <div class="relative z-10">
+                            <div id="turnstile-icon-container" class="w-24 h-24 sm:w-32 sm:h-32 rounded-full border-4 border-emerald-500 flex items-center justify-center mx-auto mb-3 sm:mb-4 bg-black shadow-[0_0_40px_rgba(16,185,129,0.3)] transition-all duration-500">
+                                <i id="turnstile-icon" class="fa-solid fa-door-closed text-4xl sm:text-5xl text-emerald-500 transition-colors duration-500"></i>
+                            </div>
+                            <h3 class="font-gears text-lg sm:text-2xl font-black text-white tracking-widest uppercase">Estado: <span id="turnstile-status-text" class="text-emerald-500">ARMADO</span></h3>
+                            <p class="text-stone-400 text-[11px] sm:text-xs mt-1.5 sm:mt-2 uppercase tracking-widest font-bold"><i class="fa-solid fa-fingerprint text-red-500"></i> Lector Biométrico Activo</p>
+                        </div>
+                    </div>
+
+                    <!-- Panel de Comandos de Anulación -->
+                    <div class="space-y-3 sm:space-y-3.5 flex flex-col justify-center">
+                        <p class="text-[11px] sm:text-xs text-stone-500 uppercase font-bold tracking-wider mb-0.5">Comandos de Anulación Remota</p>
+                        
+                        <button onclick="manualOverrideOpen()" class="w-full bg-[#0d0d0d] border border-emerald-600/50 hover:bg-emerald-950/40 active:scale-[0.99] hover:border-emerald-500 text-white p-3.5 sm:p-4 rounded-2xl flex items-center gap-3.5 sm:gap-4 transition-all group text-left cursor-pointer">
+                            <div class="w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform"><i class="fa-solid fa-unlock-keyhole text-lg sm:text-xl"></i></div>
+                            <div>
+                                <p class="font-black uppercase tracking-wider text-xs sm:text-sm text-white">Apertura Manual</p>
+                                <p class="text-[11px] text-stone-400">Libera el torniquete por 5 segundos en TV y local.</p>
+                            </div>
+                        </button>
+
+                        <button id="btn-lockdown" onclick="emergencyLockdown()" class="w-full bg-[#0d0d0d] border border-rose-600/50 hover:bg-rose-950/40 active:scale-[0.99] hover:border-rose-500 text-white p-3.5 sm:p-4 rounded-2xl flex items-center gap-3.5 sm:gap-4 transition-all group text-left cursor-pointer">
+                            <div class="w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-rose-500/20 text-rose-500 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform"><i id="btn-lockdown-icon" class="fa-solid fa-lock text-lg sm:text-xl"></i></div>
+                            <div>
+                                <p id="btn-lockdown-title" class="font-black uppercase tracking-wider text-xs sm:text-sm text-white">Bloqueo de Emergencia</p>
+                                <p id="btn-lockdown-sub" class="text-[11px] text-stone-400">Traba el torniquete y la TV indefinidamente.</p>
+                            </div>
+                        </button>
+                        
+                        <button onclick="simulateExternalScan()" class="w-full bg-[#0d0d0d] border border-blue-600/50 hover:bg-blue-950/40 active:scale-[0.99] hover:border-blue-500 text-white p-3.5 sm:p-4 rounded-2xl flex items-center gap-3.5 sm:gap-4 transition-all group text-left cursor-pointer">
+                            <div class="w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-blue-500/20 text-blue-400 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform"><i class="fa-solid fa-fingerprint text-lg sm:text-xl pulse-ring"></i></div>
+                            <div>
+                                <p class="font-black uppercase tracking-wider text-xs sm:text-sm text-white">Simular Huella Aleatoria</p>
+                                <p class="text-[11px] text-stone-400">Prueba el flujo completo entre Admin, Servidor y TV.</p>
+                            </div>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- SIMULADOR MANUAL ESPECÍFICO Y RADAR EN VIVO -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 pt-1">
+                    <div class="bg-[#0a0a0a] border border-stone-800 rounded-2xl p-4 sm:p-6">
+                        <p class="text-[10px] text-stone-500 uppercase font-bold tracking-wider mb-3 sm:mb-4">Simular Huellas Específicas</p>
+                        <div class="space-y-2.5 sm:space-y-3">
+                            <button onclick="emitScan('active')" class="w-full bg-emerald-950/30 hover:bg-emerald-900/50 active:scale-[0.99] border border-emerald-900/50 rounded-xl p-3 flex items-center gap-3 text-left transition-all cursor-pointer">
+                                <div class="w-8 h-8 rounded-full bg-emerald-500 flex items-center justify-center text-black font-bold shrink-0"><i class="fa-solid fa-skull"></i></div>
+                                <div><p class="text-[10px] font-black text-emerald-400 uppercase">Activo (Acceso Permitido)</p><p class="text-xs font-bold text-white">Carlos Mendoza (18 días)</p></div>
+                            </button>
+                            <button onclick="emitScan('warning')" class="w-full bg-amber-950/30 hover:bg-amber-900/50 active:scale-[0.99] border border-amber-900/50 rounded-xl p-3 flex items-center gap-3 text-left transition-all cursor-pointer">
+                                <div class="w-8 h-8 rounded-full bg-amber-500 flex items-center justify-center text-black font-bold shrink-0"><i class="fa-solid fa-clock"></i></div>
+                                <div><p class="text-[10px] font-black text-amber-400 uppercase">Por Vencer (Aviso)</p><p class="text-xs font-bold text-white">Sofía Ramírez (Vence mañana)</p></div>
+                            </button>
+                            <button onclick="emitScan('expired')" class="w-full bg-rose-950/30 hover:bg-rose-900/50 active:scale-[0.99] border border-rose-900/50 rounded-xl p-3 flex items-center gap-3 text-left transition-all cursor-pointer">
+                                <div class="w-8 h-8 rounded-full bg-rose-600 flex items-center justify-center text-white font-bold shrink-0"><i class="fa-solid fa-skull-crossbones"></i></div>
+                                <div><p class="text-[10px] font-black text-rose-400 uppercase">Vencido (Denegado)</p><p class="text-xs font-bold text-white">Jorge Vargas (Venció hace 4 días)</p></div>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-[#0a0a0a] border border-stone-800 rounded-2xl p-4 sm:p-6 flex flex-col">
+                        <p class="text-[10px] text-stone-500 uppercase font-bold tracking-wider mb-3 sm:mb-4 flex justify-between"><span>Radar de Entradas en Vivo</span> <span class="text-emerald-500 animate-pulse">● Recibiendo</span></p>
+                        <div id="live-access-feed" class="flex-1 space-y-2 overflow-y-auto max-h-56">
+                            <p class="text-xs text-stone-600 text-center italic mt-10">Esperando lecturas del torniquete...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===================================== -->
+            <!-- TAB 5: AFORO EN VIVO                   -->
+            <!-- ===================================== -->
+            <div id="tab-guerreros_activos" class="tab-content p-3.5 sm:p-5 md:p-8 max-w-7xl mx-auto space-y-5 md:space-y-6">
+                <div class="flex flex-row justify-between items-center gap-3">
+                    <div><h2 class="text-xl sm:text-2xl md:text-3xl font-black text-white">Aforo en Vivo</h2><p class="text-stone-400 text-xs sm:text-sm">Guerreros entrenando ahora mismo en las instalaciones.</p></div>
+                    <div class="flex bg-[#0a0a0a] p-1 rounded-xl border border-stone-800 shrink-0">
+                        <button onclick="toggleViewFormat('grid')" id="btn-view-grid" class="p-2 w-10 sm:w-12 rounded-lg bg-stone-800 text-white cursor-pointer"><i class="fa-solid fa-border-all"></i></button>
+                        <button onclick="toggleViewFormat('list')" id="btn-view-list" class="p-2 w-10 sm:w-12 rounded-lg text-stone-500 cursor-pointer"><i class="fa-solid fa-list"></i></button>
+                    </div>
+                </div>
+                <div id="active-members-container" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4"></div>
+            </div>
+
+            <!-- ===================================== -->
+            <!-- TAB 6: PELOTÓN / BASE DE DATOS         -->
+            <!-- ===================================== -->
+            <div id="tab-socios" class="tab-content p-3.5 sm:p-5 md:p-8 max-w-7xl mx-auto space-y-5 md:space-y-6">
+                <div class="flex flex-col md:flex-row justify-between gap-3 sm:gap-4">
+                    <div><h2 class="text-xl sm:text-2xl md:text-3xl font-black text-white">Pelotón (Guerreros)</h2><p class="text-stone-400 text-xs sm:text-sm">Directorio maestro de socios, renovaciones y altas.</p></div>
+                    <div class="flex flex-col sm:flex-row gap-2">
+                        <div class="relative w-full sm:w-64">
+                            <i class="fa-solid fa-magnifying-glass absolute left-3 top-3 text-stone-500 text-sm"></i>
+                            <input id="search-member-input" oninput="searchMembers()" type="text" placeholder="Buscar guerrero..." class="w-full bg-[#111] border border-stone-800 rounded-xl pl-9 pr-3 py-2.5 text-sm text-white focus:border-red-500 focus:outline-none">
+                        </div>
+                        <div class="flex gap-2">
+                            <select id="filter-status" onchange="filterMembers()" class="flex-1 sm:flex-initial bg-[#111] border border-stone-800 rounded-xl px-3 py-2.5 text-xs sm:text-sm text-stone-300 focus:border-red-500 focus:outline-none">
+                                <option value="all">Todos los Estados</option>
+                                <option value="active">Activos</option>
+                                <option value="warning">Por Vencer (&lt; 3 días)</option>
+                                <option value="expired">Vencidos / Bajas</option>
+                            </select>
+                            <button onclick="openNewMemberModal()" class="bg-red-600 hover:bg-red-500 active:scale-95 text-white px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-red-900/40 shrink-0">
+                                <i class="fa-solid fa-plus"></i> Reclutar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SECCIÓN DE RENOVACIONES RÁPIDAS (CARDS) -->
+                <div class="space-y-3">
+                    <p class="text-xs uppercase font-bold text-stone-400 tracking-wider"><i class="fa-solid fa-bolt text-amber-500"></i> Renovaciones Rápidas (1-Clic)</p>
+                    <div id="phone-members-list" class="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-4">
+                        <!-- Card Jorge Vargas (Vencido) -->
+                        <div id="card-012" class="bg-[#0a0a0a] border border-rose-900/80 rounded-2xl p-4 flex flex-col gap-3 shadow-lg">
+                            <div class="flex items-start justify-between">
+                                <div class="flex items-center gap-3">
+                                    <img src="https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?auto=format&fit=crop&w=150&q=80" class="w-11 h-11 rounded-full border-2 border-rose-500 object-cover shrink-0">
+                                    <div>
+                                        <p class="font-bold text-white text-sm">Jorge Vargas</p>
+                                        <span id="badge-012" class="inline-block bg-rose-500/20 text-rose-400 text-[10px] font-bold px-2 py-0.5 rounded mt-0.5 border border-rose-500/30">Vencido hace 4 días</span>
+                                    </div>
+                                </div>
+                                <span class="text-[10px] font-gears text-stone-500 bg-[#111] px-2 py-1 rounded">ID: 012</span>
+                            </div>
+                            <div id="actions-012" class="grid grid-cols-2 gap-2 mt-auto">
+                                <button onclick="renewMember('012', 'Mensual', 400, 30)" class="bg-red-600 hover:bg-red-500 active:scale-95 text-white text-[10px] font-black py-2.5 rounded-lg uppercase tracking-wider shadow cursor-pointer">Mes ($400)</button>
+                                <button onclick="renewMember('012', 'Quincena', 250, 15)" class="bg-stone-900 hover:bg-stone-800 active:scale-95 border border-stone-700 text-stone-300 text-[10px] font-bold py-2.5 rounded-lg uppercase tracking-wider cursor-pointer">Quin. ($250)</button>
+                            </div>
+                        </div>
+
+                        <!-- Card Sofía Ramírez (Aviso) -->
+                        <div id="card-019" class="bg-[#0a0a0a] border border-amber-900/60 rounded-2xl p-4 flex flex-col gap-3 shadow-lg">
+                            <div class="flex items-start justify-between">
+                                <div class="flex items-center gap-3">
+                                    <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80" class="w-11 h-11 rounded-full border-2 border-amber-500 object-cover shrink-0">
+                                    <div>
+                                        <p class="font-bold text-white text-sm">Sofía Ramírez</p>
+                                        <span id="badge-019" class="inline-block bg-amber-500/20 text-amber-400 text-[10px] font-bold px-2 py-0.5 rounded mt-0.5 border border-amber-500/30">Vence mañana</span>
+                                    </div>
+                                </div>
+                                <span class="text-[10px] font-gears text-stone-500 bg-[#111] px-2 py-1 rounded">ID: 019</span>
+                            </div>
+                            <div id="actions-019" class="grid grid-cols-2 gap-2 mt-auto">
+                                <button onclick="renewMember('019', 'Quincena', 250, 15)" class="bg-amber-600 hover:bg-amber-500 active:scale-95 text-white text-[10px] font-black py-2.5 rounded-lg uppercase tracking-wider shadow cursor-pointer">Renovar Quin ($250)</button>
+                                <button onclick="renewMember('019', 'Mensual', 400, 30)" class="bg-stone-900 hover:bg-stone-800 active:scale-95 border border-stone-700 text-stone-300 text-[10px] font-bold py-2.5 rounded-lg uppercase tracking-wider cursor-pointer">Subir a Mes ($400)</button>
+                            </div>
+                        </div>
+
+                        <!-- Card Carlos Mendoza (Activo) -->
+                        <div id="card-042" class="bg-[#0a0a0a] border border-emerald-900/40 rounded-2xl p-4 flex flex-col gap-3 shadow-lg">
+                            <div class="flex items-start justify-between">
+                                <div class="flex items-center gap-3">
+                                    <img src="https://images.unsplash.com/photo-1568602471122-7832951cc4c5?auto=format&fit=crop&w=150&q=80" class="w-11 h-11 rounded-full border-2 border-emerald-500 object-cover shrink-0">
+                                    <div>
+                                        <p class="font-bold text-white text-sm">Carlos Mendoza</p>
+                                        <span class="inline-block bg-emerald-500/20 text-emerald-400 text-[10px] font-bold px-2 py-0.5 rounded mt-0.5 border border-emerald-500/30">18 días restantes</span>
+                                    </div>
+                                </div>
+                                <span class="text-[10px] font-gears text-stone-500 bg-[#111] px-2 py-1 rounded">ID: 042</span>
+                            </div>
+                            <div class="bg-stone-950 p-2.5 rounded-lg border border-stone-800 text-[11px] text-stone-400 mt-auto flex justify-between items-center">
+                                <span>Plan: Mensual ($400)</span>
+                                <span class="text-emerald-400 font-bold"><i class="fa-solid fa-check"></i> Al Corriente</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TABLA MAESTRA COMPLETA -->
+                <div class="overflow-x-auto bg-[#0a0a0a] border border-stone-800 rounded-2xl mt-4">
+                    <table class="w-full text-left text-sm text-stone-300">
+                        <thead class="bg-[#111] text-[10px] uppercase tracking-wider font-bold text-stone-500 border-b border-stone-800">
+                            <tr>
+                                <th class="px-3.5 sm:px-5 py-3.5 sm:py-4">Guerrero</th>
+                                <th class="px-5 py-4 hidden md:table-cell">Membresía</th>
+                                <th class="px-2.5 sm:px-5 py-3.5 sm:py-4">Estatus</th>
+                                <th class="px-5 py-4 text-center hidden sm:table-cell">Torniquete</th>
+                                <th class="px-3.5 sm:px-5 py-3.5 sm:py-4 text-right">Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody id="full-database-list" class="divide-y divide-stone-800/50"></tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- BOTTOM NAV MOBILE COMPLETA (6 SECCIONES) -->
+    <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-[#070707]/95 backdrop-blur-md border-t border-red-900/40 px-1.5 py-2 flex justify-around items-center text-stone-500 text-xs z-40" id="mobile-nav">
+        <button onclick="switchTab('dashboard')" class="nav-btn-mob flex flex-col items-center py-1 flex-1 text-red-500"><i class="fa-solid fa-chart-line text-base mb-0.5"></i><span class="text-[9px] font-bold">Base</span></button>
+        <button onclick="switchTab('comunicaciones')" class="nav-btn-mob flex flex-col items-center py-1 flex-1 hover:text-stone-300"><i class="fa-solid fa-satellite-dish text-base mb-0.5"></i><span class="text-[9px] font-bold">TV</span></button>
+        <button onclick="switchTab('torniquete')" class="nav-btn-mob flex flex-col items-center py-1 flex-1 hover:text-stone-300"><i class="fa-solid fa-door-open text-base mb-0.5"></i><span class="text-[9px] font-bold">Puerta</span></button>
+        <button onclick="switchTab('socios')" class="nav-btn-mob flex flex-col items-center py-1 flex-1 hover:text-stone-300"><i class="fa-solid fa-users text-base mb-0.5"></i><span class="text-[9px] font-bold">Pelotón</span></button>
+        <button onclick="switchTab('guerreros_activos')" class="nav-btn-mob flex flex-col items-center py-1 flex-1 hover:text-stone-300"><i class="fa-solid fa-map-location-dot text-base mb-0.5"></i><span class="text-[9px] font-bold">Aforo</span></button>
+        <button onclick="switchTab('tienda')" class="nav-btn-mob flex flex-col items-center py-1 flex-1 hover:text-stone-300"><i class="fa-solid fa-cart-shopping text-base mb-0.5"></i><span class="text-[9px] font-bold">Arsenal</span></button>
+    </nav>
+
+    <!-- MODAL NUEVO SOCIO (RECLUTAR GUERRERO) -->
+    <div id="modal-new" class="hidden fixed inset-0 bg-black/85 backdrop-blur-sm z-[100] items-center justify-center p-4">
+        <div class="bg-stone-950 border border-red-900/60 rounded-3xl p-5 sm:p-6 w-full max-w-md shadow-2xl relative">
+            <button onclick="closeNewMemberModal()" class="absolute top-4 right-4 text-stone-400 hover:text-white bg-stone-900 w-8 h-8 rounded-full flex items-center justify-center cursor-pointer"><i class="fa-solid fa-xmark"></i></button>
+            <div class="flex items-center gap-3 mb-5">
+                <div class="w-11 h-11 rounded-xl bg-red-600/10 border border-red-500 flex items-center justify-center shrink-0"><i class="fa-solid fa-user-plus text-red-500 text-lg"></i></div>
+                <div>
+                    <h4 class="font-gears text-base sm:text-lg font-black text-white leading-tight">Reclutar Guerrero</h4>
+                    <p class="text-xs text-stone-400">Alta y asignación inmediata de membresía.</p>
+                </div>
+            </div>
+            <div class="space-y-4">
+                <div>
+                    <label class="text-[10px] font-bold text-stone-400 mb-1 uppercase tracking-wider block">Nombre Completo</label>
+                    <input id="new-member-input" type="text" placeholder="Ej. Marcus Fenix" class="w-full bg-[#111] border border-stone-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-red-500">
+                </div>
+                <div>
+                    <label class="text-[10px] font-bold text-stone-400 mb-1 uppercase tracking-wider block">Plan Inicial</label>
+                    <select id="new-member-plan" class="w-full bg-[#111] border border-stone-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-red-500">
+                        <option value="Mensual|400|30">Mensualidad — $400 (30 días)</option>
+                        <option value="Promo Dúo|700|30">Promo Dúo — $700 (2 guerreros)</option>
+                        <option value="Quincena|250|15">Quincena — $250 (15 días)</option>
+                    </select>
+                </div>
+            </div>
+            <button onclick="registerNewMember()" class="w-full mt-6 bg-red-600 hover:bg-red-500 active:scale-[0.99] text-white font-black py-3.5 rounded-xl uppercase tracking-widest text-xs flex justify-center items-center gap-2 shadow-lg shadow-red-900/50 cursor-pointer">
+                <i class="fa-solid fa-check"></i> Guardar y Cobrar
+            </button>
+        </div>
+    </div>
+
+    <!-- MODAL NUEVO / EDITAR PRODUCTO DEL ARSENAL (CON EXISTENCIAS Y PRECIO) -->
+    <div id="modal-product" class="hidden fixed inset-0 bg-black/85 backdrop-blur-sm z-[100] items-center justify-center p-4">
+        <div class="bg-stone-950 border border-emerald-900/60 rounded-3xl p-5 sm:p-6 w-full max-w-md shadow-2xl relative">
+            <button onclick="closeProductModal()" class="absolute top-4 right-4 text-stone-400 hover:text-white bg-stone-900 w-8 h-8 rounded-full flex items-center justify-center cursor-pointer"><i class="fa-solid fa-xmark"></i></button>
+            <div class="flex items-center gap-3 mb-5">
+                <div class="w-11 h-11 rounded-xl bg-emerald-600/10 border border-emerald-500 flex items-center justify-center shrink-0"><i class="fa-solid fa-boxes-stacked text-emerald-400 text-lg"></i></div>
+                <div>
+                    <h4 id="modal-product-title" class="font-gears text-base sm:text-lg font-black text-white leading-tight">Nuevo Producto Arsenal</h4>
+                    <p class="text-xs text-stone-400">Configura nombre, precio, existencias (stock) e ícono.</p>
+                </div>
+            </div>
+            <input type="hidden" id="prod-id-input">
+            <div class="space-y-3.5">
+                <div>
+                    <label class="text-[10px] font-bold text-stone-400 mb-1 uppercase tracking-wider block">Nombre del Producto</label>
+                    <input id="prod-name-input" type="text" placeholder="Ej. Creatina Monohidratada" class="w-full bg-[#111] border border-stone-800 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-emerald-500">
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="text-[10px] font-bold text-stone-400 mb-1 uppercase tracking-wider block">Categoría / Detalle</label>
+                        <input id="prod-cat-input" type="text" placeholder="Ej. Scoop 5g / Bebida" class="w-full bg-[#111] border border-stone-800 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-emerald-500">
+                    </div>
+                    <div>
+                        <label class="text-[10px] font-bold text-stone-400 mb-1 uppercase tracking-wider block">Precio Venta ($ MXN)</label>
+                        <input id="prod-price-input" type="number" min="1" placeholder="35" class="w-full bg-[#111] border border-stone-800 rounded-xl px-3.5 py-2.5 text-sm text-emerald-400 font-gears font-bold focus:outline-none focus:border-emerald-500">
+                    </div>
+                </div>
+                <div class="grid grid-cols-3 gap-2.5">
+                    <div>
+                        <label class="text-[10px] font-bold text-stone-400 mb-1 uppercase tracking-wider block">Existencias (Stock)</label>
+                        <input id="prod-stock-input" type="number" min="0" placeholder="25" class="w-full bg-[#111] border border-stone-800 rounded-xl px-3 py-2.5 text-sm text-white font-gears font-bold focus:outline-none focus:border-emerald-500">
+                    </div>
+                    <div>
+                        <label class="text-[10px] font-bold text-stone-400 mb-1 uppercase tracking-wider block">Ícono</label>
+                        <select id="prod-icon-input" class="w-full bg-[#111] border border-stone-800 rounded-xl px-2.5 py-2.5 text-xs text-white focus:outline-none focus:border-emerald-500">
+                            <option value="fa-bottle-water">Botella Agua</option>
+                            <option value="fa-bolt">Rayo / Pre</option>
+                            <option value="fa-jar">Bote / Proteína</option>
+                            <option value="fa-wine-bottle">Electrolito</option>
+                            <option value="fa-rug">Toalla</option>
+                            <option value="fa-lock">Candado</option>
+                            <option value="fa-dumbbell">Equipo / Strap</option>
+                            <option value="fa-capsules">Cápsulas / Amino</option>
+                            <option value="fa-cookie-bite">Barra Proteína</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="text-[10px] font-bold text-stone-400 mb-1 uppercase tracking-wider block">Color</label>
+                        <select id="prod-color-input" class="w-full bg-[#111] border border-stone-800 rounded-xl px-2.5 py-2.5 text-xs text-white focus:outline-none focus:border-emerald-500">
+                            <option value="blue">Azul</option>
+                            <option value="rose">Rojo / Rosa</option>
+                            <option value="amber">Ámbar / Oro</option>
+                            <option value="purple">Morado</option>
+                            <option value="emerald">Verde</option>
+                            <option value="stone">Gris / Plata</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <button onclick="saveProduct()" class="w-full mt-5 bg-emerald-600 hover:bg-emerald-500 active:scale-[0.99] text-white font-black py-3.5 rounded-xl uppercase tracking-widest text-xs flex justify-center items-center gap-2 shadow-lg shadow-emerald-900/50 cursor-pointer">
+                <i class="fa-solid fa-floppy-disk"></i> Guardar en Inventario
+            </button>
+        </div>
+    </div>
+
+    <!-- MODAL EDITAR GUERRERO EXISTENTE -->
+    <div id="modal-edit-member" class="hidden fixed inset-0 bg-black/85 backdrop-blur-sm z-[100] items-center justify-center p-4">
+        <div class="bg-stone-950 border border-stone-700 rounded-3xl p-5 sm:p-6 w-full max-w-md shadow-2xl relative">
+            <button onclick="closeEditMemberModal()" class="absolute top-4 right-4 text-stone-400 hover:text-white bg-stone-900 w-8 h-8 rounded-full flex items-center justify-center cursor-pointer"><i class="fa-solid fa-xmark"></i></button>
+            <div class="flex items-center gap-3 mb-5">
+                <div class="w-11 h-11 rounded-xl bg-amber-600/10 border border-amber-500 flex items-center justify-center shrink-0"><i class="fa-solid fa-user-pen text-amber-400 text-lg"></i></div>
+                <div>
+                    <h4 class="font-gears text-base sm:text-lg font-black text-white leading-tight">Editar Guerrero</h4>
+                    <p class="text-xs text-stone-400">Modificar datos, días vigentes, plan y presencia en el gym.</p>
+                </div>
+            </div>
+            <input type="hidden" id="edit-member-id">
+            <div class="space-y-3.5">
+                <div>
+                    <label class="text-[10px] font-bold text-stone-400 mb-1 uppercase tracking-wider block">Nombre Completo</label>
+                    <input id="edit-member-name" type="text" class="w-full bg-[#111] border border-stone-800 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-amber-500">
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="text-[10px] font-bold text-stone-400 mb-1 uppercase tracking-wider block">Plan</label>
+                        <input id="edit-member-plan" type="text" class="w-full bg-[#111] border border-stone-800 rounded-xl px-3.5 py-2.5 text-sm text-white">
+                    </div>
+                    <div>
+                        <label class="text-[10px] font-bold text-stone-400 mb-1 uppercase tracking-wider block">Precio Mostrado</label>
+                        <input id="edit-member-price" type="text" class="w-full bg-[#111] border border-stone-800 rounded-xl px-3.5 py-2.5 text-sm text-emerald-400 font-gears font-bold">
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="text-[10px] font-bold text-stone-400 mb-1 uppercase tracking-wider block">Días Restantes</label>
+                        <input id="edit-member-days" type="number" class="w-full bg-[#111] border border-stone-800 rounded-xl px-3.5 py-2.5 text-sm text-white font-gears font-bold">
+                    </div>
+                    <div>
+                        <label class="text-[10px] font-bold text-stone-400 mb-1 uppercase tracking-wider block">Ubicación Actual</label>
+                        <select id="edit-member-inside" class="w-full bg-[#111] border border-stone-800 rounded-xl px-3 py-2.5 text-xs text-white">
+                            <option value="true">Dentro (Entrenando)</option>
+                            <option value="false">Fuera del Gym</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <button onclick="saveEditedMember()" class="w-full mt-5 bg-amber-600 hover:bg-amber-500 active:scale-[0.99] text-white font-black py-3.5 rounded-xl uppercase tracking-widest text-xs flex justify-center items-center gap-2 shadow-lg shadow-amber-900/50 cursor-pointer">
+                <i class="fa-solid fa-check"></i> Guardar Cambios
+            </button>
+        </div>
+    </div>
+
+    <!-- TOAST NOTIFICATION -->
+    <div id="toast" class="hidden fixed top-4 left-4 right-4 sm:left-auto sm:right-4 sm:max-w-sm bg-[#111] border border-stone-800 text-white text-xs md:text-sm font-bold px-4 py-3 rounded-xl shadow-2xl z-[200] flex items-center gap-3 transition-opacity duration-300 opacity-0">
+        <div id="toast-icon" class="w-6 h-6 rounded-full flex items-center justify-center text-[10px] shrink-0"></div>
+        <span id="toast-msg" class="flex-1 font-semibold"></span>
+    </div>
+
+    <script>
+        // === CONEXIÓN SOCKET.IO ===
+        const socket = io();
+        
+        socket.on('connect', () => {
+            document.getElementById('conn-dot').className = "w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block mr-1 animate-ping";
+            document.getElementById('conn-text').textContent = "Sistema Activo";
+            const mob = document.getElementById('conn-dot-mob');
+            if(mob) mob.className = "w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping";
+        });
+        
+        socket.on('disconnect', () => {
+            document.getElementById('conn-dot').className = "w-1.5 h-1.5 rounded-full bg-red-500 inline-block mr-1";
+            document.getElementById('conn-text').textContent = "Desconectado";
+            const mob = document.getElementById('conn-dot-mob');
+            if(mob) mob.className = "w-2.5 h-2.5 rounded-full bg-red-500";
+        });
+
+        // ESCUCHAR EVENTOS DEL RADAR Y TV
+        socket.on('UPDATE_FEED', (type) => {
+            logAccessFeed(type);
+        });
+
+        socket.on('LOCKDOWN_STATUS', (isLocked) => {
+            updateLockdownUI(isLocked);
+        });
+
+        socket.on('COUNTER_SYNC', (cnt) => {
+            todayEntries = cnt;
+            updateUI();
+        });
+
+        socket.on('DOOR_OVERRIDE_TRIGGERED', () => {
+            triggerTurnstileOpenAnimation();
+        });
+
+        // SINCRONIZAR FORMULARIOS DE ADMIN CON LA CONFIGURACIÓN ACTUAL DE LA TV
+        socket.on('TV_CONFIG_SYNC', (cfg) => {
+            if (!cfg) return;
+            const setVal = (id, v) => { const el = document.getElementById(id); if (el && v !== undefined) el.value = v; };
+            setVal('tv-music-input', cfg.musicTitle);
+            setVal('tv-tariffs-header-input', cfg.tariffsHeader);
+            setVal('tv-sensor-title-input', cfg.sensorTitle);
+            setVal('tv-sensor-sub-input', cfg.sensorSub);
+            setVal('tv-sensor-btn-input', cfg.sensorBtn);
+            setVal('tv-c1-title-input', cfg.card1Title);
+            setVal('tv-c1-desc-input', cfg.card1Desc);
+            setVal('tv-c2-title-input', cfg.card2Title);
+            setVal('tv-c2-desc-input', cfg.card2Desc);
+            setVal('tv-footer-input', cfg.footerTicker);
+            setVal('tv-bg-input', cfg.bgImage);
+
+            if (Array.isArray(cfg.tariffs)) {
+                cfg.tariffs.forEach((t, i) => {
+                    setVal(`t${i}-name`, t.name);
+                    setVal(`t${i}-price`, t.price);
+                    setVal(`t${i}-sub`, t.sub);
+                    setVal(`t${i}-ptitle`, t.promoTitle);
+                    setVal(`t${i}-pdesc`, t.promoDesc);
+                });
+                // Si la tarifa 4 (Visita) cambió de precio numérico, actualizamos el precio rápido de visita
+                if (cfg.tariffs[3] && cfg.tariffs[3].price) {
+                    const num = parseInt(String(cfg.tariffs[3].price).replace(/[^0-9]/g, ''));
+                    if (!isNaN(num) && num > 0) {
+                        quickVisitPrice = num;
+                        const qv = document.getElementById('quick-visit-price-label');
+                        if (qv) qv.textContent = num;
+                    }
+                }
+            }
+        });
+
+        // === ESTADO GENERAL Y FINANCIERO ===
+        let todayCash = 1420;
+        let todayEntries = 42;
+        let activeMembers = 128;
+        let isTurnstileLocked = false;
+        let dailyGoal = 2500;
+        let quickVisitPrice = 60;
+        let cashBreakdown = {
+            memberships: 1150,
+            visits: 180,
+            store: 90
+        };
+
+        // === INVENTARIO DEL ARSENAL (CON STOCK Y EXISTENCIAS) ===
+        const ARSENAL_ITEMS = [
+            { id: 'p1', name: 'Agua 1L', category: 'Bebidas', price: 20, stock: 24, icon: 'fa-bottle-water', color: 'blue', showOnDash: true },
+            { id: 'p2', name: 'Pre-Entreno', category: 'Scoop Hype', price: 35, stock: 18, icon: 'fa-bolt', color: 'rose', showOnDash: true },
+            { id: 'p3', name: 'Proteína Whey', category: 'Scoop Servicio', price: 30, stock: 15, icon: 'fa-jar', color: 'amber', showOnDash: true },
+            { id: 'p4', name: 'Electrolitos', category: 'Hidratación', price: 15, stock: 20, icon: 'fa-wine-bottle', color: 'purple', showOnDash: false },
+            { id: 'p5', name: 'Toalla GEARS', category: 'Equipo Oficial', price: 100, stock: 8, icon: 'fa-rug', color: 'stone', showOnDash: false },
+            { id: 'p6', name: 'Candado Lock', category: 'Seguridad Locker', price: 50, stock: 6, icon: 'fa-lock', color: 'rose', showOnDash: false }
+        ];
+
+        const COLOR_MAP = {
+            blue: { text: 'text-blue-400', border: 'hover:border-blue-500/60', badge: 'bg-blue-950/60 text-blue-300 border-blue-800/50' },
+            rose: { text: 'text-rose-500', border: 'hover:border-rose-500/60', badge: 'bg-rose-950/60 text-rose-300 border-rose-800/50' },
+            amber: { text: 'text-amber-500', border: 'hover:border-amber-500/60', badge: 'bg-amber-950/60 text-amber-300 border-amber-800/50' },
+            purple: { text: 'text-purple-400', border: 'hover:border-purple-500/60', badge: 'bg-purple-950/60 text-purple-300 border-purple-800/50' },
+            emerald: { text: 'text-emerald-400', border: 'hover:border-emerald-500/60', badge: 'bg-emerald-950/60 text-emerald-300 border-emerald-800/50' },
+            stone: { text: 'text-stone-300', border: 'hover:border-stone-400/60', badge: 'bg-stone-800 text-stone-300 border-stone-700' }
+        };
+
+        // === RELOJ Y FECHA EN VIVO ===
+        function updateClock() {
+            const now = new Date();
+            const clockEl = document.getElementById('live-clock');
+            const dateEl = document.getElementById('live-date');
+            if(clockEl) clockEl.textContent = now.toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit' });
+            if(dateEl) dateEl.textContent = now.toLocaleDateString('es-MX', { day: 'numeric', month: 'short', year: 'numeric' });
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        // === SONIDOS SINTETIZADOS (WEB AUDIO API) ===
+        function playSound(type) {
+            try {
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.connect(gain); gain.connect(ctx.destination);
+                
+                if (type === 'success') {
+                    osc.type = 'sine'; osc.frequency.setValueAtTime(880, ctx.currentTime);
+                    gain.gain.setValueAtTime(0.12, ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.3);
+                    osc.start(); osc.stop(ctx.currentTime + 0.3);
+                } else if (type === 'error') {
+                    osc.type = 'sawtooth'; osc.frequency.setValueAtTime(160, ctx.currentTime);
+                    gain.gain.setValueAtTime(0.2, ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
+                    osc.start(); osc.stop(ctx.currentTime + 0.5);
+                } else if (type === 'door') {
+                    osc.type = 'square'; osc.frequency.setValueAtTime(400, ctx.currentTime);
+                    osc.frequency.setValueAtTime(600, ctx.currentTime + 0.1);
+                    gain.gain.setValueAtTime(0.08, ctx.currentTime);
+                    gain.gain.linearRampToValueAtTime(0, ctx.currentTime + 0.25);
+                    osc.start(); osc.stop(ctx.currentTime + 0.25);
+                }
+            } catch(e){}
+        }
+
+        // === ACTUALIZACIÓN GENERAL DE UI ===
+        function updateUI() {
+            const dashCash = document.getElementById('metric-cash');
+            if(dashCash) dashCash.textContent = todayCash.toLocaleString('es-MX');
+            const posCash = document.getElementById('pos-cash');
+            if(posCash) posCash.textContent = todayCash.toLocaleString('es-MX');
+            const entries = document.getElementById('metric-entries');
+            if(entries) entries.textContent = todayEntries;
+            const members = document.getElementById('metric-members');
+            if(members) members.textContent = activeMembers;
+
+            // Actualizar Meta Diaria y Desglose
+            const goalLabel = document.getElementById('daily-goal-label');
+            if(goalLabel) goalLabel.textContent = dailyGoal.toLocaleString('es-MX');
+            const pct = Math.min(100, Math.round((todayCash / dailyGoal) * 100));
+            const goalPct = document.getElementById('daily-goal-pct');
+            if(goalPct) goalPct.textContent = pct + '%';
+            const goalBar = document.getElementById('daily-goal-bar');
+            if(goalBar) goalBar.style.width = pct + '%';
+
+            const bm = document.getElementById('breakdown-memberships');
+            if(bm) bm.textContent = cashBreakdown.memberships.toLocaleString('es-MX');
+            const bv = document.getElementById('breakdown-visits');
+            if(bv) bv.textContent = cashBreakdown.visits.toLocaleString('es-MX');
+            const bs = document.getElementById('breakdown-store');
+            if(bs) bs.textContent = cashBreakdown.store.toLocaleString('es-MX');
+        }
+
+        function updateCashUI() { updateUI(); }
+
+        function editDailyGoal() {
+            const input = prompt("Ingresa la nueva meta de ingresos diarios ($ MXN):", dailyGoal);
+            if(input === null) return;
+            const num = parseInt(input);
+            if(!isNaN(num) && num >= 100) {
+                dailyGoal = num;
+                updateUI();
+                showToast(`Meta diaria actualizada a $${dailyGoal.toLocaleString('es-MX')}`, 'info');
+            }
+        }
+
+        // === RENDERIZADO Y GESTIÓN DEL ARSENAL (PRODUCTOS + EXISTENCIAS) ===
+        function renderArsenal() {
+            const dashList = document.getElementById('dash-arsenal-list');
+            const grid = document.getElementById('arsenal-grid-container');
+            const totalBadge = document.getElementById('arsenal-total-items-badge');
+
+            let totalUnits = 0;
+            ARSENAL_ITEMS.forEach(item => totalUnits += item.stock);
+            if(totalBadge) totalBadge.textContent = `Stock Total: ${totalUnits} uds`;
+            if(typeof socket !== 'undefined') {
+                socket.emit('UPDATE_ARSENAL', ARSENAL_ITEMS.slice(0, 4));
+            }
+
+            // 1. Renderizar en el Dashboard Rápido (primeros 4 productos)
+            if(dashList) {
+                dashList.innerHTML = '';
+                ARSENAL_ITEMS.slice(0, 4).forEach(item => {
+                    const c = COLOR_MAP[item.color] || COLOR_MAP.blue;
+                    const stockBadge = item.stock > 5
+                        ? `<span class="text-[9px] text-emerald-400 font-bold">Stock: ${item.stock}</span>`
+                        : (item.stock > 0
+                            ? `<span class="text-[9px] text-amber-400 font-bold">¡Quedan ${item.stock}!</span>`
+                            : `<span class="text-[9px] text-rose-500 font-bold">Agotado (0)</span>`);
+
+                    const row = document.createElement('div');
+                    row.className = "flex justify-between items-center bg-stone-900/80 p-2.5 sm:p-3 rounded-xl border border-stone-800";
+                    row.innerHTML = `
+                        <div class="flex items-center gap-2.5 min-w-0">
+                            <div class="w-9 h-9 rounded-lg bg-black flex items-center justify-center ${c.text} text-base shrink-0"><i class="fa-solid ${item.icon}"></i></div>
+                            <div class="min-w-0">
+                                <p class="text-xs font-bold text-white truncate">${item.name}</p>
+                                <p class="text-[10px] text-stone-500">${item.category} · ${stockBadge}</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-1.5 shrink-0">
+                            <button onclick="addStock('${item.id}', 1)" class="bg-stone-950 hover:bg-stone-800 border border-stone-700 text-stone-300 text-[10px] font-bold px-2 py-1.5 rounded-lg cursor-pointer" title="Agregar +1 a existencias">+1</button>
+                            <button onclick="sellProductById('${item.id}')" class="bg-stone-800 hover:bg-stone-700 active:scale-95 text-emerald-400 font-gears text-xs font-bold px-3 py-1.5 rounded-lg transition-all cursor-pointer">$${item.price}</button>
+                        </div>
+                    `;
+                    dashList.appendChild(row);
+                });
+            }
+
+            // 2. Renderizar en la pestaña completa del Arsenal (#tab-tienda)
+            if(grid) {
+                grid.innerHTML = '';
+                ARSENAL_ITEMS.forEach(item => {
+                    const c = COLOR_MAP[item.color] || COLOR_MAP.blue;
+                    const stockClass = item.stock > 5
+                        ? 'bg-emerald-950/60 text-emerald-400 border-emerald-800/50'
+                        : (item.stock > 0
+                            ? 'bg-amber-950/70 text-amber-400 border-amber-700/60 animate-pulse'
+                            : 'bg-rose-950/80 text-rose-400 border-rose-700/60');
+
+                    const card = document.createElement('div');
+                    card.className = `bg-[#0a0a0a] border border-stone-800 ${c.border} rounded-2xl p-4 flex flex-col justify-between transition-all shadow-lg`;
+                    card.innerHTML = `
+                        <div>
+                            <div class="flex justify-between items-start mb-3">
+                                <span class="text-[10px] font-bold px-2 py-0.5 rounded-md border ${stockClass}">
+                                    <i class="fa-solid fa-boxes-stacked mr-1"></i>Existencias: ${item.stock}
+                                </span>
+                                <button onclick="openProductModal('${item.id}')" class="text-stone-400 hover:text-white bg-stone-900 hover:bg-stone-800 w-7 h-7 rounded-lg flex items-center justify-center text-xs cursor-pointer" title="Editar precio, nombre o stock">
+                                    <i class="fa-solid fa-pen"></i>
+                                </button>
+                            </div>
+                            <div class="flex items-center gap-3 mb-3">
+                                <div class="w-12 h-12 rounded-2xl bg-[#111] border border-stone-800 flex items-center justify-center ${c.text} text-xl shrink-0">
+                                    <i class="fa-solid ${item.icon}"></i>
+                                </div>
+                                <div class="min-w-0">
+                                    <p class="text-sm font-black text-white truncate">${item.name}</p>
+                                    <p class="text-[11px] text-stone-400 truncate">${item.category}</p>
+                                    <p class="font-gears text-lg font-black text-emerald-400 mt-0.5">$${item.price}</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="space-y-2 pt-2 border-t border-stone-800/80">
+                            <button onclick="sellProductById('${item.id}')" class="w-full ${item.stock > 0 ? 'bg-emerald-600 hover:bg-emerald-500 text-white shadow-emerald-900/30' : 'bg-stone-800 text-stone-400'} active:scale-95 font-black text-xs py-2.5 rounded-xl uppercase tracking-wider flex items-center justify-center gap-1.5 shadow-md transition-all cursor-pointer">
+                                <i class="fa-solid fa-cart-plus"></i> ${item.stock > 0 ? `Vender ($${item.price})` : 'Sin Stock (Vender igual)'}
+                            </button>
+                            <div class="grid grid-cols-3 gap-1.5">
+                                <button onclick="addStock('${item.id}', 1)" class="bg-stone-900 hover:bg-stone-800 active:scale-95 border border-stone-700/80 text-stone-200 text-[10px] font-bold py-1.5 rounded-lg cursor-pointer">+1 Stock</button>
+                                <button onclick="addStock('${item.id}', 5)" class="bg-stone-900 hover:bg-stone-800 active:scale-95 border border-stone-700/80 text-amber-400 text-[10px] font-bold py-1.5 rounded-lg cursor-pointer">+5 Stock</button>
+                                <button onclick="openProductModal('${item.id}')" class="bg-stone-900 hover:bg-stone-800 active:scale-95 border border-stone-700/80 text-stone-300 text-[10px] font-bold py-1.5 rounded-lg cursor-pointer">Editar</button>
+                            </div>
+                        </div>
+                    `;
+                    grid.appendChild(card);
+                });
+            }
+        }
+
+        function logStoreMovement(text, badgeText, isSale = true) {
+            const log = document.getElementById('store-sales-log');
+            if(!log) return;
+            if(log.querySelector('p.italic')) log.innerHTML = '';
+
+            const time = new Date().toLocaleTimeString('es-MX', {hour:'2-digit', minute:'2-digit', second:'2-digit'});
+            const row = document.createElement('div');
+            row.className = "flex items-center justify-between bg-stone-900/60 border border-stone-800 px-3 py-2 rounded-xl text-xs";
+            row.innerHTML = `
+                <div class="flex items-center gap-2.5">
+                    <span class="w-2 h-2 rounded-full ${isSale ? 'bg-emerald-500' : 'bg-amber-400'}"></span>
+                    <span class="text-white font-semibold">${text}</span>
+                </div>
+                <div class="flex items-center gap-3">
+                    <span class="font-gears font-bold ${isSale ? 'text-emerald-400' : 'text-amber-400'}">${badgeText}</span>
+                    <span class="text-[10px] text-stone-500 font-gears">${time}</span>
+                </div>
+            `;
+            log.prepend(row);
+        }
+
+        function sellProductById(id) {
+            const item = ARSENAL_ITEMS.find(p => p.id === id);
+            if(!item) return;
+            if(item.stock > 0) {
+                item.stock--;
+            }
+            todayCash += item.price;
+            cashBreakdown.store += item.price;
+            updateUI();
+            renderArsenal();
+            logStoreMovement(`Venta: ${item.name} (Quedan ${item.stock} uds)`, `+$${item.price}`, true);
+            showToast(`Vendido: ${item.name} (+$${item.price}) · Stock: ${item.stock}`, 'success');
+            playSound('success');
+        }
+
+        // Mantener función sellProduct(price, name) por compatibilidad total
+        function sellProduct(price, name) {
+            const found = ARSENAL_ITEMS.find(p => p.name.toLowerCase() === String(name).toLowerCase());
+            if(found) {
+                sellProductById(found.id);
+                return;
+            }
+            todayCash += price;
+            cashBreakdown.store += price;
+            updateUI();
+            logStoreMovement(`Venta directa: ${name}`, `+$${price}`, true);
+            showToast(`Vendido: ${name} (+$${price})`, 'success');
+            playSound('success');
+        }
+
+        function addStock(id, amount) {
+            const item = ARSENAL_ITEMS.find(p => p.id === id);
+            if(!item) return;
+            item.stock = Math.max(0, item.stock + amount);
+            renderArsenal();
+            logStoreMovement(`Reabastecimiento: ${item.name} (Total: ${item.stock} uds)`, `+${amount} uds`, false);
+            showToast(`+${amount} existencias agregadas a ${item.name} (Stock: ${item.stock})`, 'info');
+            playSound('success');
+        }
+
+        function restockAll(amount) {
+            ARSENAL_ITEMS.forEach(item => {
+                item.stock += amount;
+            });
+            renderArsenal();
+            logStoreMovement(`Reabastecimiento general de todos los artículos`, `+${amount} c/u`, false);
+            showToast(`Se sumaron +${amount} unidades a todo el Arsenal`, 'success');
+            playSound('success');
+        }
+
+        function openProductModal(id = null) {
+            const modal = document.getElementById('modal-product');
+            const title = document.getElementById('modal-product-title');
+            if(id) {
+                const item = ARSENAL_ITEMS.find(p => p.id === id);
+                if(!item) return;
+                title.textContent = "Editar Producto / Existencias";
+                document.getElementById('prod-id-input').value = item.id;
+                document.getElementById('prod-name-input').value = item.name;
+                document.getElementById('prod-cat-input').value = item.category;
+                document.getElementById('prod-price-input').value = item.price;
+                document.getElementById('prod-stock-input').value = item.stock;
+                document.getElementById('prod-icon-input').value = item.icon;
+                document.getElementById('prod-color-input').value = item.color;
+            } else {
+                title.textContent = "Nuevo Producto Arsenal";
+                document.getElementById('prod-id-input').value = '';
+                document.getElementById('prod-name-input').value = '';
+                document.getElementById('prod-cat-input').value = 'Suplementos';
+                document.getElementById('prod-price-input').value = '40';
+                document.getElementById('prod-stock-input').value = '15';
+                document.getElementById('prod-icon-input').value = 'fa-capsules';
+                document.getElementById('prod-color-input').value = 'emerald';
+            }
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeProductModal() {
+            const modal = document.getElementById('modal-product');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        function saveProduct() {
+            const id = document.getElementById('prod-id-input').value;
+            const name = document.getElementById('prod-name-input').value.trim();
+            const category = document.getElementById('prod-cat-input').value.trim() || 'General';
+            const price = parseInt(document.getElementById('prod-price-input').value) || 20;
+            const stock = Math.max(0, parseInt(document.getElementById('prod-stock-input').value) || 0);
+            const icon = document.getElementById('prod-icon-input').value;
+            const color = document.getElementById('prod-color-input').value;
+
+            if(!name) return alert("Escribe el nombre del producto.");
+
+            if(id) {
+                const item = ARSENAL_ITEMS.find(p => p.id === id);
+                if(item) {
+                    item.name = name;
+                    item.category = category;
+                    item.price = price;
+                    item.stock = stock;
+                    item.icon = icon;
+                    item.color = color;
+                    logStoreMovement(`Producto editado: ${name} ($${price})`, `Stock: ${stock}`, false);
+                    showToast(`${name} actualizado correctamente`, 'success');
+                }
+            } else {
+                const newItem = {
+                    id: 'p' + Date.now(),
+                    name,
+                    category,
+                    price,
+                    stock,
+                    icon,
+                    color,
+                    showOnDash: false
+                };
+                ARSENAL_ITEMS.push(newItem);
+                logStoreMovement(`Nuevo producto agregado: ${name} ($${price})`, `Stock: ${stock}`, false);
+                showToast(`Nuevo producto "${name}" agregado al Arsenal`, 'success');
+            }
+            closeProductModal();
+            renderArsenal();
+            playSound('success');
+        }
+
+        // === COBRAR VISITA RÁPIDA ($60 O PRECIO CONFIGURADO EN TARIFA 4) ===
+        function registerDayVisit() {
+            todayCash += quickVisitPrice;
+            cashBreakdown.visits += quickVisitPrice;
+            todayEntries++;
+            updateUI();
+            
+            // Sincronizar por socket con el servidor y Monitor TV
+            socket.emit('QUICK_VISIT');
+            triggerTurnstileOpenAnimation();
+            showToast(`Visita cobrada (+$${quickVisitPrice} MXN) — Puerta abierta en TV`, "success");
+            playSound('success');
+        }
+
+        // === CONTROL DE AFORO / CONTADOR TV ===
+        function adjustCounter(delta) {
+            const next = Math.max(0, todayEntries + delta);
+            todayEntries = next;
+            updateUI();
+            socket.emit('SET_COUNTER', next);
+            showToast(`Contador de Guerreros hoy ajustado a ${next}`, 'info');
+        }
+
+        function setCustomCounter() {
+            const val = prompt("Ajustar contador de 'Guerreros hoy' en el Monitor TV:", todayEntries);
+            if(val === null) return;
+            const num = parseInt(val);
+            if(!isNaN(num) && num >= 0) {
+                todayEntries = num;
+                updateUI();
+                socket.emit('SET_COUNTER', num);
+                showToast(`Aforo en TV sincronizado a ${num} guerreros`, 'success');
+            }
+        }
+
+        // === CONTROL TORNIQUETE ===
+        function emitScan(type) {
+            if(isTurnstileLocked) {
+                showToast("Acceso denegado: Torniquete bajo Bloqueo Total", "error");
+                playSound('error');
+                return;
+            }
+            socket.emit('SENSOR_SCAN', type);
+            showToast("Huella enviada al sensor", "info");
+        }
+
+        function manualOverrideOpen() {
+            if(isTurnstileLocked) {
+                showToast("No se puede abrir. El torniquete está en Bloqueo Total.", "error");
+                playSound('error');
+                return;
+            }
+            socket.emit('MANUAL_OVERRIDE');
+            triggerTurnstileOpenAnimation();
+            showToast("Apertura manual enviada al monitor (5s)", "info");
+            playSound('door');
+            logAccessFeed('active');
+        }
+
+        function triggerTurnstileOpenAnimation() {
+            const icon = document.getElementById('turnstile-icon');
+            const container = document.getElementById('turnstile-icon-container');
+            const halo = document.getElementById('turnstile-halo');
+            const dashIcon = document.getElementById('dash-turnstile-icon');
+            const dashText = document.getElementById('dash-turnstile-status');
+
+            if(icon) icon.className = "fa-solid fa-door-open text-4xl sm:text-5xl text-emerald-400";
+            if(container) container.className = "w-24 h-24 sm:w-32 sm:h-32 rounded-full border-4 border-emerald-400 flex items-center justify-center mx-auto mb-3 sm:mb-4 bg-emerald-950 shadow-[0_0_60px_rgba(16,185,129,0.5)]";
+            if(halo) halo.className = "absolute inset-0 bg-emerald-500/20 rounded-3xl opacity-100 transition-all";
+            if(dashIcon) dashIcon.className = "fa-solid fa-door-open text-emerald-400";
+            if(dashText) dashText.textContent = "Estado: Abierto (Pase)";
+
+            setTimeout(() => {
+                if(!isTurnstileLocked) {
+                    if(icon) icon.className = "fa-solid fa-door-closed text-4xl sm:text-5xl text-emerald-500";
+                    if(container) container.className = "w-24 h-24 sm:w-32 sm:h-32 rounded-full border-4 border-emerald-500 flex items-center justify-center mx-auto mb-3 sm:mb-4 bg-black shadow-[0_0_40px_rgba(16,185,129,0.3)]";
+                    if(halo) halo.className = "absolute inset-0 bg-emerald-500/10 rounded-3xl opacity-50 transition-all";
+                    if(dashIcon) dashIcon.className = "fa-solid fa-door-closed text-emerald-500";
+                    if(dashText) dashText.textContent = "Estado: Armado";
+                }
+            }, 5000);
+        }
+
+        function emergencyLockdown() {
+            isTurnstileLocked = !isTurnstileLocked;
+            socket.emit('TOGGLE_LOCKDOWN', isTurnstileLocked);
+            updateLockdownUI(isTurnstileLocked);
+            if(isTurnstileLocked) {
+                showToast("BLOQUEO DE EMERGENCIA ACTIVADO", "error");
+                playSound('error');
+            } else {
+                showToast("Torniquete restablecido a modo Armado", "success");
+                playSound('success');
+            }
+        }
+
+        function updateLockdownUI(locked) {
+            isTurnstileLocked = locked;
+            const icon = document.getElementById('turnstile-icon');
+            const container = document.getElementById('turnstile-icon-container');
+            const text = document.getElementById('turnstile-status-text');
+            const halo = document.getElementById('turnstile-halo');
+            const btn = document.getElementById('btn-lockdown');
+            const btnTitle = document.getElementById('btn-lockdown-title');
+            const btnSub = document.getElementById('btn-lockdown-sub');
+            const dashIcon = document.getElementById('dash-turnstile-icon');
+            const dashText = document.getElementById('dash-turnstile-status');
+            const dashSub = document.getElementById('dash-turnstile-sub');
+
+            if(locked) {
+                if(icon) icon.className = "fa-solid fa-lock text-4xl sm:text-5xl text-rose-500 animate-pulse";
+                if(container) container.className = "w-24 h-24 sm:w-32 sm:h-32 rounded-full border-4 border-rose-600 flex items-center justify-center mx-auto mb-3 sm:mb-4 bg-rose-950 shadow-[0_0_60px_rgba(225,29,72,0.8)] pulse-ring";
+                if(text) { text.textContent = "BLOQUEO TOTAL"; text.className = "text-rose-500"; }
+                if(halo) halo.className = "absolute inset-0 bg-rose-600/20 rounded-3xl opacity-100";
+                if(btn) btn.className = "w-full bg-rose-950/60 border border-rose-500 text-white p-3.5 sm:p-4 rounded-2xl flex items-center gap-3.5 sm:gap-4 transition-all group text-left cursor-pointer";
+                if(btnTitle) btnTitle.textContent = "Desactivar Bloqueo Total";
+                if(btnSub) btnSub.textContent = "Clic para reanudar el paso en el torniquete.";
+                if(dashIcon) dashIcon.className = "fa-solid fa-lock text-rose-500";
+                if(dashText) dashText.textContent = "Estado: BLOQUEO TOTAL";
+                if(dashSub) { dashSub.textContent = "Acceso suspendido"; dashSub.className = "text-[11px] sm:text-xs text-rose-400"; }
+            } else {
+                if(icon) icon.className = "fa-solid fa-door-closed text-4xl sm:text-5xl text-emerald-500";
+                if(container) container.className = "w-24 h-24 sm:w-32 sm:h-32 rounded-full border-4 border-emerald-500 flex items-center justify-center mx-auto mb-3 sm:mb-4 bg-black shadow-[0_0_40px_rgba(16,185,129,0.3)]";
+                if(text) { text.textContent = "ARMADO"; text.className = "text-emerald-500"; }
+                if(halo) halo.className = "absolute inset-0 bg-emerald-500/10 rounded-3xl opacity-50";
+                if(btn) btn.className = "w-full bg-[#0d0d0d] border border-rose-600/50 hover:bg-rose-950/40 hover:border-rose-500 text-white p-3.5 sm:p-4 rounded-2xl flex items-center gap-3.5 sm:gap-4 transition-all group text-left cursor-pointer";
+                if(btnTitle) btnTitle.textContent = "Bloqueo de Emergencia";
+                if(btnSub) btnSub.textContent = "Traba el torniquete y la TV indefinidamente.";
+                if(dashIcon) dashIcon.className = "fa-solid fa-door-closed text-emerald-500";
+                if(dashText) dashText.textContent = "Estado: Armado";
+                if(dashSub) { dashSub.textContent = "Lector biométrico listo"; dashSub.className = "text-[11px] sm:text-xs text-emerald-400"; }
+            }
+        }
+
+        function simulateExternalScan() {
+            if(isTurnstileLocked) {
+                showToast("Alerta: Intento de acceso durante Bloqueo Total", "error");
+                playSound('error');
+                return;
+            }
+            const options = ['active', 'warning', 'expired'];
+            const chosen = options[Math.floor(Math.random() * options.length)];
+            emitScan(chosen);
+        }
+
+        // === RADAR LOGS ===
+        function logAccessFeed(type) {
+            const feed = document.getElementById('live-access-feed');
+            const dashFeed = document.getElementById('dash-access-feed');
+            if(feed && feed.querySelector('p.italic')) feed.innerHTML = ''; 
+            if(dashFeed && dashFeed.querySelector('p.italic')) dashFeed.innerHTML = '';
+
+            const row = document.createElement('div');
+            const dashRow = document.createElement('div');
+            const time = new Date().toLocaleTimeString('es-MX', {hour:'2-digit', minute:'2-digit', second:'2-digit'});
+            
+            if(type === 'active' || type === 'warning' || type === 'visit') {
+                const name = type === 'active' ? 'Carlos Mendoza' : (type === 'warning' ? 'Sofía Ramírez' : 'Pase de Visita');
+                const badgeText = type === 'visit' ? 'VISITA PAGADA (ACCESO)' : 'ACCESO CONCEDIDO';
+                row.className = "flex items-center justify-between bg-emerald-950/20 border border-emerald-900/40 p-3 rounded-xl";
+                row.innerHTML = `<div class="flex items-center gap-3"><div class="w-8 h-8 rounded-full bg-emerald-500/20 text-emerald-500 flex items-center justify-center shrink-0"><i class="fa-solid fa-arrow-right-to-bracket"></i></div><div><p class="text-xs font-bold text-white">${name}</p><p class="text-[9px] text-emerald-500">${badgeText}</p></div></div><span class="text-[10px] text-stone-500 font-gears shrink-0">${time}</span>`;
+                dashRow.className = "flex items-center justify-between bg-emerald-950/20 border border-emerald-900/40 p-2.5 rounded-xl";
+                dashRow.innerHTML = `<div class="flex items-center gap-2"><div class="w-2 h-2 rounded-full bg-emerald-500 shrink-0"></div><span class="text-xs font-bold text-white">${name}</span></div><span class="text-[9px] text-emerald-400 font-gears shrink-0">${time}</span>`;
+            } else {
+                row.className = "flex items-center justify-between bg-rose-950/20 border border-rose-900/40 p-3 rounded-xl";
+                row.innerHTML = `<div class="flex items-center gap-3"><div class="w-8 h-8 rounded-full bg-rose-500/20 text-rose-500 flex items-center justify-center shrink-0"><i class="fa-solid fa-ban"></i></div><div><p class="text-xs font-bold text-white">Jorge Vargas</p><p class="text-[9px] text-rose-500">ACCESO DENEGADO (Vencido)</p></div></div><span class="text-[10px] text-stone-500 font-gears shrink-0">${time}</span>`;
+                dashRow.className = "flex items-center justify-between bg-rose-950/20 border border-rose-900/40 p-2.5 rounded-xl";
+                dashRow.innerHTML = `<div class="flex items-center gap-2"><div class="w-2 h-2 rounded-full bg-rose-500 shrink-0"></div><span class="text-xs font-bold text-white">Jorge Vargas</span></div><span class="text-[9px] text-rose-400 font-gears shrink-0">DENEGADO</span>`;
+            }
+
+            if(feed) {
+                feed.prepend(row);
+                if(feed.children.length > 6) feed.removeChild(feed.lastChild);
+            }
+            if(dashFeed) {
+                dashFeed.prepend(dashRow);
+                if(dashFeed.children.length > 4) dashFeed.removeChild(dashFeed.lastChild);
+            }
+        }
+
+        // === BASE DE DATOS Y GESTIÓN DE SOCIOS ===
+        const DB_MEMBERS = [
+            { id: '042', name: 'Carlos Mendoza', photo: 'https://images.unsplash.com/photo-1568602471122-7832951cc4c5?auto=format&fit=crop&w=150&q=80', plan: 'Mensual', price: '$400', status: 'active', days: 18, isInside: true, timeIn: '10:15 AM' },
+            { id: '088', name: 'Ana Gómez', photo: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=150&q=80', plan: 'Mensual', price: '$400', status: 'active', days: 22, isInside: true, timeIn: '11:30 AM' },
+            { id: '019', name: 'Sofía Ramírez', photo: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80', plan: 'Quincena', price: '$250', status: 'warning', days: 1, isInside: true, timeIn: '12:05 PM' },
+            { id: '012', name: 'Jorge Vargas', photo: 'https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?auto=format&fit=crop&w=150&q=80', plan: 'Mensual', price: '$400', status: 'expired', days: -4, isInside: false, timeIn: null },
+            { id: '105', name: 'Luis Cárdenas', photo: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=150&q=80', plan: 'Promo Dúo', price: '$700', status: 'active', days: 10, isInside: false, timeIn: null }
+        ];
+
+        function renderDatabase(filterStatus = 'all', searchQuery = '') {
+            const tbody = document.getElementById('full-database-list');
+            if(!tbody) return;
+            tbody.innerHTML = '';
+            
+            const filtered = DB_MEMBERS.filter(m => {
+                const matchStatus = (filterStatus === 'all' || m.status === filterStatus);
+                const matchSearch = (!searchQuery || m.name.toLowerCase().includes(searchQuery.toLowerCase()) || m.id.includes(searchQuery));
+                return matchStatus && matchSearch;
+            });
+
+            filtered.forEach(m => {
+                let statusHtml = m.status === 'active' ? `<span class="inline-block text-emerald-400 bg-emerald-950/50 border border-emerald-900/50 px-2 py-0.5 sm:px-2.5 sm:py-1 rounded text-[9px] sm:text-[10px] font-bold uppercase tracking-wider whitespace-nowrap">Activo (${m.days}d)</span>` :
+                                 m.status === 'warning' ? `<span class="inline-block text-amber-400 bg-amber-950/50 border border-amber-900/50 px-2 py-0.5 sm:px-2.5 sm:py-1 rounded text-[9px] sm:text-[10px] font-bold uppercase tracking-wider whitespace-nowrap">Aviso (${m.days}d)</span>` :
+                                 `<span class="inline-block text-rose-400 bg-rose-950/50 border border-rose-900/50 px-2 py-0.5 sm:px-2.5 sm:py-1 rounded text-[9px] sm:text-[10px] font-bold uppercase tracking-wider whitespace-nowrap">Vencido (${Math.abs(m.days)}d)</span>`;
+                
+                let insideHtml = m.isInside
+                    ? `<button onclick="toggleMemberInside('${m.id}')" class="text-emerald-500 hover:text-emerald-300 font-bold cursor-pointer" title="Clic para registrar salida"><i class="fa-solid fa-check"></i> Dentro</button>`
+                    : `<button onclick="toggleMemberInside('${m.id}')" class="text-stone-500 hover:text-stone-300 cursor-pointer" title="Clic para registrar entrada"><i class="fa-solid fa-minus"></i> Fuera</button>`;
+                let insideDotClass = m.isInside ? 'bg-emerald-500' : 'bg-stone-600';
+
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-stone-900/30 transition-colors";
+                tr.innerHTML = `
+                    <td class="px-3.5 sm:px-5 py-3.5 sm:py-4">
+                        <div class="flex items-center gap-2.5 sm:gap-3">
+                            <div class="relative shrink-0">
+                                <img src="${m.photo}" class="w-9 h-9 rounded-full object-cover border border-stone-700">
+                                <span class="sm:hidden absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full border-2 border-[#0a0a0a] ${insideDotClass}"></span>
+                            </div>
+                            <div class="min-w-0">
+                                <span class="font-bold text-white text-xs sm:text-sm block truncate">${m.name}</span>
+                                <span class="text-[10px] text-stone-500 font-gears">ID: ${m.id} <span class="md:hidden text-stone-400">· ${m.plan}</span></span>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="px-5 py-4 hidden md:table-cell"><span class="text-xs text-stone-300 font-bold">${m.plan}</span> <br> <span class="text-[10px] text-stone-500 font-gears">${m.price}</span></td>
+                    <td class="px-2.5 sm:px-5 py-3.5 sm:py-4">${statusHtml}</td>
+                    <td class="px-5 py-4 text-center text-xs hidden sm:table-cell">${insideHtml}</td>
+                    <td class="px-3.5 sm:px-5 py-3.5 sm:py-4 text-right whitespace-nowrap">
+                        ${m.status === 'expired' ? `<button onclick="renewMember('${m.id}', 'Mensual', 400, 30)" class="bg-red-600 hover:bg-red-500 active:scale-95 text-white text-[10px] font-black px-2 sm:px-2.5 py-1.5 rounded mr-1 cursor-pointer">Renovar</button>` : ''}
+                        <button onclick="openEditMemberModal('${m.id}')" class="bg-[#222] hover:bg-stone-700 px-2.5 sm:px-3 py-1.5 rounded border border-stone-800 text-xs font-bold text-stone-300 cursor-pointer" title="Editar guerrero"><i class="fa-solid fa-pen"></i></button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function toggleMemberInside(id) {
+            const m = DB_MEMBERS.find(x => x.id === id);
+            if(!m) return;
+            m.isInside = !m.isInside;
+            if(m.isInside) {
+                m.timeIn = new Date().toLocaleTimeString('es-MX', {hour:'2-digit', minute:'2-digit'});
+            }
+            filterMembers();
+            renderActiveMembers(currentFormat);
+            showToast(`${m.name}: ${m.isInside ? 'Registrado DENTRO del gym' : 'Registrado FUERA del gym'}`, 'info');
+        }
+
+        function openEditMemberModal(id) {
+            const m = DB_MEMBERS.find(x => x.id === id);
+            if(!m) return;
+            document.getElementById('edit-member-id').value = m.id;
+            document.getElementById('edit-member-name').value = m.name;
+            document.getElementById('edit-member-plan').value = m.plan;
+            document.getElementById('edit-member-price').value = m.price;
+            document.getElementById('edit-member-days').value = m.days;
+            document.getElementById('edit-member-inside').value = m.isInside ? 'true' : 'false';
+
+            const modal = document.getElementById('modal-edit-member');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeEditMemberModal() {
+            const modal = document.getElementById('modal-edit-member');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        function saveEditedMember() {
+            const id = document.getElementById('edit-member-id').value;
+            const m = DB_MEMBERS.find(x => x.id === id);
+            if(!m) return;
+
+            m.name = document.getElementById('edit-member-name').value.trim() || m.name;
+            m.plan = document.getElementById('edit-member-plan').value.trim() || m.plan;
+            m.price = document.getElementById('edit-member-price').value.trim() || m.price;
+            m.days = parseInt(document.getElementById('edit-member-days').value) || 0;
+            m.isInside = document.getElementById('edit-member-inside').value === 'true';
+            if(m.isInside && !m.timeIn) {
+                m.timeIn = new Date().toLocaleTimeString('es-MX', {hour:'2-digit', minute:'2-digit'});
+            }
+
+            if(m.days < 0) m.status = 'expired';
+            else if(m.days <= 3) m.status = 'warning';
+            else m.status = 'active';
+
+            closeEditMemberModal();
+            filterMembers();
+            renderActiveMembers(currentFormat);
+            showToast(`Datos de ${m.name} actualizados`, 'success');
+            playSound('success');
+        }
+
+        function filterMembers() {
+            const filter = document.getElementById('filter-status').value;
+            const search = document.getElementById('search-member-input').value;
+            renderDatabase(filter, search);
+        }
+
+        function searchMembers() {
+            filterMembers();
+        }
+
+        // === RENOVACIÓN DE GUERREROS EN 1-CLIC ===
+        function renewMember(id, planType, price, days) {
+            todayCash += price;
+            cashBreakdown.memberships += price;
+            const member = DB_MEMBERS.find(m => m.id === id);
+            if(member) {
+                member.status = 'active';
+                member.days = days;
+                member.plan = planType;
+                member.price = '$' + price;
+            }
+            updateUI();
+            renderDatabase();
+            renderActiveMembers(currentFormat);
+
+            // Actualizar tarjeta superior si existe
+            const badge = document.getElementById(`badge-${id}`);
+            if(badge) {
+                badge.className = "inline-block bg-emerald-500/20 text-emerald-400 text-[10px] font-bold px-2 py-0.5 rounded mt-0.5 border border-emerald-500/30";
+                badge.textContent = `${planType} Renovado (${days} días)`;
+            }
+            const actions = document.getElementById(`actions-${id}`);
+            if(actions) {
+                actions.innerHTML = `<div class="col-span-2 bg-emerald-950/40 border border-emerald-900/50 p-2 rounded-lg text-center text-[10px] font-bold text-emerald-400"><i class="fa-solid fa-check"></i> Membresía Activa (+$${price})</div>`;
+            }
+
+            // Emitir evento al servidor y TV
+            socket.emit('RENEW_MEMBER', { name: member ? member.name : 'Socio #' + id, plan: planType });
+            showToast(`Renovación exitosa: ${member ? member.name : id} (+$${price})`, "success");
+            playSound('success');
+        }
+
+        // === MODAL NUEVO SOCIO (RECLUTAR GUERRERO) ===
+        function openNewMemberModal() {
+            const m = document.getElementById('modal-new');
+            m.classList.remove('hidden');
+            m.classList.add('flex');
+            document.getElementById('new-member-input').focus();
+        }
+
+        function closeNewMemberModal() {
+            const m = document.getElementById('modal-new');
+            m.classList.add('hidden');
+            m.classList.remove('flex');
+        }
+
+        function registerNewMember() {
+            const name = document.getElementById('new-member-input').value.trim();
+            const planArr = document.getElementById('new-member-plan').value.split('|');
+            if(!name) return alert("Por favor escribe el nombre completo del guerrero.");
+            
+            const price = parseInt(planArr[1]);
+            const days = parseInt(planArr[2]);
+            const newId = String(Math.floor(Math.random() * 900) + 100);
+
+            todayCash += price;
+            cashBreakdown.memberships += price;
+            activeMembers++;
+            updateUI();
+
+            const newMember = {
+                id: newId,
+                name: name,
+                photo: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80',
+                plan: planArr[0],
+                price: '$' + price,
+                status: 'active',
+                days: days,
+                isInside: true,
+                timeIn: new Date().toLocaleTimeString('es-MX', {hour:'2-digit', minute:'2-digit'})
+            };
+            DB_MEMBERS.unshift(newMember);
+
+            closeNewMemberModal();
+            renderDatabase();
+            renderActiveMembers(currentFormat);
+            showToast(`¡Guerrero ${name} reclutado! (+$${price})`, 'success');
+            playSound('success');
+
+            document.getElementById('new-member-input').value = "";
+        }
+
+        // === AFORO EN VIVO ===
+        let currentFormat = 'grid';
+        function toggleViewFormat(format) {
+            currentFormat = format;
+            document.getElementById('btn-view-grid').className = format === 'grid' ? "p-2 w-10 sm:w-12 rounded-lg bg-[#222] text-white shadow cursor-pointer" : "p-2 w-10 sm:w-12 rounded-lg text-stone-500 hover:text-white cursor-pointer";
+            document.getElementById('btn-view-list').className = format === 'list' ? "p-2 w-10 sm:w-12 rounded-lg bg-[#222] text-white shadow cursor-pointer" : "p-2 w-10 sm:w-12 rounded-lg text-stone-500 hover:text-white cursor-pointer";
+            renderActiveMembers(format);
+        }
+
+        function renderActiveMembers(format) {
+            const container = document.getElementById('active-members-container');
+            if(!container) return;
+            container.innerHTML = '';
+            container.className = format === 'list' ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3' : 'grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4';
+
+            DB_MEMBERS.filter(m => m.isInside).forEach(f => {
+                const card = document.createElement('div');
+                if (format === 'grid') {
+                    card.className = "bg-[#0a0a0a] border border-stone-800 rounded-2xl p-3.5 sm:p-4 flex flex-col items-center text-center relative";
+                    card.innerHTML = `<div class="absolute top-2.5 right-2.5 w-2 h-2 bg-emerald-500 rounded-full shadow-[0_0_8px_#10b981]"></div><img src="${f.photo}" class="w-14 h-14 sm:w-16 sm:h-16 rounded-full object-cover border-2 border-stone-700 mb-2.5 sm:mb-3"><p class="font-bold text-white text-xs sm:text-sm leading-tight">${f.name}</p><p class="text-[10px] text-stone-400 mt-1"><i class="fa-solid fa-clock"></i> ${f.timeIn}</p>`;
+                } else {
+                    card.className = "bg-[#0a0a0a] border border-stone-800 rounded-xl p-3 flex items-center gap-3";
+                    card.innerHTML = `<img src="${f.photo}" class="w-10 h-10 rounded-full object-cover border border-stone-700"><div><p class="font-bold text-white text-sm">${f.name}</p><p class="text-[10px] text-emerald-400">Entró: ${f.timeIn}</p></div>`;
+                }
+                container.appendChild(card);
+            });
+        }
+
+        // === DRAWER MENÚ LATERAL MOBILE ===
+        function toggleMobileDrawer() {
+            const drawer = document.getElementById('mobile-drawer');
+            if (drawer) drawer.classList.toggle('hidden');
+        }
+
+        // === NAVEGACIÓN ENTRE PESTAÑAS ===
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            const target = document.getElementById('tab-' + tabId);
+            if(target) target.classList.add('active');
+
+            // Actualizar estilo en Desktop
+            document.querySelectorAll('#desktop-nav .nav-btn').forEach(btn => {
+                btn.className = "nav-btn w-full flex items-center gap-4 px-3 py-3 text-sm font-semibold text-left";
+                if(btn.innerHTML.includes('fa-door-open') || btn.innerHTML.includes('fa-map-location-dot')) btn.classList.add('border-b', 'border-stone-800/50', 'pb-5', 'mb-2');
+                const i = btn.querySelector('i');
+                if(i) i.className = i.className.replace(/text-red-400/g, 'text-stone-400');
+            });
+            const activeDesk = Array.from(document.querySelectorAll('#desktop-nav .nav-btn')).find(b => b.getAttribute('onclick') && b.getAttribute('onclick').includes(tabId));
+            if(activeDesk) {
+                activeDesk.className = "nav-btn active w-full flex items-center gap-4 px-3 py-3 text-sm text-left";
+                if(activeDesk.innerHTML.includes('fa-door-open') || activeDesk.innerHTML.includes('fa-map-location-dot')) activeDesk.classList.add('mb-2');
+                const i = activeDesk.querySelector('i');
+                if(i) i.className = i.className.replace(/text-stone-400/g, 'text-red-400');
+            }
+
+            // Actualizar estilo en Drawer Mobile
+            document.querySelectorAll('#drawer-nav .drawer-btn').forEach(btn => {
+                btn.className = "drawer-btn w-full flex items-center gap-3.5 px-3 py-2.5 rounded-xl text-sm font-semibold text-stone-300 hover:bg-stone-900 text-left";
+                const i = btn.querySelector('i');
+                if(i) i.className = i.className.replace(/text-red-400/g, 'text-stone-400');
+            });
+            const activeDrawer = Array.from(document.querySelectorAll('#drawer-nav .drawer-btn')).find(b => b.getAttribute('onclick') && b.getAttribute('onclick').includes(tabId));
+            if(activeDrawer) {
+                activeDrawer.className = "drawer-btn w-full flex items-center gap-3.5 px-3 py-2.5 rounded-xl text-sm font-semibold text-white bg-[#3b0707] border border-red-900/60 text-left";
+                const i = activeDrawer.querySelector('i');
+                if(i) i.className = i.className.replace(/text-stone-400/g, 'text-red-400');
+            }
+
+            // Actualizar estilo en Bottom Nav Mobile
+            document.querySelectorAll('#mobile-nav .nav-btn-mob').forEach(btn => btn.className = "nav-btn-mob flex flex-col items-center py-1 flex-1 hover:text-stone-300 text-stone-500");
+            const activeMob = Array.from(document.querySelectorAll('#mobile-nav .nav-btn-mob')).find(b => b.getAttribute('onclick') && b.getAttribute('onclick').includes(tabId));
+            if(activeMob) activeMob.className = "nav-btn-mob flex flex-col items-center py-1 flex-1 text-red-500";
+        }
+
+        // === COMUNICACIONES Y CONTROL TOTAL DEL MONITOR TV ===
+        function fillExampleAlert() {
+            const badgeEl = document.getElementById('alert-badge-input');
+            if(badgeEl) badgeEl.value = "PROMO RELÁMPAGO HOY";
+            document.getElementById('alert-title-input').value = "VENTA NOCTURNA 💀";
+            document.getElementById('alert-msg-input').value = "A partir de las 8:00 PM, todos los Suplementos y Scoops pre-entreno tienen un 15% de descuento. ¡Aprovecha!";
+        }
+
+        function sendAlertToMonitor() {
+            const badgeEl = document.getElementById('alert-badge-input');
+            const badge = (badgeEl && badgeEl.value.trim()) ? badgeEl.value.trim() : 'AVISO EN VIVO DESDE RECEPCIÓN';
+            const title = document.getElementById('alert-title-input').value.trim() || 'ALERTA GEARS';
+            const msg = document.getElementById('alert-msg-input').value.trim() || 'Aviso para el pelotón.';
+            
+            socket.emit('SEND_PROMO', { badge, title, msg });
+            showToast("Transmitido permanentemente al Monitor TV", "success");
+            playSound('success');
+            
+            document.getElementById('alert-title-input').value = '';
+            document.getElementById('alert-msg-input').value = '';
+        }
+
+        function saveTariffsToTV() {
+            const tariffs = [0, 1, 2, 3].map(i => ({
+                name: document.getElementById(`t${i}-name`).value.trim() || `Plan ${i+1}`,
+                price: document.getElementById(`t${i}-price`).value.trim() || '$0',
+                sub: document.getElementById(`t${i}-sub`).value.trim() || '',
+                promoTitle: document.getElementById(`t${i}-ptitle`).value.trim() || 'TARIFA OFICIAL',
+                promoDesc: document.getElementById(`t${i}-pdesc`).value.trim() || ''
+            }));
+            const tariffsHeader = document.getElementById('tv-tariffs-header-input').value.trim() || 'TARIFAS OFICIALES (CLIC PARA VER)';
+
+            socket.emit('UPDATE_TV_CONFIG', { tariffs, tariffsHeader });
+            showToast("Precios y Tarifas actualizados en el Monitor TV", "success");
+            playSound('success');
+        }
+
+        function setTvBgPreset(url) {
+            const bgInput = document.getElementById('tv-bg-input');
+            if(bgInput) bgInput.value = url;
+            saveFullTvConfig();
+        }
+
+        function saveFullTvConfig() {
+            const payload = {
+                musicTitle: document.getElementById('tv-music-input').value.trim(),
+                sensorTitle: document.getElementById('tv-sensor-title-input').value.trim(),
+                sensorSub: document.getElementById('tv-sensor-sub-input').value.trim(),
+                sensorBtn: document.getElementById('tv-sensor-btn-input').value.trim(),
+                card1Title: document.getElementById('tv-c1-title-input').value.trim(),
+                card1Desc: document.getElementById('tv-c1-desc-input').value.trim(),
+                card2Title: document.getElementById('tv-c2-title-input').value.trim(),
+                card2Desc: document.getElementById('tv-c2-desc-input').value.trim(),
+                footerTicker: document.getElementById('tv-footer-input').value.trim(),
+                bgImage: document.getElementById('tv-bg-input').value.trim()
+            };
+            socket.emit('UPDATE_TV_CONFIG', payload);
+            showToast("Interfaz, textos y fondo sincronizados con el Monitor TV", "success");
+            playSound('success');
+        }
+
+        function remoteSelectTariff(idx) {
+            socket.emit('REMOTE_SELECT_TARIFF', idx);
+            showToast(`Tarifa #${idx + 1} enfocada en el Monitor TV`, "info");
+        }
+
+        function remoteNextPromo() {
+            socket.emit('REMOTE_NEXT_PROMO');
+            showToast("Siguiente promoción activada en el Monitor TV", "info");
+        }
+
+        // === TOAST NOTIFICATIONS ===
+        function showToast(msg, type = 'success') {
+            const t = document.getElementById('toast'), i = document.getElementById('toast-icon');
+            if(!t || !i) return;
+            if(type === 'success'){
+                t.className = "hidden fixed top-4 left-4 right-4 sm:left-auto sm:right-4 sm:max-w-sm bg-emerald-950 border border-emerald-900 text-emerald-100 text-xs px-4 py-3 rounded-xl shadow-2xl z-[200] flex items-center gap-3 transition-opacity duration-300 opacity-0";
+                i.className = "w-6 h-6 rounded-full bg-emerald-500 flex items-center justify-center text-black shrink-0"; i.innerHTML = '<i class="fa-solid fa-check"></i>';
+            } else if(type === 'error'){
+                t.className = "hidden fixed top-4 left-4 right-4 sm:left-auto sm:right-4 sm:max-w-sm bg-rose-950 border border-rose-900 text-rose-100 text-xs px-4 py-3 rounded-xl shadow-2xl z-[200] flex items-center gap-3 transition-opacity duration-300 opacity-0";
+                i.className = "w-6 h-6 rounded-full bg-rose-500 flex items-center justify-center text-white shrink-0"; i.innerHTML = '<i class="fa-solid fa-xmark"></i>';
+            } else {
+                t.className = "hidden fixed top-4 left-4 right-4 sm:left-auto sm:right-4 sm:max-w-sm bg-blue-950 border border-blue-900 text-blue-100 text-xs px-4 py-3 rounded-xl shadow-2xl z-[200] flex items-center gap-3 transition-opacity duration-300 opacity-0";
+                i.className = "w-6 h-6 rounded-full bg-blue-500 flex items-center justify-center text-white shrink-0"; i.innerHTML = '<i class="fa-solid fa-info"></i>';
+            }
+            document.getElementById('toast-msg').innerHTML = msg;
+            t.classList.remove('hidden');
+            setTimeout(() => t.classList.remove('opacity-0'), 10);
+            setTimeout(() => { t.classList.add('opacity-0'); setTimeout(() => t.classList.add('hidden'), 300); }, 3000);
+        }
+
+        // === INICIALIZACIÓN ===
+        renderArsenal();
+        toggleViewFormat('grid');
+        renderDatabase();
+        updateUI();
+    </script>
+</body>
+</html>

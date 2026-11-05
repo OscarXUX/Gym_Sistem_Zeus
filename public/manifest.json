@@ -1,0 +1,23 @@
+{
+  "short_name": "GEARS GYM",
+  "name": "GEARS GYM - Cuartel General & Monitor",
+  "icons": [
+    {
+      "src": "/assets/icon.png",
+      "type": "image/png",
+      "sizes": "192x192",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/assets/icon.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "any maskable"
+    }
+  ],
+  "start_url": "/?view=admin",
+  "background_color": "#050505",
+  "theme_color": "#e11d48",
+  "display": "standalone",
+  "orientation": "any"
+}

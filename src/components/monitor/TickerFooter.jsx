@@ -1,0 +1,36 @@
+import React from 'react';
+
+export default function TickerFooter({
+  footerTicker = 'CÓDIGO DE HONOR: Traer toalla obligatoria • Descarga tus barras y mancuernas al terminar • Suplementos y bebidas frías disponibles en barra • Horario: Lun-Vie 6am a 10pm | Sáb 7am a 2pm • ¡Entrena sin piedad en GEARS!'
+}) {
+  return (
+    <footer className="relative z-10 w-full max-w-full bg-black/95 border-t border-red-600/40 py-[clamp(0.4rem,1dvh,0.7rem)] px-[clamp(0.85rem,1.5vw,1.35rem)] overflow-hidden shrink-0 flex items-center gap-3">
+      <span className="bg-red-600 text-white text-[clamp(9px,min(0.75vw,1.55dvh),12px)] font-black uppercase px-2.5 py-0.5 rounded tracking-wider shrink-0 flex items-center gap-1.5 shadow">
+        <i className="fa-solid fa-bullhorn text-[0.9em]"></i> AVISOS
+      </span>
+      <div className="flex-1 min-w-0 overflow-hidden whitespace-nowrap">
+        <div className="inline-block animate-marquee text-[clamp(0.75rem,min(0.95vw,1.95dvh),0.98rem)] font-bold text-stone-200">
+          <span className="mr-8">{footerTicker}</span>
+          <span className="mr-8 text-red-500">✦</span>
+          <span className="mr-8">{footerTicker}</span>
+          <span className="mr-8 text-red-500">✦</span>
+          <span className="mr-8">{footerTicker}</span>
+          <span className="mr-8 text-red-500">✦</span>
+          <span className="mr-8">{footerTicker}</span>
+        </div>
+      </div>
+
+      <style>{`
+        @keyframes marquee {
+          0% { transform: translateX(0%); }
+          100% { transform: translateX(-50%); }
+        }
+        .animate-marquee {
+          display: inline-block;
+          white-space: nowrap;
+          animation: marquee 28s linear infinite;
+        }
+      `}</style>
+    </footer>
+  );
+}
