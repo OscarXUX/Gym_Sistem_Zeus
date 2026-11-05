@@ -1,8 +1,24 @@
 // backend/db/database.js
 const Database = require('better-sqlite3');
 const path = require('path');
+const fs = require('fs');
 
-const dbPath = path.join(__dirname, 'gears_gym.sqlite');
+const oldDbPath = path.join(__dirname, 'gears_gym.sqlite');
+const newDbPath = path.join(__dirname, 'zeus_gym.sqlite');
+
+// Migración transparente si existe gears_gym.sqlite y no existe zeus_gym.sqlite
+if (fs.existsSync(oldDbPath) && !fs.existsSync(newDbPath)) {
+  try {
+    fs.copyFileSync(oldDbPath, newDbPath);
+    if (fs.existsSync(oldDbPath + '-wal')) fs.copyFileSync(oldDbPath + '-wal', newDbPath + '-wal');
+    if (fs.existsSync(oldDbPath + '-shm')) fs.copyFileSync(oldDbPath + '-shm', newDbPath + '-shm');
+    console.log('⚡ [MIGRACIÓN] Base de datos gears_gym.sqlite migrada exitosamente a zeus_gym.sqlite');
+  } catch (err) {
+    console.error('⚠️ [MIGRACIÓN ERROR]', err.message);
+  }
+}
+
+const dbPath = process.env.DB_PATH || newDbPath;
 const db = new Database(dbPath);
 
 // Optimización WAL para lecturas y escrituras concurrentes sin bloqueos de archivo
@@ -27,7 +43,7 @@ db.exec(`
     active INTEGER DEFAULT 1
   );
 
-  -- Tabla Maestra de Socios (Guerreros)
+  -- Tabla Maestra de Socios (Atletas del Olimpo)
   CREATE TABLE IF NOT EXISTS members (
     id TEXT PRIMARY KEY,
     name TEXT NOT NULL,
@@ -63,7 +79,7 @@ db.exec(`
     timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
   );
 
-  -- Tabla Maestra del Arsenal (Inventario / Suplementos / Accesorios)
+  -- Tabla Maestra de Néctar y Suplementos (Inventario del Olimpo)
   CREATE TABLE IF NOT EXISTS products (
     id TEXT PRIMARY KEY,
     name TEXT NOT NULL,
@@ -76,7 +92,7 @@ db.exec(`
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
   );
 
-  -- Tabla Transaccional de Ventas del Arsenal
+  -- Tabla Transaccional de Ventas de Néctar y Suplementos
   CREATE TABLE IF NOT EXISTS store_sales (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     product_id TEXT,
@@ -133,7 +149,7 @@ db.exec(`
     store_cash INTEGER DEFAULT 0,
     today_entries INTEGER DEFAULT 0,
     notes TEXT DEFAULT '',
-    closed_by TEXT DEFAULT 'Comandante',
+    closed_by TEXT DEFAULT 'Administrador Olimpo',
     closed_at DATETIME DEFAULT CURRENT_TIMESTAMP
   );
 `);
@@ -279,10 +295,10 @@ if (planCount.total === 0) {
     INSERT INTO plans (id, name, price, duration_days, sub_title, promo_title, promo_desc, sort_order)
     VALUES (?, ?, ?, ?, ?, ?, ?, ?)
   `);
-  insertPlan.run('mensual', 'Mensualidad', 400, 30, 'Acceso Total 30 días', 'MENSUALIDAD GEARS — $400 MXN', 'Acceso total durante 30 días de entrenamiento sin límites en el campo de batalla.', 1);
-  insertPlan.run('duo', 'Promo 2 Guerreros', 700, 30, '¡Ahorras $100 MXN!', 'PROMO DÚO 2 X $700 MXN', 'Entrena con tu compañero de escuadrón y ahorren $100 MXN en su mensualidad.', 2);
-  insertPlan.run('quincena', 'Quincena', 250, 15, '15 días de batalla', 'QUINCENA GEARS — $250 MXN', '15 días intensos de entrenamiento. ¡Cero excusas en la legión GEARS GYM!', 3);
-  insertPlan.run('visita', 'Visita del Día', 60, 1, 'Pase individual', 'VISITA DEL DÍA — $60 MXN', 'Pase individual de acceso completo por un día. ¡Entrena sin piedad!', 4);
+  insertPlan.run('mensual', 'Membresía Olimpo', 400, 30, 'Pase Total 30 días', 'MEMBRESÍA ZEUS OLIMPO — $400 MXN', 'Acceso total durante 30 días para forjar fuerza legendaria en el Templo de Zeus.', 1);
+  insertPlan.run('duo', 'Promo Dúo Titanes 2 X $700 MXN', 700, 30, '¡Ahorro Divino de $100 MXN!', 'PROMO DÚO TITANES 2 X $700 MXN', 'Entrena en el Templo de Zeus. ¡Disciplina y poder divino!', 2);
+  insertPlan.run('quincena', 'Quincena Celestial', 250, 15, '15 días de poder divino', 'QUINCENA CELESTIAL — $250 MXN', '15 días intensos de entrenamiento con el poder del trueno en ZEUS GYM.', 3);
+  insertPlan.run('visita', 'Pase Diario Zeus', 60, 1, 'Pase individual olímpico', 'PASE DIARIO ZEUS — $60 MXN', 'Pase individual de acceso completo por un día. ¡Despierta al titán que llevas dentro!', 4);
 }
 
 const productCount = db.prepare('SELECT COUNT(*) as total FROM products').get();
@@ -291,30 +307,30 @@ if (productCount.total === 0) {
     INSERT INTO products (id, name, category, price, stock, icon, color)
     VALUES (?, ?, ?, ?, ?, ?, ?)
   `);
-  insertProd.run('p1', 'Agua 1L', 'Bebidas', 20, 24, 'fa-bottle-water', 'blue');
-  insertProd.run('p2', 'Pre-Entreno Hype', 'Scoop Hype', 35, 18, 'fa-bolt', 'rose');
-  insertProd.run('p3', 'Proteína Whey', 'Scoop Servicio', 30, 15, 'fa-jar', 'amber');
-  insertProd.run('p4', 'Electrolitos', 'Hidratación', 15, 20, 'fa-wine-bottle', 'purple');
-  insertProd.run('p5', 'Toalla GEARS', 'Equipo Oficial', 100, 8, 'fa-rug', 'stone');
-  insertProd.run('p6', 'Candado Lock', 'Seguridad Locker', 50, 6, 'fa-lock', 'rose');
+  insertProd.run('p1', 'Agua Glaciar Olimpo 1L', 'Hidratación', 20, 24, 'fa-bottle-water', 'blue');
+  insertProd.run('p2', 'Pre-Entreno Rayo de Zeus', 'Fórmula Divina', 35, 18, 'fa-bolt', 'amber');
+  insertProd.run('p3', 'Proteína Néctar Divino', 'Néctar de Dioses', 30, 15, 'fa-jar', 'cyan');
+  insertProd.run('p4', 'Electrolitos Ambrosía', 'Elixir Olímpico', 15, 20, 'fa-wine-bottle', 'purple');
+  insertProd.run('p5', 'Toalla Oficial ZEUS GYM', 'Indumentaria Olímpica', 100, 8, 'fa-rug', 'indigo');
+  insertProd.run('p6', 'Candado Titán', 'Seguridad Égida', 50, 6, 'fa-lock', 'amber');
 }
 
 const tvSettingsCount = db.prepare('SELECT COUNT(*) as total FROM tv_settings').get();
 if (tvSettingsCount.total === 0) {
   const insertSetting = db.prepare(`INSERT INTO tv_settings (key, value) VALUES (?, ?)`);
-  insertSetting.run('musicTitle', 'HEAVY WORKOUT MIX');
-  insertSetting.run('promoBadge', 'PROMO GEARS DEL MES');
-  insertSetting.run('promoTitle', 'PROMO DÚO 2 X $700 MXN');
-  insertSetting.run('promoDesc', 'Entrena con tu compañero de escuadrón. ¡Cero excusas en la legión GEARS GYM!');
-  insertSetting.run('tariffsHeader', 'TARIFAS OFICIALES DE LA LEGIÓN (TOCA UNA TARJETA PARA DESTACAR EN PANTALLA)');
-  insertSetting.run('sensorTitle', 'Coloca tu huella en el sensor para entrar');
-  insertSetting.run('sensorSub', 'El sistema mostrará tus días restantes de forma automática en pantalla');
+  insertSetting.run('musicTitle', 'SONIDOS DEL OLIMPO // WORKOUT SESSIONS');
+  insertSetting.run('promoBadge', 'DECRETO DEL OLIMPO');
+  insertSetting.run('promoTitle', 'PROMO DÚO TITANES 2 X $700 MXN');
+  insertSetting.run('promoDesc', 'Entrena en el Templo de Zeus. ¡Disciplina y poder divino!');
+  insertSetting.run('tariffsHeader', 'TARIFAS OFICIALES DEL TEMPLO DE ZEUS');
+  insertSetting.run('sensorTitle', 'Presenta tu huella o PIN para entrar al Olimpo');
+  insertSetting.run('sensorSub', 'El oráculo validará tu vigencia al instante');
   insertSetting.run('sensorBtn', 'PIN O HUELLA');
-  insertSetting.run('card1Title', 'SUPLEMENTOS EN RECEPCIÓN');
-  insertSetting.run('card1Desc', 'Pregunta por tu Scoop de Pre-entreno Hype, Creatina y Proteína por servicio.');
-  insertSetting.run('card2Title', 'CÓDIGO DE HONOR GEARS');
-  insertSetting.run('card2Desc', 'Descarga los discos al terminar y trae tu toalla. ¡Entrena sin piedad!');
-  insertSetting.run('footerTicker', 'Mensualidad $400 | Promo 2x$700 | Quincena $250 | Visita $60');
+  insertSetting.run('card1Title', 'NÉCTAR Y SUPLEMENTOS EN RECEPCIÓN');
+  insertSetting.run('card1Desc', 'Pregunta por tu Scoop de Rayo de Zeus, Creatina y Proteína Néctar Divino.');
+  insertSetting.run('card2Title', 'CÓDIGO OLÍMPICO');
+  insertSetting.run('card2Desc', 'Descarga tus barras al terminar y porta tu toalla. ¡Honor en el Templo de Zeus!');
+  insertSetting.run('footerTicker', 'Membresía Olimpo $400 | Promo Dúo Titanes 2x$700 | Quincena Celestial $250 | Pase Diario Zeus $60 | ZEUS GYM');
   insertSetting.run('bgImage', 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=1400&q=80');
 }
 
@@ -330,11 +346,99 @@ if (memberCount.total === 0) {
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `);
 
-  insertMember.run('042', 'Carlos Mendoza', '5512345678', 'https://images.unsplash.com/photo-1568602471122-7832951cc4c5?auto=format&fit=crop&w=150&q=80', 'Mensual', 'mensual', '$400', 'active', 18, 18, addDaysToDate(today, -12), addDaysToDate(today, 18), '042', 'E042A1', 1, 1, '10:15 AM', '10:15 AM');
-  insertMember.run('088', 'Ana Gómez', '5587654321', 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=150&q=80', 'Mensual', 'mensual', '$400', 'active', 22, 22, addDaysToDate(today, -8), addDaysToDate(today, 22), '088', 'E088B2', 1, 1, '11:30 AM', '11:30 AM');
-  insertMember.run('019', 'Sofía Ramírez', '5544332211', 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80', 'Quincena', 'quincena', '$250', 'warning', 1, 1, addDaysToDate(today, -14), addDaysToDate(today, 1), '019', 'E019C3', 1, 1, '12:05 PM', '12:05 PM');
-  insertMember.run('012', 'Jorge Vargas', '5599887766', 'https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?auto=format&fit=crop&w=150&q=80', 'Mensual', 'mensual', '$400', 'expired', -4, -4, addDaysToDate(today, -34), addDaysToDate(today, -4), '012', 'E012D4', 0, 0, null, null);
+  insertMember.run('042', 'Carlos Mendoza', '5512345678', 'https://images.unsplash.com/photo-1568602471122-7832951cc4c5?auto=format&fit=crop&w=150&q=80', 'Membresía Olimpo', 'mensual', '$400', 'active', 18, 18, addDaysToDate(today, -12), addDaysToDate(today, 18), '042', 'E042A1', 1, 1, '10:15 AM', '10:15 AM');
+  insertMember.run('088', 'Ana Gómez', '5587654321', 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=150&q=80', 'Membresía Olimpo', 'mensual', '$400', 'active', 22, 22, addDaysToDate(today, -8), addDaysToDate(today, 22), '088', 'E088B2', 1, 1, '11:30 AM', '11:30 AM');
+  insertMember.run('019', 'Sofía Ramírez', '5544332211', 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80', 'Quincena Celestial', 'quincena', '$250', 'warning', 1, 1, addDaysToDate(today, -14), addDaysToDate(today, 1), '019', 'E019C3', 1, 1, '12:05 PM', '12:05 PM');
+  insertMember.run('012', 'Jorge Vargas', '5599887766', 'https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?auto=format&fit=crop&w=150&q=80', 'Membresía Olimpo', 'mensual', '$400', 'expired', -4, -4, addDaysToDate(today, -34), addDaysToDate(today, -4), '012', 'E012D4', 0, 0, null, null);
 }
+
+// Rutina de sanitización / migración automática para bases de datos preexistentes
+function upgradeExistingZeusLore() {
+  try {
+    db.transaction(() => {
+      // 1. Actualizar Planes
+      db.prepare(`
+        UPDATE plans SET
+          name = CASE id
+            WHEN 'mensual' THEN 'Membresía Olimpo'
+            WHEN 'duo' THEN 'Promo Dúo Titanes 2 X $700 MXN'
+            WHEN 'quincena' THEN 'Quincena Celestial'
+            WHEN 'visita' THEN 'Pase Diario Zeus'
+            ELSE name END,
+          sub_title = CASE id
+            WHEN 'mensual' THEN 'Pase Total 30 días'
+            WHEN 'duo' THEN '¡Ahorro Divino de $100 MXN!'
+            WHEN 'quincena' THEN '15 días de poder divino'
+            WHEN 'visita' THEN 'Pase individual olímpico'
+            ELSE sub_title END,
+          promo_title = CASE id
+            WHEN 'mensual' THEN 'MEMBRESÍA ZEUS OLIMPO — $400 MXN'
+            WHEN 'duo' THEN 'PROMO DÚO TITANES 2 X $700 MXN'
+            WHEN 'quincena' THEN 'QUINCENA CELESTIAL — $250 MXN'
+            WHEN 'visita' THEN 'PASE DIARIO ZEUS — $60 MXN'
+            ELSE promo_title END,
+          promo_desc = CASE id
+            WHEN 'mensual' THEN 'Acceso total durante 30 días para forjar fuerza legendaria en el Templo de Zeus.'
+            WHEN 'duo' THEN 'Entrena en el Templo de Zeus. ¡Disciplina y poder divino!'
+            WHEN 'quincena' THEN '15 días intensos de entrenamiento con el poder del trueno en ZEUS GYM.'
+            WHEN 'visita' THEN 'Pase individual de acceso completo por un día. ¡Despierta al titán que llevas dentro!'
+            ELSE promo_desc END
+        WHERE promo_title LIKE '%GEARS%' OR promo_title LIKE '%GUERRERO%' OR name LIKE '%Guerreros%' OR promo_desc LIKE '%batalla%'
+      `).run();
+
+      // 2. Actualizar Productos
+      db.prepare(`
+        UPDATE products SET
+          name = CASE id
+            WHEN 'p1' THEN 'Agua Glaciar Olimpo 1L'
+            WHEN 'p2' THEN 'Pre-Entreno Rayo de Zeus'
+            WHEN 'p3' THEN 'Proteína Néctar Divino'
+            WHEN 'p4' THEN 'Electrolitos Ambrosía'
+            WHEN 'p5' THEN 'Toalla Oficial ZEUS GYM'
+            WHEN 'p6' THEN 'Candado Titán'
+            ELSE name END,
+          category = CASE id
+            WHEN 'p1' THEN 'Hidratación'
+            WHEN 'p2' THEN 'Fórmula Divina'
+            WHEN 'p3' THEN 'Néctar de Dioses'
+            WHEN 'p4' THEN 'Elixir Olímpico'
+            WHEN 'p5' THEN 'Indumentaria Olímpica'
+            WHEN 'p6' THEN 'Seguridad Égida'
+            ELSE category END
+        WHERE name LIKE '%GEARS%' OR name LIKE '%Hype%' OR name LIKE '%Lock%'
+      `).run();
+
+      // 3. Actualizar Ajustes de TV
+      const tvFixes = [
+        ['musicTitle', 'SONIDOS DEL OLIMPO // WORKOUT SESSIONS'],
+        ['promoBadge', 'DECRETO DEL OLIMPO'],
+        ['promoTitle', 'PROMO DÚO TITANES 2 X $700 MXN'],
+        ['promoDesc', 'Entrena en el Templo de Zeus. ¡Disciplina y poder divino!'],
+        ['tariffsHeader', 'TARIFAS OFICIALES DEL TEMPLO DE ZEUS'],
+        ['sensorTitle', 'Presenta tu huella o PIN para entrar al Olimpo'],
+        ['sensorSub', 'El oráculo validará tu vigencia al instante'],
+        ['card1Title', 'NÉCTAR Y SUPLEMENTOS EN RECEPCIÓN'],
+        ['card1Desc', 'Pregunta por tu Scoop de Rayo de Zeus, Creatina y Proteína Néctar Divino.'],
+        ['card2Title', 'CÓDIGO OLÍMPICO'],
+        ['card2Desc', 'Descarga tus barras al terminar y porta tu toalla. ¡Honor en el Templo de Zeus!'],
+        ['footerTicker', 'Membresía Olimpo $400 | Promo Dúo Titanes 2x$700 | Quincena Celestial $250 | Pase Diario Zeus $60 | ZEUS GYM']
+      ];
+      const updateSettingStmt = db.prepare(`
+        UPDATE tv_settings SET value = ?
+        WHERE key = ? AND (value LIKE '%GEARS%' OR value LIKE '%LEGIÓN%' OR value LIKE '%escuadrón%' OR value LIKE '%piedad%' OR value LIKE '%Guerreros%')
+      `);
+      for (const [k, v] of tvFixes) {
+        updateSettingStmt.run(v, k);
+      }
+
+      // 4. Actualizar cash_cuts con Comandante
+      db.prepare(`UPDATE cash_cuts SET closed_by = 'Administrador Olimpo' WHERE closed_by = 'Comandante'`).run();
+    })();
+  } catch (err) {
+    console.warn('⚠️ [ZEUS MIGRACIÓN] Error al sincronizar registros preexistentes:', err.message);
+  }
+}
+upgradeExistingZeusLore();
 
 // =========================================================================
 // 5. NORMALIZADORES Y MÉTODOS DE CONSULTA
@@ -524,8 +628,8 @@ function createMember({ id, name, phone = '', photo, plan = 'Mensualidad', price
   const defaultPhoto = photo && String(photo).trim() !== '' ? photo : 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=300&q=80';
   const nowTime = new Date().toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit' });
 
-  const memberName = (name && String(name).trim()) ? String(name).trim() : 'Nuevo Guerrero';
-  const planName = (plan && String(plan).trim()) ? String(plan).trim() : 'Mensualidad';
+  const memberName = (name && String(name).trim()) ? String(name).trim() : 'Nuevo Atleta Olímpico';
+  const planName = (plan && String(plan).trim()) ? String(plan).trim() : 'Membresía Olimpo';
 
   const tx = db.transaction(() => {
     db.prepare(`
@@ -614,8 +718,8 @@ function renewMember(idOrObj, plan = 'Mensualidad', price = '$400', extraDays = 
     `).run(newTotalDays, newTotalDays, newExpireDate, String(plan || 'Mensualidad').trim(), priceText, memberId);
 
     // Auditoría de pago (seguro contra valores vacíos)
-    const memberName = existing.name || 'Guerrero';
-    const planName = String(plan || existing.plan || 'Mensualidad').trim();
+    const memberName = existing.name || 'Atleta';
+    const planName = String(plan || existing.plan || 'Membresía Olimpo').trim();
     db.prepare(`
       INSERT INTO member_payments (member_id, member_name, plan_name, amount, payment_type)
       VALUES (?, ?, ?, ?, 'RENEWAL')
@@ -708,7 +812,7 @@ function deleteMember(id) {
 }
 
 // =========================================================================
-// 7. OPERACIONES DEL ARSENAL (PRODUCTOS, STOCK Y VENTAS TRANSACCIONALES)
+// 7. OPERACIONES DE NÉCTAR Y SUPLEMENTOS (PRODUCTOS, STOCK Y VENTAS TRANSACCIONALES)
 // =========================================================================
 function getAllProducts() {
   return db.prepare('SELECT * FROM products WHERE active = 1 ORDER BY id ASC').all();
@@ -758,7 +862,7 @@ function recordStoreSale(itemIdOrObj, itemName, price, quantity = 1) {
   let qty = quantity;
   if (typeof itemIdOrObj === 'object' && itemIdOrObj !== null) {
     itemId = itemIdOrObj.productId || itemIdOrObj.itemId || itemIdOrObj.id || 'item';
-    itemName = itemIdOrObj.name || itemIdOrObj.itemName || 'Producto Arsenal';
+    itemName = itemIdOrObj.name || itemIdOrObj.itemName || 'Néctar y Suplemento Olimpo';
     price = itemIdOrObj.price;
     qty = itemIdOrObj.quantity || 1;
   }
@@ -783,7 +887,7 @@ function recordStoreSale(itemIdOrObj, itemName, price, quantity = 1) {
     const info = db.prepare(`
       INSERT INTO store_sales (product_id, item_id, item_name, quantity, unit_price, price, total_price)
       VALUES (?, ?, ?, ?, ?, ?, ?)
-    `).run(String(itemId), String(itemId), String(itemName || 'Producto Arsenal'), qty, numericPrice, numericPrice, totalAmount);
+    `).run(String(itemId), String(itemId), String(itemName || 'Néctar y Suplemento Olimpo'), qty, numericPrice, numericPrice, totalAmount);
 
     insertedSale = db.prepare('SELECT * FROM store_sales WHERE id = ?').get(info.lastInsertRowid);
 
@@ -835,37 +939,37 @@ function updatePlan(id, data = {}) {
   return db.prepare('SELECT * FROM plans WHERE id = ?').get(id);
 }
 
-function getDefaultGymNotices(card2Title = 'CÓDIGO DE HONOR GEARS', card2Desc = 'Descarga los discos al terminar y trae tu toalla. ¡Entrena sin piedad!') {
+function getDefaultGymNotices(card2Title = 'CÓDIGO OLÍMPICO', card2Desc = 'Descarga tus barras al terminar y porta tu toalla. ¡Honor en el Templo de Zeus!') {
   return [
     {
       id: 'n1',
-      badge: 'REGLA DE ORO • HIGIENE OBLIGATORIA',
+      badge: 'REGLA SAGRADA • HIGIENE OBLIGATORIA',
       title: 'USO OBLIGATORIO DE TOALLA',
-      desc: 'Por higiene y respeto a tus hermanos de armas, es obligatorio portar toalla personal para limpiar bancos y máquinas al terminar.',
+      desc: 'Por higiene y respeto a tus compañeros atletas en el santuario, es obligatorio portar toalla personal para limpiar bancos y máquinas al terminar.',
       icon: 'fa-spray-can-sparkles',
       theme: 'amber'
     },
     {
       id: 'n2',
-      badge: card2Title || 'CÓDIGO DE HONOR • DISCIPLINA',
+      badge: card2Title || 'CÓDIGO OLÍMPICO • DISCIPLINA',
       title: 'DESCARGA TUS BARRAS Y ACOMODA EL EQUIPO',
-      desc: card2Desc || 'Si tuviste la fuerza para levantarlo, ten la disciplina de guardarlo. Regresa mancuernas y discos a sus racks.',
+      desc: card2Desc || 'Si tuviste la fuerza para levantarlo, ten la disciplina de guardarlo. Regresa mancuernas y discos a sus soportes.',
       icon: 'fa-dumbbell',
-      theme: 'red'
+      theme: 'blue'
     },
     {
       id: 'n3',
       badge: 'SEGURIDAD • PREVENCIÓN',
       title: 'CALZADO Y VESTIMENTA DEPORTIVA',
-      desc: 'Por tu seguridad en sala de pesas, está estrictamente prohibido entrenar descalzo, en sandalias o con calzado no deportivo.',
+      desc: 'Por tu seguridad en el Templo de Zeus, está estrictamente prohibido entrenar descalzo, en sandalias o con calzado no deportivo.',
       icon: 'fa-shoe-prints',
-      theme: 'blue'
+      theme: 'cyan'
     },
     {
       id: 'n4',
-      badge: 'HORARIOS OFICIALES • LA LEGIÓN',
-      title: 'HORARIOS DEL CAMPO DE BATALLA',
-      desc: 'Lunes a Viernes: 6:00 AM – 10:00 PM | Sábados: 7:00 AM – 2:00 PM. ¡Cero excusas en la legión GEARS GYM!',
+      badge: 'HORARIOS OFICIALES • EL OLIMPO',
+      title: 'HORARIOS DEL TEMPLO DE ZEUS',
+      desc: 'Lunes a Viernes: 6:00 AM – 10:00 PM | Sábados: 7:00 AM – 2:00 PM. ¡Disciplina y poder divino en ZEUS GYM!',
       icon: 'fa-clock',
       theme: 'emerald'
     }
@@ -918,7 +1022,7 @@ function getTvConfig() {
   const plans = getAllPlans();
   config.tariffs = plans.map((p) => {
     const formattedPrice =
-      (p.id === 'duo' || p.name.includes('2 Guerreros')) && (p.price === 700 || p.price === '700')
+      (p.id === 'duo' || p.name.includes('Titanes') || p.name.includes('2 Guerreros')) && (p.price === 700 || p.price === '700')
         ? '2x' + String.fromCharCode(36) + '700'
         : (String(p.price).includes(String.fromCharCode(36)) ? String(p.price) : String.fromCharCode(36) + p.price);
     return {
@@ -983,7 +1087,7 @@ function saveTvConfig(newConfig = {}) {
 // =========================================================================
 // 9. CORTE DE CAJA, ACCESOS Y CIERRES
 // =========================================================================
-function logAccess({ memberId = null, memberName = 'Guerrero', action = 'ENTRY', channel = 1, status = 'GRANTED' }) {
+function logAccess({ memberId = null, memberName = 'Atleta', action = 'ENTRY', channel = 1, status = 'GRANTED' }) {
   const stmt = db.prepare(`
     INSERT INTO access_logs (member_id, member_name, action, channel, status)
     VALUES (?, ?, ?, ?, ?)
@@ -1065,7 +1169,7 @@ function getDailyCutSummary(date = null) {
   };
 }
 
-function registerCashCut({ date = null, counted_cash = 0, notes = '', closed_by = 'Comandante' }) {
+function registerCashCut({ date = null, counted_cash = 0, notes = '', closed_by = 'Administrador Olimpo' }) {
   const targetDate = date || getTodayDate();
   const summary = getDailyCutSummary(targetDate);
   const counted = parseInt(counted_cash, 10) || 0;
@@ -1088,7 +1192,7 @@ function registerCashCut({ date = null, counted_cash = 0, notes = '', closed_by 
     summary.store_cash,
     summary.today_entries,
     String(notes || '').trim(),
-    String(closed_by || 'Comandante')
+    String(closed_by || 'Administrador Olimpo')
   );
 
   return db.prepare('SELECT * FROM cash_cuts WHERE id = ?').get(info.lastInsertRowid);

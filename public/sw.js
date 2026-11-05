@@ -1,10 +1,11 @@
-// public/sw.js
-const CACHE_NAME = 'gears-gym-offline-v4';
+// public/sw.js - ZEUS GYM Offline Service Worker
+const CACHE_NAME = 'zeus-gym-offline-v1';
 const STATIC_ASSETS = [
   '/',
   '/index.html',
   '/manifest.json',
-  '/assets/icon.png'
+  '/assets/icon.png',
+  '/assets/icon.svg'
 ];
 
 self.addEventListener('install', (event) => {

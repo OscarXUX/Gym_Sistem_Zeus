@@ -29,12 +29,12 @@ const INITIAL_MEMBERS = [
 ];
 
 const INITIAL_ARSENAL = [
-  { id: 'p1', name: 'Agua 1L', category: 'Bebidas', price: 20, stock: 24, icon: 'fa-bottle-water', color: 'blue' },
-  { id: 'p2', name: 'Pre-Entreno Hype', category: 'Scoop Hype', price: 35, stock: 18, icon: 'fa-bolt', color: 'rose' },
-  { id: 'p3', name: 'Proteína Whey', category: 'Scoop Servicio', price: 30, stock: 15, icon: 'fa-jar', color: 'amber' },
-  { id: 'p4', name: 'Electrolitos', category: 'Hidratación', price: 15, stock: 20, icon: 'fa-wine-bottle', color: 'purple' },
-  { id: 'p5', name: 'Toalla GEARS', category: 'Equipo Oficial', price: 100, stock: 8, icon: 'fa-rug', color: 'stone' },
-  { id: 'p6', name: 'Candado Lock', category: 'Seguridad Locker', price: 50, stock: 6, icon: 'fa-lock', color: 'rose' }
+  { id: 'p1', name: 'Agua Sagrada 1L', category: 'Bebidas', price: 20, stock: 24, icon: 'fa-bottle-water', color: 'blue' },
+  { id: 'p2', name: 'Rayo Divino (Pre)', category: 'Pre-Entreno', price: 35, stock: 18, icon: 'fa-bolt-lightning', color: 'amber' },
+  { id: 'p3', name: 'Ambrosía Proteica', category: 'Proteína', price: 30, stock: 15, icon: 'fa-jar', color: 'blue' },
+  { id: 'p4', name: 'Néctar Electrolitos', category: 'Hidratación', price: 15, stock: 20, icon: 'fa-wine-bottle', color: 'purple' },
+  { id: 'p5', name: 'Toalla Oficial Zeus', category: 'Equipo Oficial', price: 100, stock: 8, icon: 'fa-rug', color: 'sky' },
+  { id: 'p6', name: 'Candado del Olimpo', category: 'Seguridad Locker', price: 50, stock: 6, icon: 'fa-lock', color: 'amber' }
 ];
 
 export default function AdminPanel({ currentView = 'admin', onChangeView }) {
@@ -339,13 +339,13 @@ export default function AdminPanel({ currentView = 'admin', onChangeView }) {
     setArsenalItems((prev) =>
       prev.map((item) => ({ ...item, stock: item.stock + amount }))
     );
-    showToast(`Se sumaron +${amount} existencias a todo el Arsenal`, 'success');
+    showToast(`Se sumaron +${amount} existencias a Néctar & Suplementos`, 'success');
     playSound('success');
   };
 
   const handleSellProduct = async (id, customName, customPrice) => {
     const found = arsenalItems.find((p) => p.id === id);
-    const itemName = customName || (found ? found.name : 'Suplemento Arsenal');
+    const itemName = customName || (found ? found.name : 'Néctar / Suplemento');
     const itemPrice = customPrice ?? (found ? found.price : 20);
 
     setArsenalItems((prev) =>
@@ -494,7 +494,7 @@ export default function AdminPanel({ currentView = 'admin', onChangeView }) {
         if (Array.isArray(data.members)) setMembers(data.members);
         if (data.metrics) applyMetrics(data.metrics);
         showToast(
-          `¡Guerrero ${name} (#${data.member?.id || ''}) guardado en SQLite! (+$${rawPrice || price})`,
+          `¡Atleta ${name} (#${data.member?.id || ''}) consagrado en SQLite! (+$${rawPrice || price})`,
           'success'
         );
         playSound('success');
@@ -505,7 +505,7 @@ export default function AdminPanel({ currentView = 'admin', onChangeView }) {
     }
 
     socket.emit('CREATE_MEMBER', payload);
-    showToast(`¡Guerrero ${name} reclutado! (+$${rawPrice || price})`, 'success');
+    showToast(`¡Atleta ${name} consagrado! (+$${rawPrice || price})`, 'success');
     playSound('success');
   };
 
@@ -519,7 +519,7 @@ export default function AdminPanel({ currentView = 'admin', onChangeView }) {
       if (res.ok) {
         const data = await res.json();
         if (Array.isArray(data.members)) setMembers(data.members);
-        showToast('Datos del guerrero actualizados en SQLite', 'success');
+        showToast('Datos del atleta actualizados en SQLite', 'success');
         playSound('success');
         return;
       }
@@ -527,13 +527,13 @@ export default function AdminPanel({ currentView = 'admin', onChangeView }) {
       // Fallback
     }
     socket.emit('UPDATE_MEMBER', editedData);
-    showToast('Datos del guerrero actualizados', 'success');
+    showToast('Datos del atleta actualizados', 'success');
     playSound('success');
   };
 
   const handleDeleteMember = async (id) => {
     const target = members.find((m) => m.id === id);
-    if (!window.confirm(`¿Dar de baja al guerrero ${target ? target.name : '#' + id} de la base de datos?`)) {
+    if (!window.confirm(`¿Dar de baja al atleta ${target ? target.name : '#' + id} del Olimpo?`)) {
       return;
     }
     try {
@@ -577,7 +577,7 @@ export default function AdminPanel({ currentView = 'admin', onChangeView }) {
   };
 
   return (
-    <div className="flex h-[100dvh] w-full overflow-hidden antialiased bg-[#111418] text-stone-200">
+    <div className="flex h-[100dvh] w-full overflow-hidden antialiased bg-[#070b14] text-slate-100">
       {/* Toast Alert */}
       <Toast toast={toast} />
 

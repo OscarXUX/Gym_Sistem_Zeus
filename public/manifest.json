@@ -1,6 +1,6 @@
 {
-  "short_name": "GEARS GYM",
-  "name": "GEARS GYM - Cuartel General & Monitor",
+  "short_name": "ZEUS GYM",
+  "name": "ZEUS GYM - Templo Olímpico & Monitor Kiosco",
   "icons": [
     {
       "src": "/assets/icon.png",
@@ -13,11 +13,17 @@
       "type": "image/png",
       "sizes": "512x512",
       "purpose": "any maskable"
+    },
+    {
+      "src": "/assets/icon.svg",
+      "type": "image/svg+xml",
+      "sizes": "any",
+      "purpose": "any"
     }
   ],
   "start_url": "/?view=admin",
-  "background_color": "#050505",
-  "theme_color": "#e11d48",
+  "background_color": "#070b14",
+  "theme_color": "#0b1329",
   "display": "standalone",
   "orientation": "any"
 }

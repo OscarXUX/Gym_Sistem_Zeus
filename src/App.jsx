@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import AdminPanel from './screens/AdminPanel';
 import Monitor from './screens/Monitor';
-import { CrimsonOmenDefs } from './components/common/CrimsonOmenSvg';
+import { ZeusDefs } from './components/common/ZeusSvg';
 
 export default function App() {
   const getInitialView = () => {
@@ -38,9 +38,9 @@ export default function App() {
   }, []);
 
   return (
-    <div className="w-full h-full min-h-screen bg-[#111418] text-stone-200 relative">
-      {/* SVG Definitions for Crimson Omen */}
-      <CrimsonOmenDefs />
+    <div className="w-full h-full min-h-screen bg-[#070b14] text-slate-100 relative">
+      {/* Definiciones Vectoriales del Olimpo y Rayo de Zeus */}
+      <ZeusDefs />
 
       {/* Pantalla Activa */}
       {currentView === 'admin' ? (

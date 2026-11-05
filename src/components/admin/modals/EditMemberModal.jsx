@@ -16,7 +16,7 @@ export default function EditMemberModal({ isOpen, onClose, member, onSave, onDel
       setName(member.name || '');
       setPhone(member.phone || '');
       setPhoto(member.photo || '');
-      setPlan(member.plan || 'Mensualidad');
+      setPlan(member.plan || 'Mensualidad Olimpo');
       setPrice(member.price || '$400');
       setDays(member.days !== undefined ? member.days : 30);
       setIsInside(!!member.isInside);
@@ -64,40 +64,39 @@ export default function EditMemberModal({ isOpen, onClose, member, onSave, onDel
 
   return (
     <div className="fixed inset-0 bg-black/85 backdrop-blur-sm z-[110] flex items-center justify-center p-3 sm:p-4 animate-fadeIn overflow-hidden">
-      {/* Contenedor Modal con scroll interno y límites estrictos de pantalla (90dvh) */}
-      <div className="bg-[#0a0a0a] border border-stone-800 rounded-3xl w-full max-w-lg shadow-2xl relative my-auto max-h-[90dvh] flex flex-col overflow-hidden">
+      <div className="bg-[#090e1a] border border-sky-500/30 rounded-3xl w-full max-w-lg shadow-2xl relative my-auto max-h-[90dvh] flex flex-col overflow-hidden">
         {/* Cabecera Fija */}
-        <div className="p-4 sm:p-5 border-b border-stone-800/80 flex items-center justify-between shrink-0 bg-stone-950/90">
+        <div className="p-4 sm:p-5 border-b border-slate-800/80 flex items-center justify-between shrink-0 bg-slate-950/90">
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-xl bg-red-950/80 border border-red-600/50 flex items-center justify-center text-red-500 text-sm">
+            <div className="w-8 h-8 rounded-xl bg-sky-500/20 border border-sky-400/50 flex items-center justify-center text-sky-400 text-sm shadow-[0_0_10px_rgba(56,189,248,0.3)]">
               <i className="fa-solid fa-user-pen"></i>
             </div>
             <div>
-              <h3 className="font-gears text-sm sm:text-base font-black text-white leading-tight">
-                Editar Datos del Guerrero
+              <h3 className="font-zeus text-sm sm:text-base font-black text-white leading-tight">
+                Editar Datos del Atleta
               </h3>
-              <p className="text-[11px] text-stone-400">ID Oficial: #{member.id}</p>
+              <p className="text-[11px] text-slate-400">ID Oficial: #{member.id}</p>
             </div>
           </div>
           <button
             type="button"
             onClick={onClose}
-            className="w-8 h-8 rounded-xl bg-stone-900 hover:bg-stone-800 text-stone-400 hover:text-white flex items-center justify-center text-sm cursor-pointer transition-colors"
+            className="w-8 h-8 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center text-sm cursor-pointer transition-colors"
           >
             <i className="fa-solid fa-xmark"></i>
           </button>
         </div>
 
-        {/* Cuerpo con Scroll Interno Suave */}
+        {/* Cuerpo con Scroll Interno */}
         <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-4 sm:p-5 space-y-4 scrollbar-thin">
-          {/* SECCIÓN HERO: FOTO Y NOMBRE EN LA MISMA FILA */}
-          <div className="bg-stone-900/60 border border-stone-800 rounded-2xl p-3 sm:p-4 flex items-center gap-3.5">
-            {/* Foto Avatar con Botón de Cambio */}
+          {/* SECCIÓN HERO: FOTO Y NOMBRE */}
+          <div className="bg-slate-900/60 border border-slate-800 rounded-2xl p-3 sm:p-4 flex items-center gap-3.5 backdrop-blur-md">
+            {/* Foto Avatar */}
             <div className="relative shrink-0 group">
               <img
                 src={photo || member.photo}
                 alt={name}
-                className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl object-cover border-2 border-red-500/80 bg-stone-950 shadow-md"
+                className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl object-cover border-2 border-sky-400/80 bg-slate-950 shadow-md"
               />
               <button
                 type="button"
@@ -111,7 +110,7 @@ export default function EditMemberModal({ isOpen, onClose, member, onSave, onDel
               <button
                 type="button"
                 onClick={() => fileInputRef.current && fileInputRef.current.click()}
-                className="absolute -bottom-1.5 -right-1.5 w-6 h-6 rounded-full bg-red-600 hover:bg-red-500 text-white flex items-center justify-center text-[10px] border border-stone-900 shadow sm:hidden cursor-pointer"
+                className="absolute -bottom-1.5 -right-1.5 w-6 h-6 rounded-full bg-sky-500 hover:bg-sky-400 text-white flex items-center justify-center text-[10px] border border-slate-900 shadow sm:hidden cursor-pointer"
                 title="Cambiar Foto"
               >
                 <i className="fa-solid fa-camera"></i>
@@ -127,13 +126,13 @@ export default function EditMemberModal({ isOpen, onClose, member, onSave, onDel
               className="hidden"
             />
 
-            {/* Nombre y Badge ID en la misma fila (Hero) */}
+            {/* Nombre y Badge ID */}
             <div className="flex-1 min-w-0 space-y-1">
               <div className="flex items-center justify-between gap-1.5">
-                <label className="text-[10px] font-black uppercase tracking-wider text-red-400 block">
+                <label className="text-[10px] font-black uppercase tracking-wider text-sky-400 block">
                   Nombre Completo
                 </label>
-                <span className="text-[9px] font-gears font-bold px-1.5 py-0.5 rounded bg-stone-800 text-stone-300 border border-stone-700">
+                <span className="text-[9px] font-zeus font-bold px-1.5 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-700">
                   ID: #{member.id}
                 </span>
               </div>
@@ -141,12 +140,12 @@ export default function EditMemberModal({ isOpen, onClose, member, onSave, onDel
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                placeholder="Nombre del guerrero"
-                className="w-full bg-stone-950 border border-stone-700 focus:border-red-500 rounded-xl px-3 py-2 text-xs sm:text-sm text-white font-gears font-black tracking-wide focus:outline-none"
+                placeholder="Nombre del atleta"
+                className="w-full bg-slate-950 border border-slate-700 focus:border-sky-400 rounded-xl px-3 py-2 text-xs sm:text-sm text-white font-zeus font-black tracking-wide focus:outline-none transition-colors"
                 required
               />
-              <span className="text-[10px] text-stone-400 block truncate">
-                Toca la foto para actualizar la captura biométrica
+              <span className="text-[10px] text-slate-400 block truncate">
+                Toca la foto para actualizar la captura sagrada
               </span>
             </div>
           </div>
@@ -154,7 +153,7 @@ export default function EditMemberModal({ isOpen, onClose, member, onSave, onDel
           {/* Teléfono y Presencia */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <label className="text-[10px] font-black uppercase tracking-wider text-stone-400 block mb-1">
+              <label className="text-[10px] font-black uppercase tracking-wider text-slate-400 block mb-1">
                 Teléfono / WhatsApp
               </label>
               <input
@@ -162,20 +161,20 @@ export default function EditMemberModal({ isOpen, onClose, member, onSave, onDel
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
                 placeholder="Ej. 55 1234 5678"
-                className="w-full bg-stone-900 border border-stone-800 focus:border-red-500 rounded-xl px-3 py-2 text-xs text-white font-bold focus:outline-none"
+                className="w-full bg-slate-900 border border-slate-800 focus:border-sky-400 rounded-xl px-3 py-2 text-xs text-white font-bold focus:outline-none transition-colors"
               />
             </div>
             <div>
-              <label className="text-[10px] font-black uppercase tracking-wider text-stone-400 block mb-1">
+              <label className="text-[10px] font-black uppercase tracking-wider text-slate-400 block mb-1">
                 Presencia Actual
               </label>
               <select
                 value={isInside ? 'true' : 'false'}
                 onChange={(e) => setIsInside(e.target.value === 'true')}
-                className="w-full bg-stone-900 border border-stone-800 focus:border-red-500 rounded-xl px-3 py-2 text-xs text-white font-bold focus:outline-none cursor-pointer"
+                className="w-full bg-slate-900 border border-slate-800 focus:border-sky-400 rounded-xl px-3 py-2 text-xs text-white font-bold focus:outline-none cursor-pointer"
               >
-                <option value="true">Dentro del Gym (Entrenando)</option>
-                <option value="false">Fuera de las Instalaciones</option>
+                <option value="true">Dentro del Olimpo (Entrenando)</option>
+                <option value="false">Fuera del Santuario</option>
               </select>
             </div>
           </div>
@@ -183,47 +182,47 @@ export default function EditMemberModal({ isOpen, onClose, member, onSave, onDel
           {/* Plan y Precio */}
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="text-[10px] font-black uppercase tracking-wider text-stone-400 block mb-1">
-                Plan Activo
+              <label className="text-[10px] font-black uppercase tracking-wider text-slate-400 block mb-1">
+                Decreto / Plan Activo
               </label>
               <input
                 type="text"
                 value={plan}
                 onChange={(e) => setPlan(e.target.value)}
-                className="w-full bg-stone-900 border border-stone-800 focus:border-red-500 rounded-xl px-3 py-2 text-xs text-white font-bold focus:outline-none"
+                className="w-full bg-slate-900 border border-slate-800 focus:border-sky-400 rounded-xl px-3 py-2 text-xs text-white font-bold focus:outline-none transition-colors"
               />
             </div>
             <div>
-              <label className="text-[10px] font-black uppercase tracking-wider text-stone-400 block mb-1">
+              <label className="text-[10px] font-black uppercase tracking-wider text-slate-400 block mb-1">
                 Tarifa Registrada
               </label>
               <input
                 type="text"
                 value={price}
                 onChange={(e) => setPrice(e.target.value)}
-                className="w-full bg-stone-900 border border-stone-800 focus:border-red-500 rounded-xl px-3 py-2 text-xs text-emerald-400 font-gears font-bold focus:outline-none"
+                className="w-full bg-slate-900 border border-slate-800 focus:border-sky-400 rounded-xl px-3 py-2 text-xs text-emerald-400 font-zeus font-bold focus:outline-none transition-colors"
               />
             </div>
           </div>
 
-          {/* Días Restantes con accesos rápidos */}
+          {/* Días Restantes */}
           <div className="space-y-1.5">
             <div className="flex items-center justify-between">
-              <label className="text-[10px] font-black uppercase tracking-wider text-stone-400 block">
+              <label className="text-[10px] font-black uppercase tracking-wider text-slate-400 block">
                 Días Restantes de Acceso
               </label>
               <div className="flex gap-1">
                 <button
                   type="button"
                   onClick={() => setDays((prev) => Math.max(0, parseInt(prev, 10) || 0) + 15)}
-                  className="text-[9px] bg-stone-900 hover:bg-stone-800 border border-stone-800 text-stone-300 px-2 py-0.5 rounded cursor-pointer font-bold"
+                  className="text-[9px] bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 px-2 py-0.5 rounded cursor-pointer font-bold"
                 >
                   +15d
                 </button>
                 <button
                   type="button"
                   onClick={() => setDays((prev) => Math.max(0, parseInt(prev, 10) || 0) + 30)}
-                  className="text-[9px] bg-stone-900 hover:bg-stone-800 border border-stone-800 text-stone-300 px-2 py-0.5 rounded cursor-pointer font-bold"
+                  className="text-[9px] bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 px-2 py-0.5 rounded cursor-pointer font-bold"
                 >
                   +30d
                 </button>
@@ -233,12 +232,12 @@ export default function EditMemberModal({ isOpen, onClose, member, onSave, onDel
               type="number"
               value={days}
               onChange={(e) => setDays(e.target.value)}
-              className="w-full bg-stone-900 border border-stone-800 focus:border-red-500 rounded-xl px-3 py-2 text-xs text-white font-gears font-bold focus:outline-none"
+              className="w-full bg-slate-900 border border-slate-800 focus:border-sky-400 rounded-xl px-3 py-2 text-xs text-white font-zeus font-bold focus:outline-none transition-colors"
             />
           </div>
 
-          {/* Barra de Acciones Fija en Parte Inferior */}
-          <div className="flex items-center gap-2 pt-3 border-t border-stone-800/80">
+          {/* Barra de Acciones */}
+          <div className="flex items-center gap-2 pt-3 border-t border-slate-800/80">
             {onDelete && (
               <button
                 type="button"
@@ -247,7 +246,7 @@ export default function EditMemberModal({ isOpen, onClose, member, onSave, onDel
                   onClose();
                 }}
                 className="bg-rose-950/60 hover:bg-rose-900 border border-rose-700/60 text-rose-300 font-bold text-xs p-2.5 rounded-xl transition-all cursor-pointer shrink-0"
-                title="Dar de baja socio permanentemente"
+                title="Dar de baja atleta permanentemente"
               >
                 <i className="fa-solid fa-trash"></i>
               </button>
@@ -255,13 +254,13 @@ export default function EditMemberModal({ isOpen, onClose, member, onSave, onDel
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 bg-stone-900 hover:bg-stone-800 text-stone-300 font-bold text-xs py-2.5 rounded-xl transition-all cursor-pointer text-center"
+              className="flex-1 bg-slate-900 hover:bg-slate-800 text-slate-300 font-bold text-xs py-2.5 rounded-xl transition-all cursor-pointer text-center"
             >
               Cancelar
             </button>
             <button
               type="submit"
-              className="flex-1 bg-red-600 hover:bg-red-500 active:scale-95 text-white font-black text-xs py-2.5 rounded-xl uppercase tracking-wider transition-all cursor-pointer shadow-lg shadow-red-950/50 text-center"
+              className="flex-1 bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 active:scale-95 text-white font-black text-xs py-2.5 rounded-xl uppercase tracking-wider transition-all cursor-pointer shadow-lg shadow-sky-950/50 text-center border border-sky-400/30"
             >
               Guardar Cambios
             </button>

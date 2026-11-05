@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <!-- Background Radial Gradient -->
+    <radialGradient id="bg-grad" cx="50%" cy="30%" r="75%">
+      <stop offset="0%" stop-color="#1e293b" />
+      <stop offset="45%" stop-color="#0d1527" />
+      <stop offset="100%" stop-color="#070b14" />
+    </radialGradient>
+
+    <!-- Shield Linear Gradient -->
+    <linearGradient id="shield-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8" />
+      <stop offset="40%" stop-color="#1e3a8a" />
+      <stop offset="100%" stop-color="#070b14" />
+    </linearGradient>
+
+    <!-- Divine Golden Lightning Bolt Gradient -->
+    <linearGradient id="bolt-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fffbeb" />
+      <stop offset="25%" stop-color="#fef08a" />
+      <stop offset="60%" stop-color="#fbbf24" />
+      <stop offset="100%" stop-color="#f59e0b" />
+    </linearGradient>
+
+    <!-- Celestial Aura Glow Filter -->
+    <filter id="glow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="8" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+
+    <!-- Intense Bolt Glow Filter -->
+    <filter id="bolt-glow" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="6" result="blur1" />
+      <feGaussianBlur stdDeviation="14" result="blur2" />
+      <feMerge>
+        <feMergeNode in="blur2" />
+        <feMergeNode in="blur1" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background Canvas -->
+  <rect width="512" height="512" rx="115" fill="url(#bg-grad)" />
+
+  <!-- Outer Glass Border -->
+  <rect width="506" height="506" x="3" y="3" rx="112" fill="none" stroke="rgba(255, 255, 255, 0.12)" stroke-width="4" />
+
+  <!-- Celestial Laurel Outer Ring -->
+  <circle cx="256" cy="256" r="215" fill="none" stroke="rgba(56, 189, 248, 0.2)" stroke-width="3" stroke-dasharray="8 12" />
+
+  <!-- Olympian Aegis Shield -->
+  <path
+    d="M256 56 L416 128 C416 280, 352 384, 256 448 C160 384, 96 280, 96 128 Z"
+    fill="url(#shield-grad)"
+    stroke="#38bdf8"
+    stroke-width="7"
+    filter="url(#glow)"
+  />
+
+  <!-- Shield Inner Border Accent -->
+  <path
+    d="M256 78 L394 140 C394 270, 338 362, 256 420 C174 362, 118 270, 118 140 Z"
+    fill="none"
+    stroke="rgba(255, 255, 255, 0.2)"
+    stroke-width="3"
+  />
+
+  <!-- Inner Sacred Geometry Ring -->
+  <circle cx="256" cy="260" r="115" fill="none" stroke="rgba(251, 191, 36, 0.25)" stroke-width="3" stroke-dasharray="10 8" />
+
+  <!-- Divine Thunderbolt of Zeus -->
+  <path
+    d="M272 90 L176 250 L248 250 L220 404 L340 228 L268 228 Z"
+    fill="url(#bolt-grad)"
+    stroke="#fffbeb"
+    stroke-width="4"
+    stroke-linejoin="round"
+    filter="url(#bolt-glow)"
+  />
+</svg>

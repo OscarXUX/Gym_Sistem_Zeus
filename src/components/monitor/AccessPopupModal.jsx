@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { CrimsonOmen } from '../common/CrimsonOmenSvg';
+import { ZeusEmblem } from '../common/ZeusSvg';
 
 export default function AccessPopupModal({ accessData, onClose }) {
   useEffect(() => {
@@ -33,11 +33,11 @@ export default function AccessPopupModal({ accessData, onClose }) {
   return (
     <div
       onClick={onClose}
-      className="fixed inset-0 bg-black/85 backdrop-blur-md z-[200] flex items-center justify-center p-[clamp(0.75rem,2dvh,1.75rem)] cursor-pointer animate-fadeIn"
+      className="fixed inset-0 bg-black/85 backdrop-blur-xl z-[200] flex items-center justify-center p-[clamp(0.75rem,2dvh,1.75rem)] cursor-pointer animate-fadeIn"
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className={`modal-enter w-full max-w-[clamp(24rem,62vw,48rem)] max-h-[92dvh] rounded-3xl p-[clamp(1.25rem,3.5dvh,2.5rem)] shadow-[0_25px_80px_rgba(0,0,0,0.9)] flex flex-col items-center justify-between text-center relative overflow-hidden cursor-default ${cardClasses}`}
+        className={`modal-enter w-full max-w-[clamp(24rem,62vw,48rem)] max-h-[92dvh] rounded-3xl p-[clamp(1.25rem,3.5dvh,2.5rem)] shadow-[0_25px_80px_rgba(0,0,0,0.9)] flex flex-col items-center justify-between text-center relative overflow-hidden cursor-default backdrop-blur-2xl ${cardClasses}`}
       >
         {/* Barra de Tiempo Regresiva Superior */}
         <div className="absolute top-0 left-0 right-0 h-2 bg-black/50 overflow-hidden">
@@ -53,15 +53,15 @@ export default function AccessPopupModal({ accessData, onClose }) {
         <button
           type="button"
           onClick={onClose}
-          className="absolute top-4 right-4 z-20 w-9 h-9 rounded-full bg-black/50 hover:bg-black/80 border border-white/15 text-stone-300 hover:text-white flex items-center justify-center transition-colors cursor-pointer"
+          className="absolute top-4 right-4 z-20 w-9 h-9 rounded-full bg-black/50 hover:bg-black/80 border border-white/15 text-slate-300 hover:text-white flex items-center justify-center transition-colors cursor-pointer"
           title="Cerrar aviso"
         >
           <i className="fa-solid fa-xmark text-base"></i>
         </button>
 
-        {/* Marcas de Agua Crimson Omen */}
-        <CrimsonOmen className={watermarkTopClass} />
-        <CrimsonOmen className={watermarkBottomClass} />
+        {/* Marcas de Agua Zeus Emblem */}
+        <ZeusEmblem className={watermarkTopClass} />
+        <ZeusEmblem className={watermarkBottomClass} />
 
         {/* Badge de Estado Superior */}
         <div
@@ -77,19 +77,19 @@ export default function AccessPopupModal({ accessData, onClose }) {
             className="w-[clamp(5.25rem,min(10vw,18dvh),9rem)] h-[clamp(5.25rem,min(10vw,18dvh),9rem)] rounded-full object-cover border-4 border-white/25 shadow-[0_10px_30px_rgba(0,0,0,0.7)]"
           />
           <div
-            className={`w-[clamp(1.9rem,min(3vw,5.5dvh),2.75rem)] h-[clamp(1.9rem,min(3vw,5.5dvh),2.75rem)] rounded-full flex items-center justify-center text-[clamp(0.9rem,min(1.4vw,2.6dvh),1.25rem)] font-bold absolute -bottom-1 -right-1 border-4 border-stone-950 shadow-xl ${iconBg}`}
+            className={`w-[clamp(1.9rem,min(3vw,5.5dvh),2.75rem)] h-[clamp(1.9rem,min(3vw,5.5dvh),2.75rem)] rounded-full flex items-center justify-center text-[clamp(0.9rem,min(1.4vw,2.6dvh),1.25rem)] font-bold absolute -bottom-1 -right-1 border-4 border-slate-950 shadow-xl ${iconBg}`}
             dangerouslySetInnerHTML={{ __html: iconHtml }}
           ></div>
         </div>
 
         {/* Nombre del Socio */}
-        <h2 className="relative z-10 font-gears text-[clamp(1.5rem,min(3.1vw,6.2dvh),3.1rem)] font-black text-white uppercase tracking-wide leading-tight drop-shadow-[0_4px_10px_rgba(0,0,0,0.8)] max-w-full truncate">
+        <h2 className="relative z-10 font-zeus text-[clamp(1.5rem,min(3.1vw,6.2dvh),3.1rem)] font-black text-white uppercase tracking-wide leading-tight drop-shadow-[0_4px_10px_rgba(0,0,0,0.8)] max-w-full truncate">
           {name}
         </h2>
 
         {/* Mensaje de Bienvenida / Alerta */}
         <p
-          className="relative z-10 text-[clamp(0.85rem,min(1.25vw,2.5dvh),1.2rem)] text-stone-200 mt-[clamp(0.3rem,0.9dvh,0.65rem)] max-w-xl font-medium leading-snug line-clamp-2"
+          className="relative z-10 text-[clamp(0.85rem,min(1.25vw,2.5dvh),1.2rem)] text-slate-200 mt-[clamp(0.3rem,0.9dvh,0.65rem)] max-w-xl font-medium leading-snug line-clamp-2"
           dangerouslySetInnerHTML={{ __html: message }}
         ></p>
 
@@ -99,32 +99,32 @@ export default function AccessPopupModal({ accessData, onClose }) {
         {/* Métricas del Miembro (3 Tarjetas Adaptativas) */}
         <div className="relative z-10 grid grid-cols-3 gap-[clamp(0.5rem,1.3vw,1.1rem)] w-full shrink-0">
           <div className={`rounded-2xl py-[clamp(0.55rem,1.4dvh,1rem)] px-[clamp(0.5rem,1.1vw,1rem)] text-center backdrop-blur-md shadow-inner overflow-hidden ${statBoxClasses}`}>
-            <p className="text-[clamp(9px,min(0.78vw,1.6dvh),12px)] text-stone-400 font-black uppercase tracking-widest flex items-center justify-center gap-1.5 truncate">
+            <p className="text-[clamp(9px,min(0.78vw,1.6dvh),12px)] text-slate-400 font-black uppercase tracking-widest flex items-center justify-center gap-1.5 truncate">
               <i className="fa-solid fa-id-card opacity-75 shrink-0"></i>
               <span className="truncate">Membresía</span>
             </p>
-            <p className="font-gears text-[clamp(0.8rem,min(1.3vw,2.6dvh),1.2rem)] font-black text-white mt-1 truncate">
+            <p className="font-zeus text-[clamp(0.8rem,min(1.3vw,2.6dvh),1.2rem)] font-black text-white mt-1 truncate">
               {plan}
             </p>
           </div>
 
           <div className={`rounded-2xl py-[clamp(0.55rem,1.4dvh,1rem)] px-[clamp(0.5rem,1.1vw,1rem)] text-center backdrop-blur-md shadow-inner overflow-hidden ${statBoxClasses}`}>
-            <p className="text-[clamp(9px,min(0.78vw,1.6dvh),12px)] text-stone-400 font-black uppercase tracking-widest flex items-center justify-center gap-1.5 truncate">
+            <p className="text-[clamp(9px,min(0.78vw,1.6dvh),12px)] text-slate-400 font-black uppercase tracking-widest flex items-center justify-center gap-1.5 truncate">
               <i className="fa-solid fa-calendar-check opacity-75 shrink-0"></i>
               <span className="truncate">Vigencia</span>
             </p>
-            <p className="font-gears text-[clamp(0.8rem,min(1.3vw,2.6dvh),1.2rem)] font-black text-white mt-1 truncate">
+            <p className="font-zeus text-[clamp(0.8rem,min(1.3vw,2.6dvh),1.2rem)] font-black text-white mt-1 truncate">
               {expire}
             </p>
           </div>
 
           <div className={`rounded-2xl py-[clamp(0.55rem,1.4dvh,1rem)] px-[clamp(0.5rem,1.1vw,1rem)] text-center backdrop-blur-md shadow-inner overflow-hidden ${statBoxClasses}`}>
-            <p className="text-[clamp(9px,min(0.78vw,1.6dvh),12px)] text-stone-400 font-black uppercase tracking-widest flex items-center justify-center gap-1.5 truncate">
-              <i className="fa-solid fa-fire-flame-curved opacity-75 shrink-0"></i>
-              <span className="truncate">Racha / ID</span>
+            <p className="text-[clamp(9px,min(0.78vw,1.6dvh),12px)] text-slate-400 font-black uppercase tracking-widest flex items-center justify-center gap-1.5 truncate">
+              <i className="fa-solid fa-bolt-lightning text-amber-400 opacity-90 shrink-0"></i>
+              <span className="truncate">Estado / ID</span>
             </p>
             <p
-              className="font-gears text-[clamp(0.8rem,min(1.3vw,2.6dvh),1.2rem)] font-black text-white mt-1 truncate"
+              className="font-zeus text-[clamp(0.8rem,min(1.3vw,2.6dvh),1.2rem)] font-black text-white mt-1 truncate"
               dangerouslySetInnerHTML={{ __html: streak }}
             ></p>
           </div>

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 
 export default function ProductModal({ isOpen, onClose, product, onSave }) {
   const [name, setName] = useState('');
-  const [category, setCategory] = useState('Suplementos');
+  const [category, setCategory] = useState('Néctar & Suplementos');
   const [price, setPrice] = useState(30);
   const [stock, setStock] = useState(15);
   const [icon, setIcon] = useState('fa-bottle-water');
@@ -11,18 +11,18 @@ export default function ProductModal({ isOpen, onClose, product, onSave }) {
   useEffect(() => {
     if (product) {
       setName(product.name || '');
-      setCategory(product.category || 'Suplementos');
+      setCategory(product.category || 'Néctar & Suplementos');
       setPrice(product.price || 30);
       setStock(product.stock !== undefined ? product.stock : 10);
       setIcon(product.icon || 'fa-bottle-water');
       setColor(product.color || 'blue');
     } else {
       setName('');
-      setCategory('Suplementos');
+      setCategory('Néctar & Suplementos');
       setPrice(40);
       setStock(15);
-      setIcon('fa-capsules');
-      setColor('emerald');
+      setIcon('fa-bolt-lightning');
+      setColor('amber');
     }
   }, [product, isOpen]);
 
@@ -45,49 +45,49 @@ export default function ProductModal({ isOpen, onClose, product, onSave }) {
 
   return (
     <div className="fixed inset-0 bg-black/85 backdrop-blur-sm z-[100] flex items-center justify-center p-4 animate-fadeIn">
-      <div className="bg-[#0a0a0a] border border-stone-800 rounded-3xl p-6 sm:p-8 w-full max-w-md shadow-2xl relative">
+      <div className="bg-[#090e1a] border border-sky-500/30 rounded-3xl p-6 sm:p-8 w-full max-w-md shadow-2xl relative">
         <button
           onClick={onClose}
-          className="absolute top-5 right-5 text-stone-500 hover:text-white text-lg cursor-pointer"
+          className="absolute top-5 right-5 text-slate-400 hover:text-white text-lg cursor-pointer"
         >
           <i className="fa-solid fa-xmark"></i>
         </button>
 
-        <h4 className="font-gears text-lg font-black text-white mb-1">
-          {product ? 'Editar Producto / Existencias' : 'Nuevo Producto Arsenal'}
+        <h4 className="font-zeus text-lg font-black text-white mb-1">
+          {product ? 'Editar Producto / Existencias' : 'Nuevo Néctar / Suplemento'}
         </h4>
-        <p className="text-xs text-stone-400 mb-4">Administra precio, existencias e ícono del catálogo</p>
+        <p className="text-xs text-slate-400 mb-4">Administra precio, existencias e ícono del catálogo del Olimpo</p>
 
         <form onSubmit={handleSubmit} className="space-y-3.5">
           <div>
-            <label className="text-[10px] text-stone-400 uppercase font-bold block mb-1">Nombre</label>
+            <label className="text-[10px] text-slate-400 uppercase font-bold block mb-1">Nombre</label>
             <input
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder="Ej. Barra de Proteína"
-              className="w-full bg-[#111] border border-stone-800 rounded-xl px-3 py-2 text-xs text-white font-bold"
+              placeholder="Ej. Ambrosía Proteica o Rayo Pre-Entreno"
+              className="w-full bg-slate-950 border border-slate-800 focus:border-sky-400 rounded-xl px-3 py-2 text-xs text-white font-bold transition-colors"
               required
             />
           </div>
 
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="text-[10px] text-stone-400 uppercase font-bold block mb-1">Categoría</label>
+              <label className="text-[10px] text-slate-400 uppercase font-bold block mb-1">Categoría</label>
               <input
                 type="text"
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
-                className="w-full bg-[#111] border border-stone-800 rounded-xl px-3 py-2 text-xs text-white"
+                className="w-full bg-slate-950 border border-slate-800 focus:border-sky-400 rounded-xl px-3 py-2 text-xs text-white transition-colors"
               />
             </div>
             <div>
-              <label className="text-[10px] text-stone-400 uppercase font-bold block mb-1">Precio ($ MXN)</label>
+              <label className="text-[10px] text-slate-400 uppercase font-bold block mb-1">Precio ($ MXN)</label>
               <input
                 type="number"
                 value={price}
                 onChange={(e) => setPrice(e.target.value)}
-                className="w-full bg-[#111] border border-stone-800 rounded-xl px-3 py-2 text-xs text-emerald-400 font-gears font-bold"
+                className="w-full bg-slate-950 border border-slate-800 focus:border-sky-400 rounded-xl px-3 py-2 text-xs text-emerald-400 font-zeus font-bold transition-colors"
                 required
               />
             </div>
@@ -95,43 +95,45 @@ export default function ProductModal({ isOpen, onClose, product, onSave }) {
 
           <div className="grid grid-cols-3 gap-2">
             <div>
-              <label className="text-[10px] text-stone-400 uppercase font-bold block mb-1">Stock</label>
+              <label className="text-[10px] text-slate-400 uppercase font-bold block mb-1">Stock</label>
               <input
                 type="number"
                 value={stock}
                 onChange={(e) => setStock(e.target.value)}
-                className="w-full bg-[#111] border border-stone-800 rounded-xl px-2.5 py-2 text-xs text-white font-bold"
+                className="w-full bg-slate-950 border border-slate-800 focus:border-sky-400 rounded-xl px-2.5 py-2 text-xs text-white font-bold transition-colors"
                 required
               />
             </div>
             <div>
-              <label className="text-[10px] text-stone-400 uppercase font-bold block mb-1">Ícono</label>
+              <label className="text-[10px] text-slate-400 uppercase font-bold block mb-1">Ícono</label>
               <select
                 value={icon}
                 onChange={(e) => setIcon(e.target.value)}
-                className="w-full bg-[#111] border border-stone-800 rounded-xl px-2 py-2 text-xs text-white"
+                className="w-full bg-slate-950 border border-slate-800 focus:border-sky-400 rounded-xl px-2 py-2 text-xs text-white cursor-pointer"
               >
-                <option value="fa-bottle-water">Botella</option>
-                <option value="fa-bolt">Pre-Entreno</option>
-                <option value="fa-jar">Proteína</option>
+                <option value="fa-bolt-lightning">Rayo Divino</option>
+                <option value="fa-bottle-water">Agua Sagrada</option>
+                <option value="fa-jar">Proteína / Ambrosía</option>
+                <option value="fa-wine-bottle">Néctar / Botella</option>
                 <option value="fa-capsules">Cápsulas</option>
-                <option value="fa-rug">Toalla</option>
-                <option value="fa-lock">Candado</option>
+                <option value="fa-rug">Toalla Oficial</option>
+                <option value="fa-lock">Candado Olimpo</option>
+                <option value="fa-shield-halved">Escudo Zeus</option>
               </select>
             </div>
             <div>
-              <label className="text-[10px] text-stone-400 uppercase font-bold block mb-1">Color</label>
+              <label className="text-[10px] text-slate-400 uppercase font-bold block mb-1">Color</label>
               <select
                 value={color}
                 onChange={(e) => setColor(e.target.value)}
-                className="w-full bg-[#111] border border-stone-800 rounded-xl px-2 py-2 text-xs text-white font-bold"
+                className="w-full bg-slate-950 border border-slate-800 focus:border-sky-400 rounded-xl px-2 py-2 text-xs text-white font-bold cursor-pointer"
               >
-                <option value="blue">Azul</option>
-                <option value="rose">Rojo/Rosa</option>
-                <option value="amber">Ámbar</option>
-                <option value="emerald">Verde</option>
-                <option value="purple">Morado</option>
-                <option value="stone">Gris</option>
+                <option value="blue">Azul Celestial</option>
+                <option value="amber">Ámbar Rayo</option>
+                <option value="emerald">Esmeralda</option>
+                <option value="purple">Morado Néctar</option>
+                <option value="rose">Rosa / Carmesí</option>
+                <option value="stone">Acero</option>
               </select>
             </div>
           </div>
@@ -140,13 +142,13 @@ export default function ProductModal({ isOpen, onClose, product, onSave }) {
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 bg-stone-900 hover:bg-stone-800 text-stone-300 font-bold text-xs py-2.5 rounded-xl transition-all cursor-pointer"
+              className="flex-1 bg-slate-900 hover:bg-slate-800 text-slate-300 font-bold text-xs py-2.5 rounded-xl transition-all cursor-pointer"
             >
               Cancelar
             </button>
             <button
               type="submit"
-              className="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs py-2.5 rounded-xl uppercase tracking-wider transition-all cursor-pointer"
+              className="flex-1 bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 text-white font-black text-xs py-2.5 rounded-xl uppercase tracking-wider transition-all cursor-pointer shadow-lg shadow-sky-950/50 border border-sky-400/30"
             >
               Guardar
             </button>

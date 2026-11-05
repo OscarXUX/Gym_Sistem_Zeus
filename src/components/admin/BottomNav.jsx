@@ -3,77 +3,52 @@ import React from 'react';
 export default function BottomNav({ activeTab, onSwitchTab }) {
   const tabs = [
     { id: 'dashboard', label: 'Inicio', icon: 'fa-chart-pie' },
-    { id: 'torniquete', label: 'Puerta', icon: 'fa-door-open' },
-    { id: 'socios', label: 'Socios', icon: 'fa-users', isCenterGear: true },
-    { id: 'tienda', label: 'Arsenal', icon: 'fa-bag-shopping' },
-    { id: 'comunicaciones', label: 'Monitor TV', icon: 'fa-tv' }
+    { id: 'torniquete', label: 'Portal', icon: 'fa-door-open' },
+    { id: 'socios', label: 'Atletas', icon: 'fa-bolt-lightning', isCenterMedallion: true },
+    { id: 'tienda', label: 'Néctar', icon: 'fa-bag-shopping' },
+    { id: 'comunicaciones', label: 'Decretos', icon: 'fa-tv' }
   ];
 
   return (
-    <nav className="sticky bottom-0 md:hidden flex items-end justify-around backdrop-blur-md bg-[#111418]/90 border-t border-stone-800/80 px-2 pb-1.5 pt-1 shrink-0 z-30">
+    <nav className="sticky bottom-0 md:hidden flex items-end justify-around backdrop-blur-md bg-[#090e1a]/95 border-t border-slate-800/80 px-2 pb-1.5 pt-1 shrink-0 z-30">
       {tabs.map((tab) => {
         const isActive = activeTab === tab.id;
 
-        // Botón Central (Socios) encerrado en Engranaje Mecánico Símétrico Sobresaliente
-        if (tab.isCenterGear) {
+        // Botón Central: Medallón del Rayo Olímpico (Olympian Lightning Aegis Medallion)
+        if (tab.isCenterMedallion) {
           return (
             <div key={tab.id} className="relative -mt-6 flex flex-col items-center flex-1 shrink-0">
               <button
                 type="button"
                 onClick={() => onSwitchTab(tab.id)}
-                className="w-16 h-16 flex items-center justify-center transition-all cursor-pointer relative active:scale-95 bg-transparent p-0 border-0 outline-none"
-                title="Directorio de Socios"
+                className="w-16 h-16 flex items-center justify-center transition-all cursor-pointer relative active:scale-95 bg-transparent p-0 border-0 outline-none group"
+                title="Directorio de Atletas del Olimpo"
               >
-                {/* SVG del Engranaje Gears con 12 Dientes 100% Simétricos */}
-                <svg
-                  viewBox="0 0 100 100"
-                  style={{
-                    transformOrigin: '50% 50%',
-                    animationDuration: '24s'
-                  }}
-                  className={`w-16 h-16 absolute inset-0 pointer-events-none transition-all origin-center ${
+                {/* Halo Celestial Pulsante */}
+                <div
+                  className={`w-16 h-16 rounded-full absolute inset-0 transition-all pointer-events-none ${
                     isActive
-                      ? 'gear-spin drop-shadow-[0_0_12px_rgba(220,38,38,0.75)]'
-                      : 'drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]'
+                      ? 'border-2 border-sky-400/80 bg-gradient-to-tr from-sky-950 via-slate-900 to-amber-950/80 shadow-[0_0_24px_rgba(56,189,248,0.5)] ring-2 ring-sky-400/40 animate-pulse'
+                      : 'border-2 border-sky-500/30 bg-slate-900/90 shadow-[0_4px_12px_rgba(0,0,0,0.8)]'
                   }`}
-                >
-                  {/* Corona de 12 Dientes Mecánicos Calculados Trigonométricamente */}
-                  <path
-                    fill={isActive ? '#dc2626' : '#262626'}
-                    stroke={isActive ? '#ef4444' : '#44403c'}
-                    strokeWidth="2"
-                    strokeLinejoin="round"
-                    d="M44.52,15.43 L46.23,2.15 L53.77,2.15 L55.48,15.43 L62.54,17.32 L70.66,6.68 L77.19,10.44 L72.03,22.80 L77.20,27.97 L89.56,22.81 L93.32,29.34 L82.68,37.46 L84.57,44.52 L97.85,46.23 L97.85,53.77 L84.57,55.48 L82.68,62.54 L93.32,70.66 L89.56,77.19 L77.20,72.03 L72.03,77.20 L77.19,89.56 L70.66,93.32 L62.54,82.68 L55.48,84.57 L53.77,97.85 L46.23,97.85 L44.52,84.57 L37.46,82.68 L29.34,93.32 L22.81,89.56 L27.97,77.20 L22.80,72.03 L10.44,77.19 L6.68,70.66 L17.32,62.54 L15.43,55.48 L2.15,53.77 L2.15,46.23 L15.43,44.52 L17.32,37.46 L6.68,29.34 L10.44,22.81 L22.80,27.97 L27.97,22.80 L22.81,10.44 L29.34,6.68 L37.46,17.32 Z"
-                  />
-                  {/* Bisel Circular Interior */}
-                  <circle
-                    cx="50"
-                    cy="50"
-                    r="31"
-                    fill={isActive ? '#b91c1c' : '#171717'}
-                    stroke={isActive ? '#fca5a5' : '#525252'}
-                    strokeWidth="2"
-                  />
-                  {/* Núcleo Central */}
-                  <circle
-                    cx="50"
-                    cy="50"
-                    r="23"
-                    fill={isActive ? '#991b1b' : '#0a0a0a'}
-                  />
-                </svg>
+                ></div>
 
-                {/* Icono de Socios Centrado en el Núcleo */}
-                <i
-                  className={`fa-solid ${tab.icon} text-base sm:text-lg relative z-10 transition-transform ${
-                    isActive ? 'text-white scale-110' : 'text-stone-300'
-                  }`}
-                ></i>
+                {/* Aro Sagrado Interior */}
+                <div className="w-12 h-12 rounded-full absolute inset-2 border border-amber-400/40 bg-gradient-to-br from-sky-900/40 to-slate-950 flex items-center justify-center shadow-inner">
+                  {/* Rayo Divino de Zeus en Oro Brillante */}
+                  <i
+                    className={`fa-solid fa-bolt-lightning text-xl relative z-10 transition-transform ${
+                      isActive
+                        ? 'text-amber-300 scale-110 drop-shadow-[0_0_12px_rgba(251,191,36,0.9)]'
+                        : 'text-amber-400/80 drop-shadow-[0_0_6px_rgba(251,191,36,0.5)]'
+                    }`}
+                  ></i>
+                </div>
               </button>
 
               <span
                 className={`text-[9px] font-black tracking-tight -mt-1 leading-none ${
-                  isActive ? 'text-red-400 font-bold' : 'text-stone-400'
+                  isActive ? 'text-sky-400 font-bold drop-shadow' : 'text-slate-400'
                 }`}
               >
                 {tab.label}
@@ -82,18 +57,18 @@ export default function BottomNav({ activeTab, onSwitchTab }) {
           );
         }
 
-        // Botones normales
+        // Botones laterales normales estilo Apple cápsula
         return (
           <button
             key={tab.id}
             onClick={() => onSwitchTab(tab.id)}
             className={`flex flex-col items-center justify-center py-1 px-1.5 rounded-xl flex-1 transition-all cursor-pointer ${
               isActive
-                ? 'text-red-500 font-bold'
-                : 'text-stone-400 hover:text-stone-200'
+                ? 'text-sky-400 font-bold'
+                : 'text-slate-400 hover:text-slate-200'
             }`}
           >
-            <i className={`fa-solid ${tab.icon} text-base mb-0.5 ${isActive ? 'text-red-500' : 'text-stone-400'}`}></i>
+            <i className={`fa-solid ${tab.icon} text-base mb-0.5 ${isActive ? 'text-sky-400 drop-shadow-[0_0_8px_rgba(56,189,248,0.6)]' : 'text-slate-400'}`}></i>
             <span className="text-[10px] font-semibold tracking-tight">{tab.label}</span>
           </button>
         );

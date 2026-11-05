@@ -28,6 +28,17 @@ const io = new Server(server, {
   }
 });
 
+// Helper para pulsar relevador y emitir RELAY_PULSE_EVENT a todos los clientes conectados
+function triggerRelayPulseWithBroadcast(channel = 1, onComplete) {
+  const targetChannel = channel === 2 ? 2 : 1;
+  const duration = relay.pulseDuration || 800;
+  io.emit('RELAY_PULSE_EVENT', { channel: targetChannel, duration, state: 'OPEN' });
+  relay.triggerAccessPulse(targetChannel, (result) => {
+    io.emit('RELAY_PULSE_EVENT', { channel: targetChannel, duration: 0, state: 'CLOSED' });
+    if (onComplete) onComplete(result);
+  });
+}
+
 // Cargar métricas persistidas del día desde SQLite
 const initialMetrics = db.getTodayMetrics();
 let todayCounter = initialMetrics ? initialMetrics.today_entries : 42;
@@ -37,9 +48,9 @@ let turnstileLocked = false;
 let tvConfig = db.getTvConfig();
 
 let currentPromo = {
-  badge: tvConfig.promoBadge || 'PROMO GEARS DEL MES',
-  title: tvConfig.promoTitle || 'PROMO DÚO 2 X $700 MXN',
-  msg: tvConfig.promoDesc || 'Entrena con tu compañero de escuadrón. ¡Cero excusas en la legión GEARS GYM!'
+  badge: tvConfig.promoBadge || 'DECRETO DEL OLIMPO',
+  title: tvConfig.promoTitle || 'PROMO DÚO TITANES 2 X $700 MXN',
+  msg: tvConfig.promoDesc || 'Entrena en el Templo de Zeus. ¡Disciplina y poder divino!'
 };
 
 // ==========================================
@@ -158,14 +169,14 @@ app.get('/api/plans', (req, res) => {
   }
 });
 
-// Suplementos e Inventario Arsenal
+// Néctar y Suplementos (Inventario Olimpo)
 app.get('/api/products', (req, res) => {
   try {
     const products = db.getAllProducts();
     res.json(products);
   } catch (err) {
     console.error('[API GET /api/products ERROR]', err.message);
-    res.status(500).json({ error: 'Error al consultar inventario Arsenal' });
+    res.status(500).json({ error: 'Error al consultar inventario de Néctar y Suplementos' });
   }
 });
 
@@ -173,6 +184,7 @@ app.post('/api/products', (req, res) => {
   try {
     const saved = db.saveProduct(req.body || {});
     const products = db.getAllProducts();
+    io.emit('PRODUCTS_SYNC', products);
     io.emit('ARSENAL_SYNC', products);
     res.json({ ok: true, product: saved, products });
   } catch (err) {
@@ -186,6 +198,7 @@ app.post('/api/products/:id/stock', (req, res) => {
     const delta = parseInt(req.body && req.body.delta !== undefined ? req.body.delta : 1, 10);
     const updated = db.addProductStock(req.params.id, delta);
     const products = db.getAllProducts();
+    io.emit('PRODUCTS_SYNC', products);
     io.emit('ARSENAL_SYNC', products);
     res.json({ ok: true, product: updated, products });
   } catch (err) {
@@ -197,6 +210,7 @@ app.post('/api/products/:id/stock', (req, res) => {
 app.post('/api/products/restock-all', (req, res) => {
   try {
     const products = db.restockAllProducts();
+    io.emit('PRODUCTS_SYNC', products);
     io.emit('ARSENAL_SYNC', products);
     res.json({ ok: true, products });
   } catch (err) {
@@ -207,12 +221,13 @@ app.post('/api/products/restock-all', (req, res) => {
 
 app.post('/api/store/sale', (req, res) => {
   try {
-    const { itemId = 'p1', itemName = 'Suplemento Arsenal', price = 20, quantity = 1 } = req.body || {};
+    const { itemId = 'p1', itemName = 'Néctar y Suplemento Olimpo', price = 20, quantity = 1 } = req.body || {};
     const { sale, metrics } = db.recordStoreSale(itemId, itemName, price, quantity);
     const products = db.getAllProducts();
 
     io.emit('METRICS_SYNC', metrics);
     io.emit('STORE_SALE_RECORDED', { sale, metrics });
+    io.emit('PRODUCTS_SYNC', products);
     io.emit('ARSENAL_SYNC', products);
 
     res.status(201).json({
@@ -300,14 +315,14 @@ app.post('/api/turnstile/override', (req, res) => {
   const rawChannel = req.body && req.body.channel ? parseInt(req.body.channel, 10) : 1;
   const channel = rawChannel === 2 ? 2 : 1;
 
-  relay.triggerAccessPulse(channel);
+  triggerRelayPulseWithBroadcast(channel);
 
   const updated = db.incrementEntries(1);
   todayCounter = updated.today_entries;
 
   db.logAccess({
     memberId: 'ADMIN',
-    memberName: `Apertura Manual (${channel === 1 ? 'Entrada' : 'Salida'})`,
+    memberName: `Apertura Manual Administrador Olimpo (${channel === 1 ? 'Entrada' : 'Salida'})`,
     action: channel === 1 ? 'MANUAL_ENTRY' : 'MANUAL_EXIT',
     channel,
     status: 'GRANTED'
@@ -326,16 +341,216 @@ app.post('/api/turnstile/override', (req, res) => {
 });
 
 // ==========================================
+// ENDPOINTS REST PARA MODO SIMULACIÓN ZEUS
+// ==========================================
+
+app.post('/api/simulation/scan', (req, res) => {
+  try {
+    const { memberId, pin, rfid, type, channel = 1 } = req.body || {};
+    const targetChannel = channel === 2 ? 2 : 1;
+
+    if (turnstileLocked) {
+      return res.json({
+        ok: false,
+        accessGranted: false,
+        reason: 'TURNSTILE_LOCKED',
+        channel: targetChannel
+      });
+    }
+
+    const credential = memberId ?? pin ?? rfid;
+    let member = null;
+    if (credential !== undefined && credential !== null && String(credential).trim() !== '') {
+      member = db.getMemberByCredential(String(credential).trim());
+    } else if (type) {
+      const memberMap = {
+        active: '042',
+        warning: '019',
+        expired: '012'
+      };
+      const mappedId = memberMap[type] || '042';
+      member = db.getMemberById(mappedId);
+    } else {
+      member = db.getMemberById('042');
+    }
+
+    if (member) {
+      const isExpired = member.status === 'expired' || member.days < 0;
+      if (!isExpired) {
+        triggerRelayPulseWithBroadcast(targetChannel);
+        const metrics = db.incrementEntries(1);
+        todayCounter = metrics.today_entries;
+
+        const nowTime = new Date().toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit' });
+        const updatedMember = db.updateMember(member.id, {
+          isInside: targetChannel === 1,
+          timeIn: targetChannel === 1 ? nowTime : member.timeIn
+        });
+
+        db.logAccess({
+          memberId: member.id,
+          memberName: member.name,
+          action: targetChannel === 1 ? 'SIMULATION_ENTRY' : 'SIMULATION_EXIT',
+          channel: targetChannel,
+          status: member.status === 'warning' ? 'GRANTED_WARNING' : 'GRANTED'
+        });
+
+        io.emit('COUNTER_SYNC', todayCounter);
+        io.emit('METRICS_SYNC', metrics);
+        io.emit('MEMBERS_UPDATED', db.getAllMembers());
+
+        const cardPayload = {
+          ...(updatedMember || member),
+          type: member.status === 'warning' ? 'warning' : 'active',
+          channel: targetChannel
+        };
+        io.emit('SHOW_ACCESS_CARD', cardPayload);
+        io.emit('UPDATE_FEED', cardPayload);
+
+        return res.json({
+          ok: true,
+          accessGranted: true,
+          status: member.status,
+          member: updatedMember || member,
+          channel: targetChannel,
+          counter: todayCounter
+        });
+      } else {
+        db.logAccess({
+          memberId: member.id,
+          memberName: member.name,
+          action: 'SIMULATION_DENIED',
+          channel: targetChannel,
+          status: 'DENIED_EXPIRED'
+        });
+
+        const deniedPayload = {
+          ...member,
+          status: 'expired',
+          type: 'expired',
+          channel: targetChannel
+        };
+        io.emit('SHOW_ACCESS_CARD', deniedPayload);
+        io.emit('UPDATE_FEED', deniedPayload);
+
+        return res.json({
+          ok: true,
+          accessGranted: false,
+          reason: 'EXPIRED',
+          member,
+          channel: targetChannel
+        });
+      }
+    } else {
+      return res.status(404).json({
+        ok: false,
+        accessGranted: false,
+        reason: 'MEMBER_NOT_FOUND',
+        channel: targetChannel
+      });
+    }
+  } catch (err) {
+    console.error('[API /api/simulation/scan ERROR]', err.message);
+    res.status(500).json({ ok: false, error: err.message });
+  }
+});
+
+app.post('/api/simulation/override', (req, res) => {
+  try {
+    if (turnstileLocked) {
+      return res.status(403).json({ ok: false, error: 'Torniquete en Bloqueo Total de Emergencia' });
+    }
+    const channel = req.body && req.body.channel === 2 ? 2 : 1;
+    triggerRelayPulseWithBroadcast(channel);
+
+    const updated = db.incrementEntries(1);
+    todayCounter = updated.today_entries;
+
+    db.logAccess({
+      memberId: 'ADMIN',
+      memberName: 'Apertura Manual Administrador Olimpo',
+      action: channel === 1 ? 'MANUAL_ENTRY' : 'MANUAL_EXIT',
+      channel,
+      status: 'GRANTED'
+    });
+
+    io.emit('DOOR_OVERRIDE_TRIGGERED', { channel });
+    io.emit('COUNTER_SYNC', todayCounter);
+    io.emit('METRICS_SYNC', updated);
+
+    res.json({
+      ok: true,
+      channel,
+      direction: channel === 1 ? 'ENTRADA' : 'SALIDA',
+      counter: todayCounter
+    });
+  } catch (err) {
+    res.status(500).json({ ok: false, error: err.message });
+  }
+});
+
+app.post('/api/simulation/visit', (req, res) => {
+  try {
+    if (turnstileLocked) {
+      return res.status(403).json({ ok: false, error: 'Torniquete en Bloqueo Total de Emergencia' });
+    }
+    const amount = (req.body && (req.body.amount || req.body.price)) || 60;
+    const visitPrice = parseInt(amount, 10) || 60;
+
+    triggerRelayPulseWithBroadcast(1);
+
+    const updated = db.recordQuickVisit(visitPrice, 1);
+    todayCounter = updated.today_entries;
+
+    io.emit('VISIT_PROCESSED', { counter: todayCounter, cashVisits: updated.visits_cash });
+    io.emit('COUNTER_SYNC', todayCounter);
+    io.emit('METRICS_SYNC', updated);
+    io.emit('DOOR_OVERRIDE_TRIGGERED', { channel: 1 });
+    io.emit('SHOW_ACCESS_CARD', 'visit');
+    io.emit('UPDATE_FEED', 'visit');
+
+    res.json({
+      ok: true,
+      price: visitPrice,
+      counter: todayCounter,
+      metrics: updated
+    });
+  } catch (err) {
+    res.status(500).json({ ok: false, error: err.message });
+  }
+});
+
+app.get('/api/simulation/status', (req, res) => {
+  try {
+    res.json({
+      simulationMode: Boolean(relay.isSimulation),
+      hardwareEnabled: Boolean(!relay.isSimulation && relay.isConnected),
+      db: 'zeus_gym.sqlite',
+      connectedClients: io.engine.clientsCount,
+      todayEntries: todayCounter,
+      turnstileLocked,
+      channels: {
+        1: relay.isProcessing[1] ? 'busy' : 'ready',
+        2: relay.isProcessing[2] ? 'busy' : 'ready'
+      }
+    });
+  } catch (err) {
+    res.status(500).json({ ok: false, error: err.message });
+  }
+});
+
+// ==========================================
 // EVENTOS SOCKET.IO EN TIEMPO REAL
 // ==========================================
 
 io.on('connection', (socket) => {
-  console.log('💀 Dispositivo conectado al cuartel: ' + socket.id);
+  console.log('⚡ Dispositivo conectado al Templo de Zeus: ' + socket.id);
 
   const metrics = db.getTodayMetrics();
   todayCounter = metrics.today_entries;
 
   socket.emit('TV_CONFIG_SYNC', db.getTvConfig());
+  socket.emit('PRODUCTS_SYNC', db.getAllProducts());
   socket.emit('ARSENAL_SYNC', db.getAllProducts());
   socket.emit('MEMBERS_UPDATED', db.getAllMembers());
   socket.emit('METRICS_SYNC', metrics);
@@ -349,7 +564,7 @@ io.on('connection', (socket) => {
   socket.on('SEND_PROMO', (data = {}) => {
     console.log('Promoción recibida:', data);
     currentPromo = {
-      badge: data.badge || tvConfig.promoBadge || 'PROMO GEARS DEL MES',
+      badge: data.badge || tvConfig.promoBadge || 'DECRETO DEL OLIMPO',
       title: data.title || '',
       msg: data.msg || ''
     };
@@ -387,18 +602,22 @@ io.on('connection', (socket) => {
     io.emit('NEXT_PROMO_TRIGGER');
   });
 
-  socket.on('UPDATE_ARSENAL', (items) => {
+  const handleProductsUpdate = (items) => {
     try {
       if (Array.isArray(items)) {
         for (const item of items) {
           db.saveProduct(item);
         }
-        io.emit('ARSENAL_SYNC', db.getAllProducts());
+        const allProds = db.getAllProducts();
+        io.emit('PRODUCTS_SYNC', allProds);
+        io.emit('ARSENAL_SYNC', allProds);
       }
     } catch (err) {
-      console.error('[SOCKET UPDATE_ARSENAL ERROR]', err.message);
+      console.error('[SOCKET UPDATE_PRODUCTS ERROR]', err.message);
     }
-  });
+  };
+  socket.on('UPDATE_PRODUCTS', handleProductsUpdate);
+  socket.on('UPDATE_ARSENAL', handleProductsUpdate);
 
   socket.on('SET_COUNTER', (val) => {
     const parsed = parseInt(val, 10);
@@ -415,7 +634,7 @@ io.on('connection', (socket) => {
     console.log(`Estado de Bloqueo de Emergencia cambiado a: ${turnstileLocked ? 'BLOQUEADO' : 'DESBLOQUEADO'}`);
     db.logAccess({
       memberId: 'SYSTEM',
-      memberName: 'Comando Central',
+      memberName: 'Oráculo Central Olimpo',
       action: turnstileLocked ? 'LOCKDOWN_ON' : 'LOCKDOWN_OFF',
       channel: 1,
       status: turnstileLocked ? 'LOCKED' : 'ARMED'
@@ -429,16 +648,16 @@ io.on('connection', (socket) => {
       return;
     }
     const channel = payload && typeof payload === 'object' && payload.channel === 2 ? 2 : 1;
-    console.log(`Apertura manual remota activada por Comandante (Canal ${channel})`);
+    console.log(`Apertura manual remota activada por Administrador Olimpo (Canal ${channel})`);
 
-    relay.triggerAccessPulse(channel);
+    triggerRelayPulseWithBroadcast(channel);
 
     const updated = db.incrementEntries(1);
     todayCounter = updated.today_entries;
 
     db.logAccess({
       memberId: 'ADMIN',
-      memberName: 'Apertura Manual Comandante',
+      memberName: 'Apertura Manual Administrador Olimpo',
       action: channel === 1 ? 'MANUAL_ENTRY' : 'MANUAL_EXIT',
       channel,
       status: 'GRANTED'
@@ -460,7 +679,7 @@ io.on('connection', (socket) => {
       60;
 
     console.log(`Visita registrada y cobrada en mostrador ($${visitPrice} MXN)`);
-    relay.triggerAccessPulse(1);
+    triggerRelayPulseWithBroadcast(1);
 
     const updated = db.recordQuickVisit(visitPrice, 1);
     todayCounter = updated.today_entries;
@@ -485,7 +704,7 @@ io.on('connection', (socket) => {
 
       io.emit('MEMBERS_UPDATED', allMembers);
       io.emit('METRICS_SYNC', updatedMetrics);
-      console.log(`Nuevo guerrero reclutado en SQLite: #${created.id} ${created.name}`);
+      console.log(`⚡ Nuevo atleta del Olimpo consagrado en SQLite: #${created.id} ${created.name}`);
     } catch (err) {
       console.error('[SOCKET CREATE_MEMBER ERROR]', err.message);
     }
@@ -544,7 +763,7 @@ io.on('connection', (socket) => {
   socket.on('RECORD_STORE_SALE', (data = {}) => {
     try {
       const itemId = data.itemId || data.id || 'p1';
-      const itemName = data.itemName || data.name || 'Suplemento Arsenal';
+      const itemName = data.itemName || data.name || 'Néctar y Suplemento Olimpo';
       const price = data.price || 20;
       const quantity = data.quantity || 1;
 
@@ -553,6 +772,7 @@ io.on('connection', (socket) => {
 
       io.emit('METRICS_SYNC', updatedMetrics);
       io.emit('STORE_SALE_RECORDED', { sale, metrics: updatedMetrics });
+      io.emit('PRODUCTS_SYNC', products);
       io.emit('ARSENAL_SYNC', products);
     } catch (err) {
       console.error('[SOCKET RECORD_STORE_SALE ERROR]', err.message);
@@ -574,7 +794,7 @@ io.on('connection', (socket) => {
         const nowTime = new Date().toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit' });
 
         if (canEnter) {
-          relay.triggerAccessPulse(channel);
+          triggerRelayPulseWithBroadcast(channel);
           const updatedMetrics = db.incrementEntries(1);
           todayCounter = updatedMetrics.today_entries;
 
@@ -655,10 +875,10 @@ io.on('connection', (socket) => {
       warning: { id: '019', name: 'Sofía Ramírez' },
       expired: { id: '012', name: 'Jorge Vargas' }
     };
-    const target = memberMap[scanType] || { id: '000', name: 'Guerrero' };
+    const target = memberMap[scanType] || { id: '000', name: 'Atleta' };
 
     if (!turnstileLocked && (scanType === 'active' || scanType === 'warning')) {
-      relay.triggerAccessPulse(channel);
+      triggerRelayPulseWithBroadcast(channel);
       const updated = db.incrementEntries(1);
       todayCounter = updated.today_entries;
 
@@ -705,8 +925,9 @@ app.use((req, res, next) => {
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, '0.0.0.0', () => {
   console.log(`===================================================`);
-  console.log(`💀 GEARS GYM OFFLINE-FIRST SERVER ACTIVO 💀`);
+  console.log(`⚡ ZEUS GYM — SISTEMA OFFLINE-FIRST ACTIVO ⚡`);
   console.log(`🌐 URL Local / LAN: http://0.0.0.0:${PORT}`);
-  console.log(`🗄️  SQLite WAL:      Activo (gears_gym.sqlite)`);
+  console.log(`🗄️  SQLite WAL:      Activo (zeus_gym.sqlite)`);
+  console.log(`⚡ Modo Simulación:  ${relay.isSimulation ? '100% ACTIVO (Virtual)' : 'Hardware Físico'}`);
   console.log(`===================================================`);
 });

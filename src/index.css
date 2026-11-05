@@ -1,21 +1,37 @@
 @import "tailwindcss";
 
+/* ========================================================================== */
+/* ZEUS GYM — APPLE & CLAUDE AESTHETIC ENGINE & DESIGN TOKENS                 */
+/* ========================================================================== */
+
 @layer base {
+  :root {
+    --canvas-deep: #070b14;
+    --canvas-surface: #090e1a;
+    --canvas-elevated: #0d1527;
+    --celestial-cyan: #38bdf8;
+    --lightning-gold: #fbbf24;
+    --olympus-emerald: #10b981;
+    --sacred-ruby: #f43f5e;
+  }
+
   html,
   body {
     overscroll-behavior: none;
     user-select: none;
     -webkit-user-select: none;
     touch-action: manipulation;
-    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    background-color: #050505;
+    font-family: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background-color: #070b14;
     color: #f8fafc;
-    background-image: radial-gradient(circle at 50% 0%, #2a0505 0%, #050505 80%);
+    background-image: radial-gradient(circle at 50% -10%, #1e293b 0%, #0d1527 50%, #070b14 100%);
     background-attachment: fixed;
     margin: 0;
     padding: 0;
     overflow-x: hidden;
     -webkit-tap-highlight-color: transparent;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
   input,
@@ -26,16 +42,128 @@
   }
 }
 
+/* ========================================================================== */
+/* TYPOGRAPHY TOKENS                                                          */
+/* ========================================================================== */
+
+.font-zeus {
+  font-family: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  letter-spacing: -0.02em;
+  font-weight: 800;
+}
+
+/* Legacy alias so any pending un-migrated components adopt sleek modern typography */
 .font-gears {
-  font-family: 'Orbitron', 'Segoe UI', Impact, system-ui, sans-serif;
-  letter-spacing: 0.05em;
+  font-family: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  letter-spacing: -0.015em;
+  font-weight: 700;
 }
 
+/* ========================================================================== */
+/* APPLE & CLAUDE GLASSMORPHISM UTILITIES                                     */
+/* ========================================================================== */
+
+.glass-panel {
+  background: rgba(13, 21, 39, 0.72);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.6), inset 0 1px 0 0 rgba(255, 255, 255, 0.1);
+}
+
+.glass-card {
+  background: rgba(15, 23, 42, 0.65);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5), inset 0 1px 0 0 rgba(255, 255, 255, 0.08);
+}
+
+.glass-surface-1 {
+  background: rgba(15, 23, 42, 0.75);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.glass-surface-2 {
+  background: rgba(30, 41, 59, 0.5);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.glass-pill {
+  background: rgba(56, 189, 248, 0.12);
+  border: 1px solid rgba(56, 189, 248, 0.25);
+  backdrop-filter: blur(8px);
+}
+
+.glass-pill-gold {
+  background: rgba(251, 191, 36, 0.12);
+  border: 1px solid rgba(251, 191, 36, 0.3);
+  backdrop-filter: blur(8px);
+}
+
+/* ========================================================================== */
+/* ZEUS DIVINE ANIMATIONS & PULSES                                            */
+/* ========================================================================== */
+
+/* Celestial Aura Glow */
+.zeus-glow {
+  box-shadow: 0 0 30px rgba(56, 189, 248, 0.35), inset 0 0 15px rgba(56, 189, 248, 0.15);
+  animation: zeusGlowPulse 4s ease-in-out infinite alternate;
+}
+
+@keyframes zeusGlowPulse {
+  0% {
+    box-shadow: 0 0 20px rgba(56, 189, 248, 0.25), inset 0 0 8px rgba(56, 189, 248, 0.1);
+    border-color: rgba(56, 189, 248, 0.3);
+  }
+  100% {
+    box-shadow: 0 0 40px rgba(56, 189, 248, 0.5), inset 0 0 20px rgba(56, 189, 248, 0.25);
+    border-color: rgba(56, 189, 248, 0.7);
+  }
+}
+
+/* Lightning Strike & Flash Pulse */
+.lightning-pulse {
+  animation: lightningStrike 2s cubic-bezier(0.25, 1, 0.5, 1) infinite;
+}
+
+@keyframes lightningStrike {
+  0%, 100% {
+    opacity: 0.9;
+    filter: drop-shadow(0 0 6px rgba(251, 191, 36, 0.6));
+  }
+  50% {
+    opacity: 1;
+    filter: drop-shadow(0 0 22px rgba(251, 191, 36, 0.95)) drop-shadow(0 0 35px rgba(56, 189, 248, 0.8));
+  }
+}
+
+/* Olympus Sacred Breathing Pulse */
+.olympus-pulse {
+  animation: olympusBreathing 3.5s ease-in-out infinite;
+}
+
+@keyframes olympusBreathing {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.85;
+  }
+  50% {
+    transform: scale(1.03);
+    opacity: 1;
+  }
+}
+
+/* Rotation for subtle orbital celestial rings */
 .gear-spin {
-  animation: spinSlow 18s linear infinite;
+  animation: celestialSpin 24s linear infinite;
 }
 
-@keyframes spinSlow {
+@keyframes celestialSpin {
   from {
     transform: rotate(0deg);
   }
@@ -44,33 +172,38 @@
   }
 }
 
+/* Scanner Ring Pulse (Cyan/Gold celestial wave) */
 .pulse-ring {
-  animation: pulse-ring 2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+  animation: pulse-ring 2.2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
 }
 
 @keyframes pulse-ring {
   0% {
-    transform: scale(0.9);
-    opacity: 0.8;
+    transform: scale(0.92);
+    opacity: 0.85;
+    box-shadow: 0 0 15px rgba(56, 189, 248, 0.4);
   }
   50% {
-    transform: scale(1.15);
-    opacity: 0.3;
+    transform: scale(1.12);
+    opacity: 0.25;
+    box-shadow: 0 0 35px rgba(56, 189, 248, 0.7);
   }
   100% {
-    transform: scale(0.9);
-    opacity: 0.8;
+    transform: scale(0.92);
+    opacity: 0.85;
+    box-shadow: 0 0 15px rgba(56, 189, 248, 0.4);
   }
 }
 
+/* Modal Pop (Apple Spring-like cubic bezier) */
 .modal-enter {
-  animation: modalPop 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: modalPop 0.32s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 @keyframes modalPop {
   0% {
     opacity: 0;
-    transform: scale(0.85) translateY(20px);
+    transform: scale(0.92) translateY(16px);
   }
   100% {
     opacity: 1;
@@ -79,7 +212,7 @@
 }
 
 .promo-banner {
-  animation: slideInDown 0.5s ease-out forwards;
+  animation: slideInDown 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 @keyframes slideInDown {
@@ -93,44 +226,45 @@
   }
 }
 
+/* Celestial Flash for Announcements & Quick Actions */
 .pulse-flash {
-  animation: flashPromo 1.5s cubic-bezier(0.4, 0, 0.6, 1);
+  animation: flashZeus 1.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-@keyframes flashPromo {
-  0%,
-  100% {
+@keyframes flashZeus {
+  0%, 100% {
     box-shadow: none;
-    border-color: #dc2626;
+    border-color: rgba(56, 189, 248, 0.4);
   }
   50% {
-    box-shadow: 0 0 40px rgba(220, 38, 38, 0.8);
-    border-color: #f87171;
-    background-color: rgba(220, 38, 38, 0.2);
+    box-shadow: 0 0 45px rgba(56, 189, 248, 0.65), 0 0 20px rgba(251, 191, 36, 0.4);
+    border-color: #38bdf8;
+    background-color: rgba(56, 189, 248, 0.12);
   }
 }
 
+/* Equalizer audio/pulse bar - Celestial cyan & gold */
 .eq-bar {
   width: 3px;
   border-radius: 2px;
-  background-color: #ef4444;
-  animation: eqBounce 0.9s ease-in-out infinite alternate;
+  background: linear-gradient(180deg, #38bdf8 0%, #fbbf24 100%);
+  animation: eqBounce 0.85s ease-in-out infinite alternate;
 }
 .eq-bar:nth-child(1) {
   height: 6px;
   animation-delay: 0s;
 }
 .eq-bar:nth-child(2) {
-  height: 13px;
-  animation-delay: 0.2s;
+  height: 14px;
+  animation-delay: 0.18s;
 }
 .eq-bar:nth-child(3) {
   height: 8px;
-  animation-delay: 0.4s;
+  animation-delay: 0.36s;
 }
 .eq-bar:nth-child(4) {
   height: 12px;
-  animation-delay: 0.15s;
+  animation-delay: 0.12s;
 }
 
 @keyframes eqBounce {
@@ -139,10 +273,14 @@
     opacity: 0.7;
   }
   100% {
-    transform: scaleY(1.15);
+    transform: scaleY(1.2);
     opacity: 1;
   }
 }
+
+/* ========================================================================== */
+/* SCROLLBAR REFINEMENT (APPLE MINIMALIST CELESTIAL SKY)                      */
+/* ========================================================================== */
 
 ::-webkit-scrollbar {
   width: 6px;
@@ -150,19 +288,19 @@
 }
 
 ::-webkit-scrollbar-track {
-  background: #0c0a09;
+  background: #070b14;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #dc2626;
-  border-radius: 3px;
+  background: #0369a1;
+  border-radius: 9999px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #ef4444;
+  background: #38bdf8;
+  box-shadow: 0 0 10px rgba(56, 189, 248, 0.6);
 }
-
-
 
 @keyframes slideProgress {
   0% {
@@ -173,18 +311,18 @@
   }
 }
 
-
 /* ========================================================================== */
-/* FONDO DE ADMINISTRACIÓN - OPCIÓN 1: CRIMSON EMBER MESH                     */
-/* Base carbón grafito antirreflejos + halo de brasa táctica Gears Gym        */
+/* FONDO DE ADMINISTRACIÓN: CELESTIAL SAPPHIRE & STARLIGHT MESH               */
+/* Deep storm midnight canvas with subtle divine sapphire & amber aura        */
 /* ========================================================================== */
 .admin-mesh-bg {
-  background-color: #111418;
+  background-color: #070b14;
   background-image:
-    radial-gradient(circle at 50% -5%, rgba(220, 38, 38, 0.16) 0%, rgba(220, 38, 38, 0.04) 42%, transparent 70%),
-    radial-gradient(circle at 100% 100%, rgba(56, 189, 248, 0.04) 0%, transparent 45%),
-    radial-gradient(circle at 0% 50%, rgba(220, 38, 38, 0.05) 0%, transparent 50%),
-    linear-gradient(155deg, #181C22 0%, #111418 50%, #0C0E10 100%);
+    radial-gradient(circle at 50% -10%, rgba(56, 189, 248, 0.14) 0%, rgba(30, 58, 138, 0.1) 40%, transparent 70%),
+    radial-gradient(circle at 95% 95%, rgba(251, 191, 36, 0.06) 0%, transparent 45%),
+    radial-gradient(circle at 5% 50%, rgba(14, 165, 233, 0.08) 0%, transparent 50%),
+    linear-gradient(160deg, #0f172a 0%, #090e1a 50%, #070b14 100%);
   background-repeat: no-repeat;
   background-size: cover;
+  background-attachment: fixed;
 }
