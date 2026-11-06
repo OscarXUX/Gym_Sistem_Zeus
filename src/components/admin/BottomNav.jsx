@@ -6,49 +6,42 @@ export default function BottomNav({ activeTab, onSwitchTab }) {
     { id: 'torniquete', label: 'Portal', icon: 'fa-door-open' },
     { id: 'socios', label: 'Atletas', icon: 'fa-bolt-lightning', isCenterMedallion: true },
     { id: 'tienda', label: 'Néctar', icon: 'fa-bag-shopping' },
-    { id: 'comunicaciones', label: 'Decretos', icon: 'fa-tv' }
+    { id: 'comunicaciones', label: 'TV', icon: 'fa-tv' }
   ];
 
   return (
-    <nav className="sticky bottom-0 md:hidden flex items-end justify-around backdrop-blur-md bg-[#090e1a]/95 border-t border-slate-800/80 px-2 pb-1.5 pt-1 shrink-0 z-30">
+    <nav className="sticky bottom-0 md:hidden flex items-end justify-around bg-gradient-to-r from-[#0F1E36] via-[#162A4A] to-[#0F1E36] border-t-2 border-[#C5A059] px-2 pb-2 pt-1 shrink-0 z-30 shadow-2xl">
       {tabs.map((tab) => {
         const isActive = activeTab === tab.id;
 
-        // Botón Central: Medallón del Rayo Olímpico (Olympian Lightning Aegis Medallion)
+        // Botón Central: Medallón del Rayo Olímpico
         if (tab.isCenterMedallion) {
           return (
             <div key={tab.id} className="relative -mt-6 flex flex-col items-center flex-1 shrink-0">
               <button
                 type="button"
                 onClick={() => onSwitchTab(tab.id)}
-                className="w-16 h-16 flex items-center justify-center transition-all cursor-pointer relative active:scale-95 bg-transparent p-0 border-0 outline-none group"
+                className="w-14 h-14 flex items-center justify-center transition-all cursor-pointer relative active:scale-95 bg-transparent p-0 border-0 outline-none"
                 title="Directorio de Atletas del Olimpo"
               >
-                {/* Halo Celestial Pulsante */}
+                {/* Medallón de Oro */}
                 <div
-                  className={`w-16 h-16 rounded-full absolute inset-0 transition-all pointer-events-none ${
+                  className={`w-14 h-14 rounded-full absolute inset-0 transition-all ${
                     isActive
-                      ? 'border-2 border-sky-400/80 bg-gradient-to-tr from-sky-950 via-slate-900 to-amber-950/80 shadow-[0_0_24px_rgba(56,189,248,0.5)] ring-2 ring-sky-400/40 animate-pulse'
-                      : 'border-2 border-sky-500/30 bg-slate-900/90 shadow-[0_4px_12px_rgba(0,0,0,0.8)]'
+                      ? 'border-2 border-[#F3E5AB] bg-gradient-to-br from-[#F5D77F] via-[#D4AF37] to-[#8C6D1F] shadow-[0_0_20px_rgba(212,175,55,0.7)] animate-pulse'
+                      : 'border-2 border-[#C5A059] bg-gradient-to-br from-[#D4AF37] to-[#8C6D1F] shadow-lg'
                   }`}
                 ></div>
 
-                {/* Aro Sagrado Interior */}
-                <div className="w-12 h-12 rounded-full absolute inset-2 border border-amber-400/40 bg-gradient-to-br from-sky-900/40 to-slate-950 flex items-center justify-center shadow-inner">
-                  {/* Rayo Divino de Zeus en Oro Brillante */}
-                  <i
-                    className={`fa-solid fa-bolt-lightning text-xl relative z-10 transition-transform ${
-                      isActive
-                        ? 'text-amber-300 scale-110 drop-shadow-[0_0_12px_rgba(251,191,36,0.9)]'
-                        : 'text-amber-400/80 drop-shadow-[0_0_6px_rgba(251,191,36,0.5)]'
-                    }`}
-                  ></i>
+                {/* Centro con Rayo */}
+                <div className="w-10 h-10 rounded-full absolute inset-2 bg-[#0F1E36] border border-[#F3E5AB]/60 flex items-center justify-center shadow-inner">
+                  <i className="fa-solid fa-bolt-lightning text-lg text-[#FFD700]"></i>
                 </div>
               </button>
 
               <span
-                className={`text-[9px] font-black tracking-tight -mt-1 leading-none ${
-                  isActive ? 'text-sky-400 font-bold drop-shadow' : 'text-slate-400'
+                className={`text-[9px] font-cinzel font-black tracking-tight mt-0.5 leading-none ${
+                  isActive ? 'text-[#D4AF37]' : 'text-[#F3E5AB]'
                 }`}
               >
                 {tab.label}
@@ -57,19 +50,19 @@ export default function BottomNav({ activeTab, onSwitchTab }) {
           );
         }
 
-        // Botones laterales normales estilo Apple cápsula
+        // Botones laterales normales
         return (
           <button
             key={tab.id}
             onClick={() => onSwitchTab(tab.id)}
-            className={`flex flex-col items-center justify-center py-1 px-1.5 rounded-xl flex-1 transition-all cursor-pointer ${
+            className={`flex flex-col items-center justify-center py-1 px-1.5 rounded-lg flex-1 transition-all cursor-pointer ${
               isActive
-                ? 'text-sky-400 font-bold'
-                : 'text-slate-400 hover:text-slate-200'
+                ? 'text-[#D4AF37] font-bold'
+                : 'text-[#F3E5AB]/70 hover:text-white'
             }`}
           >
-            <i className={`fa-solid ${tab.icon} text-base mb-0.5 ${isActive ? 'text-sky-400 drop-shadow-[0_0_8px_rgba(56,189,248,0.6)]' : 'text-slate-400'}`}></i>
-            <span className="text-[10px] font-semibold tracking-tight">{tab.label}</span>
+            <i className={`fa-solid ${tab.icon} text-base mb-0.5 ${isActive ? 'text-[#D4AF37]' : 'text-[#C5A059]'}`}></i>
+            <span className="text-[10px] font-cinzel font-bold tracking-tight">{tab.label}</span>
           </button>
         );
       })}

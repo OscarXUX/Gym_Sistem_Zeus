@@ -577,7 +577,7 @@ export default function AdminPanel({ currentView = 'admin', onChangeView }) {
   };
 
   return (
-    <div className="flex h-[100dvh] w-full overflow-hidden antialiased bg-[#070b14] text-slate-100">
+    <div className="flex h-[100dvh] w-full overflow-hidden antialiased bg-marble-travertine text-slate-800">
       {/* Toast Alert */}
       <Toast toast={toast} />
 

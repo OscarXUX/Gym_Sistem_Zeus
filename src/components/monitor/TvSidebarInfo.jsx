@@ -1,21 +1,21 @@
 import React, { useEffect } from 'react';
-import { ZeusEmblem } from '../common/ZeusSvg';
+import { ZeusMedallion } from '../common/GreekTempleComponents';
 
-const ITEM_ICONS = {
-  p1: { icon: 'fa-bottle-water', color: 'text-sky-400', bg: 'bg-sky-950/70 border-sky-500/40' },
-  p2: { icon: 'fa-bolt-lightning', color: 'text-amber-400', bg: 'bg-amber-950/70 border-amber-500/40' },
-  p3: { icon: 'fa-jar', color: 'text-sky-400', bg: 'bg-sky-950/70 border-sky-500/40' },
-  p4: { icon: 'fa-wine-bottle', color: 'text-indigo-400', bg: 'bg-indigo-950/70 border-indigo-500/40' }
-};
+const DEFAULT_PRODUCTS = [
+  { id: 'p1', name: 'Agua 1L', price: 20, icon: 'fa-bottle-water', bg: 'bg-[#162A4A] text-[#F3E5AB]' },
+  { id: 'p2', name: 'Pre-Entreno Hype', price: 35, icon: 'fa-bolt-lightning', bg: 'bg-[#162A4A] text-[#D4AF37]' },
+  { id: 'p3', name: 'Proteína Whey', price: 30, icon: 'fa-jar', bg: 'bg-[#162A4A] text-[#F3E5AB]' },
+  { id: 'p4', name: 'Electrolitos', price: 15, icon: 'fa-wine-bottle', bg: 'bg-[#162A4A] text-[#D4AF37]' }
+];
 
 export default function TvSidebarInfo({
   isSystemLocked = false,
   isDoorOpen = false,
-  sensorTitle = 'Coloca tu huella en el sensor para entrar',
+  sensorTitle = 'COLOCA TU HUELLA',
   sensorSub = 'El sistema mostrará tus días restantes de forma automática en pantalla',
   sensorBtn = 'PIN O HUELLA',
-  card1Title = 'NÉCTAR & ELÍXIRES EXPRESS',
-  card1Desc = 'Pide tu pre-entreno Rayo de Zeus, proteína o hidratación fría en barra al ingresar.',
+  card1Title = 'SUPLEMENTOS EN RECEPCIÓN',
+  card1Desc = 'Pregunta por tu Scoop de Pre-entreno Hype, Creatina y Proteína por servicio.',
   arsenalItems = [],
   pinBuffer = '',
   accessCard = null,
@@ -23,8 +23,6 @@ export default function TvSidebarInfo({
   onSensorTouch,
   onOpenPinPad
 }) {
-  const maskedPin = pinBuffer ? '*'.repeat(pinBuffer.length) : '';
-
   // Auto-descartar la tarjeta de acceso tras 4.8 segundos
   useEffect(() => {
     if (!accessCard || !onClearAccessCard) return;
@@ -34,221 +32,121 @@ export default function TvSidebarInfo({
     return () => clearTimeout(timer);
   }, [accessCard, onClearAccessCard]);
 
+  const displayProducts = Array.isArray(arsenalItems) && arsenalItems.length >= 4
+    ? arsenalItems.slice(0, 4)
+    : DEFAULT_PRODUCTS;
+
   return (
-    <aside className="w-full lg:w-[clamp(320px,29vw,450px)] bg-[#070b14]/95 border-t lg:border-t-0 lg:border-l border-sky-500/20 p-[clamp(0.55rem,1.25dvh,1rem)] flex flex-col justify-between gap-[clamp(0.5rem,1.2dvh,0.95rem)] shrink-0 relative z-20 lg:h-full lg:overflow-hidden select-none backdrop-blur-xl">
+    <aside className="w-full lg:w-[clamp(320px,29vw,430px)] flex flex-col justify-between gap-3 shrink-0 relative z-20 lg:h-full lg:overflow-hidden select-none p-2 sm:p-3">
       {/* =========================================================================
-          ZONA 1: CONSOLA DE ACCESO / ESTADO EN VIVO
+          TARJETA 1: CONTROL DE ACCESO / COLOCA TU HUELLA
       ========================================================================= */}
-      <div className="flex-1 min-h-0 flex flex-col justify-between overflow-hidden relative">
-        {accessCard ? (
-          /* A) TARJETA DE ACCESO ACTIVO EN SIDEBAR */
-          <div
-            className={`w-full h-full rounded-2xl xl:rounded-3xl p-[clamp(0.75rem,1.6dvh,1.25rem)] flex flex-col justify-between relative overflow-hidden transition-all duration-300 shadow-2xl backdrop-blur-2xl ${
-              accessCard.cardClasses || 'bg-gradient-to-b from-[#090e1a] via-[#070b14] to-black border-2 border-emerald-500'
+      <div className="flex-1 min-h-[220px] rounded-lg border border-[#C5A059] bg-[#FAF9F6] shadow-xl flex flex-col overflow-hidden relative">
+        {/* Header de la Tarjeta */}
+        <div className="bg-gradient-to-r from-[#0F1E36] via-[#162A4A] to-[#0F1E36] px-3.5 py-1.5 border-b border-[#C5A059] flex items-center justify-between shrink-0 shadow-sm">
+          <div className="flex items-center gap-2">
+            <i className="fa-solid fa-fingerprint text-[#D4AF37] text-xs"></i>
+            <span className="font-cinzel text-xs font-black text-white tracking-wider uppercase">
+              CONTROL DE ACCESO
+            </span>
+          </div>
+
+          <span
+            className={`text-[9px] font-bold uppercase px-2 py-0.5 rounded-full border tracking-wider ${
+              isSystemLocked
+                ? 'bg-[#2c1015] border-[#f43f5e] text-[#fb7185] animate-pulse'
+                : isDoorOpen
+                ? 'bg-[#0b241b] border-[#10b981] text-[#34d399] shadow-sm'
+                : 'bg-[#091528] border-[#C5A059]/70 text-[#F3E5AB]'
             }`}
           >
+            {isSystemLocked ? 'BLOQUEO TOTAL' : isDoorOpen ? 'PORTAL ABIERTO' : 'LISTO / EN LÍNEA'}
+          </span>
+        </div>
+
+        {/* Contenido de la Tarjeta */}
+        {accessCard ? (
+          /* A) TARJETA DE ACCESO ACTIVO */
+          <div className="flex-1 p-4 flex flex-col justify-between items-center text-center relative bg-marble-card">
             {/* Barra de progreso de auto-cierre */}
-            <div className="absolute top-0 left-0 right-0 h-1.5 bg-black/50 overflow-hidden">
+            <div className="absolute top-0 left-0 right-0 h-1 bg-[#0F1E36]/30 overflow-hidden">
               <div
-                className="h-full bg-white/90"
+                className="h-full bg-[#D4AF37]"
                 style={{ animation: 'countdownBar 4.7s linear forwards' }}
               ></div>
             </div>
 
-            {/* Cabecera compacta de 1 sola línea */}
-            <div className="flex items-center justify-between gap-2 pt-0.5 shrink-0">
-              <div
-                className={`px-3 py-1 rounded-full text-[clamp(9px,min(0.75vw,1.55dvh),12px)] font-black uppercase tracking-wider shadow-inner inline-flex items-center gap-1.5 truncate max-w-[86%] ${
-                  accessCard.badgeClasses || 'bg-emerald-950/80 text-emerald-300 border border-emerald-500/50'
-                }`}
-                dangerouslySetInnerHTML={{ __html: accessCard.badge || 'ACCESO AUTORIZADO' }}
-              ></div>
-
+            <div className="w-full flex items-center justify-between">
+              <span className="bg-[#0F1E36] text-[#F3E5AB] border border-[#C5A059] text-[10px] font-cinzel font-bold px-2.5 py-0.5 rounded-full uppercase">
+                {accessCard.badgeText || 'ACCESO REGISTRADO'}
+              </span>
               {onClearAccessCard && (
                 <button
+                  type="button"
                   onClick={onClearAccessCard}
-                  className="w-6 h-6 rounded-full bg-black/60 hover:bg-black text-slate-300 hover:text-white flex items-center justify-center text-xs cursor-pointer border border-white/15 shrink-0"
-                  title="Cerrar"
+                  className="w-5 h-5 rounded-full bg-[#0F1E36]/20 hover:bg-[#0F1E36] text-[#0F1E36] hover:text-white flex items-center justify-center text-[10px] cursor-pointer"
                 >
                   <i className="fa-solid fa-xmark"></i>
                 </button>
               )}
             </div>
 
-            {/* Perfil del Atleta */}
-            <div className="flex items-center gap-[clamp(0.65rem,1.1vw,1rem)] my-auto py-1 min-h-0">
-              <div className="relative shrink-0">
-                <img
-                  src={accessCard.photo || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=300&q=80'}
-                  alt={accessCard.name}
-                  className="w-[clamp(3.25rem,min(4.6vw,9.5dvh),5rem)] h-[clamp(3.25rem,min(4.6vw,9.5dvh),5rem)] rounded-full object-cover border-2 border-white/25 shadow-xl"
-                />
-                <div
-                  className={`w-[clamp(1.25rem,min(1.7vw,3.4dvh),1.65rem)] h-[clamp(1.25rem,min(1.7vw,3.4dvh),1.65rem)] rounded-full flex items-center justify-center text-[clamp(9px,min(0.8vw,1.6dvh),12px)] font-bold absolute -bottom-0.5 -right-0.5 border-2 border-slate-950 shadow ${
-                    accessCard.iconBg || 'bg-emerald-500'
-                  }`}
-                  dangerouslySetInnerHTML={{ __html: accessCard.iconHtml || '<i class="fa-solid fa-check text-white"></i>' }}
-                ></div>
-              </div>
-
-              <div className="flex-1 min-w-0">
-                <h3 className="font-zeus text-[clamp(0.95rem,min(1.35vw,2.75dvh),1.35rem)] font-black text-white uppercase leading-tight truncate">
-                  {accessCard.name}
-                </h3>
-                <p className="text-[clamp(0.72rem,min(0.9vw,1.85dvh),0.9rem)] text-slate-300 font-bold mt-0.5 truncate">
-                  Plan: <span className="text-white">{accessCard.plan || 'Membresía Olimpo'}</span>
-                </p>
-                <span
-                  className="inline-block mt-1 bg-black/60 border border-white/10 text-slate-200 text-[clamp(9px,min(0.72vw,1.5dvh),11.5px)] font-bold px-2.5 py-0.5 rounded-lg truncate max-w-full"
-                  dangerouslySetInnerHTML={{ __html: accessCard.streak || 'Atleta Activo ⚡' }}
-                ></span>
-              </div>
+            {/* Foto del Atleta */}
+            <div className="my-2 relative">
+              <img
+                src={accessCard.photo || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=300&q=80'}
+                alt={accessCard.name}
+                className="w-20 h-20 sm:w-24 sm:h-24 rounded-full object-cover border-2 border-[#D4AF37] shadow-lg"
+              />
             </div>
 
-            {/* Bloque Destacado de Vigencia */}
-            <div className={`py-[clamp(0.45rem,1.1dvh,0.8rem)] px-3 rounded-2xl border text-center shrink-0 ${accessCard.statBoxClasses || 'bg-black/80 border-emerald-500/40 text-white'}`}>
-              <p className="text-[clamp(8.5px,min(0.68vw,1.4dvh),11px)] font-black uppercase text-slate-400 tracking-widest">
-                ESTADO DE VIGENCIA
-              </p>
-              <p className="font-zeus text-[clamp(1rem,min(1.45vw,3dvh),1.5rem)] font-black text-white leading-tight mt-0.5 truncate">
-                {accessCard.expire}
-              </p>
-            </div>
+            <h3 className="font-cinzel text-lg sm:text-xl font-black text-[#0F1E36] uppercase tracking-wide leading-tight">
+              {accessCard.name}
+            </h3>
 
-            {/* Mensaje de bienvenida */}
-            <p
-              className="text-[clamp(10px,min(0.85vw,1.75dvh),13px)] text-slate-200 font-medium leading-snug line-clamp-2 text-center shrink-0"
-              dangerouslySetInnerHTML={{ __html: accessCard.message || '¡Disciplina y poder divino en el Templo de Zeus!' }}
-            ></p>
+            <p className="text-xs text-[#997A2C] font-bold font-cinzel">
+              {accessCard.plan || 'Membresía Olimpo'} • {accessCard.expire || 'Vigente'}
+            </p>
+
+            <p className="text-xs text-[#2D3748] font-medium mt-1 leading-snug max-w-xs">
+              {accessCard.message ? accessCard.message.replace(/<[^>]*>?/gm, '') : '¡Bienvenido al Templo de Zeus!'}
+            </p>
           </div>
         ) : (
-          /* B) CONSOLA DE ACCESO EN REPOSO */
-          <div className="w-full h-full bg-gradient-to-b from-[#090e1a]/90 via-[#070b14] to-black border border-sky-500/20 rounded-2xl xl:rounded-3xl p-[clamp(0.75rem,1.6dvh,1.25rem)] flex flex-col justify-between gap-[clamp(0.35rem,0.9dvh,0.75rem)] shadow-xl relative overflow-hidden backdrop-blur-xl">
-            {/* Header del sensor */}
-            <div className="flex items-center justify-between gap-2 border-b border-slate-800/80 pb-[clamp(0.35rem,0.9dvh,0.65rem)] shrink-0">
-              <div className="flex items-center gap-2 min-w-0">
-                <ZeusEmblem className="w-[clamp(1rem,min(1.2vw,2.4dvh),1.25rem)] h-[clamp(1rem,min(1.2vw,2.4dvh),1.25rem)] text-sky-400 shrink-0 drop-shadow-[0_0_8px_rgba(56,189,248,0.6)]" />
-                <h4 className="font-zeus text-[clamp(0.75rem,min(1vw,2.05dvh),0.98rem)] font-black text-slate-100 uppercase tracking-wider truncate">
-                  PORTAL DEL OLIMPO
-                </h4>
-              </div>
-              <span
-                className={`text-[clamp(8.5px,min(0.68vw,1.4dvh),10.5px)] font-black uppercase px-2.5 py-0.5 rounded-full border whitespace-nowrap shrink-0 ${
-                  isSystemLocked
-                    ? 'bg-rose-950 border-rose-500 text-rose-300 animate-pulse'
-                    : isDoorOpen
-                    ? 'bg-emerald-950 border-emerald-500 text-emerald-300 shadow-[0_0_10px_rgba(16,185,129,0.5)]'
-                    : pinBuffer
-                    ? 'bg-amber-950 border-amber-500 text-amber-300 animate-pulse'
-                    : 'bg-sky-950/70 border-sky-500/40 text-sky-300'
-                }`}
-              >
-                {isSystemLocked
-                  ? 'BLOQUEO TOTAL'
-                  : isDoorOpen
-                  ? 'PASE CONCEDIDO ⚡'
-                  : pinBuffer
-                  ? 'INGRESANDO PIN'
-                  : 'LISTO / EN ESPERA'}
-              </span>
+          /* B) EN REPOSO: MEDALLÓN DORADO DE ZEUS Y COLOCA TU HUELLA */
+          <div className="flex-1 p-3.5 sm:p-5 flex flex-col items-center justify-between text-center relative bg-marble-card">
+            {/* Medallón Dorado en Relieve */}
+            <div className="my-auto py-2">
+              <ZeusMedallion size="w-20 h-20 sm:w-24 sm:h-24" />
             </div>
 
-            {/* Núcleo Central: Scanner Biométrico con aura eléctrica cyan */}
-            <div className="flex-1 min-h-0 flex flex-col items-center justify-center gap-[clamp(0.5rem,1.35dvh,1rem)] text-center overflow-hidden">
-              <div className="relative flex items-center justify-center shrink-0">
-                {/* Anillo táctico exterior */}
-                <div
-                  className={`absolute w-[clamp(4.2rem,min(6.8vw,13.8dvh),7.25rem)] h-[clamp(4.2rem,min(6.8vw,13.8dvh),7.25rem)] rounded-full border border-dashed opacity-40 pointer-events-none ${
-                    isSystemLocked
-                      ? 'border-rose-500'
-                      : isDoorOpen
-                      ? 'border-emerald-400'
-                      : pinBuffer
-                      ? 'border-amber-400'
-                      : 'border-sky-400'
-                  }`}
-                ></div>
-
-                {/* Halo luminoso */}
-                <div
-                  className={`absolute w-[clamp(3.8rem,min(6vw,12.2dvh),6.5rem)] h-[clamp(3.8rem,min(6vw,12.2dvh),6.5rem)] rounded-full blur-md pointer-events-none transition-all duration-300 ${
-                    isSystemLocked
-                      ? 'bg-rose-600/30'
-                      : isDoorOpen
-                      ? 'bg-emerald-500/30'
-                      : pinBuffer
-                      ? 'bg-amber-500/30'
-                      : 'bg-sky-500/25'
-                  }`}
-                ></div>
-
-                <button
-                  type="button"
-                  onClick={onSensorTouch}
-                  className={`relative z-10 w-[clamp(3.5rem,min(5.7vw,11.5dvh),6.1rem)] h-[clamp(3.5rem,min(5.7vw,11.5dvh),6.1rem)] rounded-full bg-[#070b14] border-4 flex items-center justify-center transition-all duration-300 cursor-pointer shadow-2xl ${
-                    isSystemLocked
-                      ? 'border-rose-600 shadow-[0_0_30px_rgba(225,29,72,0.8)] animate-pulse'
-                      : isDoorOpen
-                      ? 'border-emerald-400 shadow-[0_0_30px_rgba(16,185,129,0.8)]'
-                      : pinBuffer
-                      ? 'border-amber-400 shadow-[0_0_30px_rgba(245,158,11,0.7)]'
-                      : 'border-sky-400 shadow-[0_0_35px_rgba(56,189,248,0.5)] hover:scale-105 active:scale-95'
-                  }`}
-                  title="Toca para simular lectura de acceso"
-                >
-                  <i
-                    className={`text-[clamp(1.6rem,min(2.6vw,5.3dvh),2.75rem)] ${
-                      isSystemLocked
-                        ? 'fa-solid fa-lock text-rose-500 animate-bounce'
-                        : isDoorOpen
-                        ? 'fa-solid fa-door-open text-emerald-400'
-                        : pinBuffer
-                        ? 'fa-solid fa-keyboard text-amber-400 animate-pulse'
-                        : 'fa-solid fa-fingerprint text-sky-400 drop-shadow-[0_0_10px_rgba(56,189,248,0.8)]'
-                    }`}
-                  ></i>
-                </button>
-              </div>
-
-              {/* Indicador de PIN si se está tecleando */}
-              {pinBuffer ? (
-                <div className="bg-black/90 border border-amber-500/80 rounded-xl px-4 py-1.5 text-center w-full max-w-xs animate-pulse">
-                  <span className="font-zeus text-[clamp(1.1rem,min(1.7vw,3.5dvh),1.6rem)] font-black text-amber-400 tracking-[0.25em]">
-                    {maskedPin}
-                  </span>
-                  <p className="text-[clamp(9px,min(0.72vw,1.45dvh),11.5px)] text-slate-300 font-bold uppercase mt-0.5">
-                    Presiona <span className="text-white underline">ENTER</span> para validar
-                  </p>
-                </div>
-              ) : (
-                <div className="text-center px-2 min-h-0">
-                  <p className="font-zeus text-[clamp(0.8rem,min(1.08vw,2.2dvh),1.12rem)] font-black text-white uppercase tracking-wide leading-snug line-clamp-2">
-                    {sensorTitle}
-                  </p>
-                  <p className="text-[clamp(10px,min(0.84vw,1.7dvh),13.5px)] text-slate-400 mt-1 max-w-[300px] mx-auto leading-snug line-clamp-2">
-                    {sensorSub}
-                  </p>
-                </div>
-              )}
+            <div className="space-y-1 mb-3">
+              <h3 className="font-cinzel text-lg sm:text-xl md:text-2xl font-black text-[#0F1E36] uppercase tracking-wider">
+                {sensorTitle || 'COLOCA TU HUELLA'}
+              </h3>
+              <p className="text-[11px] sm:text-xs text-[#4A5568] max-w-xs font-medium leading-relaxed">
+                {sensorSub || 'El sistema mostrará tus días restantes de forma automática en pantalla'}
+              </p>
             </div>
 
-            {/* Botonera de Acceso Táctil */}
-            <div className="flex items-center gap-2.5 pt-[clamp(0.35rem,0.9dvh,0.65rem)] border-t border-slate-800/80 shrink-0">
+            {/* Botones inferiores estilo Pill */}
+            <div className="w-full flex items-center justify-center gap-2 pt-1 border-t border-[#DCD7C9]">
               <button
                 type="button"
-                onClick={onOpenPinPad || onSensorTouch}
-                className="flex-1 bg-sky-500/15 hover:bg-sky-500/30 border border-sky-400/60 text-sky-200 hover:text-white py-[clamp(0.42rem,1.1dvh,0.72rem)] px-3 rounded-xl text-[clamp(0.72rem,min(0.95vw,1.95dvh),0.92rem)] font-black tracking-wider uppercase transition-all cursor-pointer flex items-center justify-center gap-2 shadow-md shadow-sky-950 truncate"
+                onClick={onOpenPinPad}
+                className="flex-1 py-1.5 px-3 rounded-full bg-gradient-to-b from-[#FFFFFF] to-[#EFECE2] border border-[#C5A059] hover:border-[#D4AF37] text-[#0F1E36] font-cinzel text-[11px] font-bold flex items-center justify-center gap-1.5 shadow-sm hover:shadow transition-all cursor-pointer"
               >
-                <i className="fa-solid fa-id-card-clip shrink-0 text-amber-300"></i>
-                <span className="truncate">{sensorBtn}</span>
+                <i className="fa-solid fa-calculator text-[#D4AF37] text-xs"></i>
+                <span>{sensorBtn || 'PIN O HUELLA'}</span>
               </button>
+
               <button
                 type="button"
                 onClick={onSensorTouch}
-                className="bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-300 hover:text-white py-[clamp(0.42rem,1.1dvh,0.72rem)] px-3 rounded-xl text-[clamp(0.72rem,min(0.9vw,1.85dvh),0.88rem)] font-bold cursor-pointer transition-all flex items-center gap-1.5 shrink-0"
-                title="Probar lectura con huella demo"
+                className="py-1.5 px-3 rounded-full bg-[#0F1E36] border border-[#C5A059] hover:bg-[#162A4A] text-[#F3E5AB] font-cinzel text-[11px] font-bold flex items-center gap-1 shadow-sm transition-all cursor-pointer"
+                title="Simular escaneo de prueba"
               >
-                <i className="fa-solid fa-fingerprint text-sky-400"></i>
+                <i className="fa-solid fa-play text-[9px] text-[#D4AF37]"></i>
                 <span>Demo</span>
               </button>
             </div>
@@ -257,66 +155,52 @@ export default function TvSidebarInfo({
       </div>
 
       {/* =========================================================================
-          ZONA 2: NÉCTAR & ELÍXIRES EXPRESS
+          TARJETA 2: SUPLEMENTOS EN RECEPCIÓN
       ========================================================================= */}
-      <div className="shrink-0 flex flex-col justify-between bg-gradient-to-b from-[#090e1a]/90 via-[#070b14] to-black border border-amber-500/30 rounded-2xl xl:rounded-3xl p-[clamp(0.65rem,1.4dvh,1.1rem)] shadow-xl overflow-hidden backdrop-blur-xl">
-        {/* Cabecera del Néctar */}
-        <div className="flex items-center justify-between gap-2 border-b border-slate-800/80 pb-[clamp(0.3rem,0.75dvh,0.55rem)] shrink-0">
-          <div className="flex items-center gap-2 min-w-0">
-            <div className="w-[clamp(1.4rem,min(1.8vw,3.6dvh),1.85rem)] h-[clamp(1.4rem,min(1.8vw,3.6dvh),1.85rem)] rounded-lg bg-amber-500/20 border border-amber-400/50 flex items-center justify-center text-amber-400 text-[clamp(10px,min(0.85vw,1.7dvh),13.5px)] shrink-0 shadow-[0_0_10px_rgba(251,191,36,0.3)]">
-              <i className="fa-solid fa-jar"></i>
-            </div>
-            <h5 className="font-zeus text-[clamp(0.72rem,min(0.98vw,2dvh),0.95rem)] font-black text-amber-400 uppercase tracking-wide truncate">
-              {card1Title}
-            </h5>
+      <div className="rounded-lg border border-[#C5A059] bg-[#FAF9F6] shadow-xl flex flex-col overflow-hidden shrink-0">
+        {/* Header de Suplementos */}
+        <div className="bg-gradient-to-r from-[#0F1E36] via-[#162A4A] to-[#0F1E36] px-3.5 py-1.5 border-b border-[#C5A059] flex items-center justify-between shrink-0 shadow-sm">
+          <div className="flex items-center gap-2">
+            <i className="fa-solid fa-bottle-water text-[#D4AF37] text-xs"></i>
+            <span className="font-cinzel text-xs font-black text-white tracking-wider uppercase">
+              {card1Title || 'SUPLEMENTOS EN RECEPCIÓN'}
+            </span>
           </div>
-          <span className="bg-amber-500/15 border border-amber-500/40 text-amber-300 text-[clamp(8.5px,min(0.68vw,1.4dvh),10.5px)] font-black uppercase px-2.5 py-0.5 rounded-full shrink-0 whitespace-nowrap">
+
+          <span className="text-[9px] font-cinzel font-bold text-[#F3E5AB] uppercase bg-[#091528] border border-[#C5A059]/60 px-2 py-0.5 rounded-full">
             EN BARRA
           </span>
         </div>
 
-        {/* Grid 2x2 Compacto y Bien Proporcionado */}
-        <div className="grid grid-cols-2 gap-[clamp(0.4rem,0.95dvh,0.7rem)] my-[clamp(0.4rem,0.95dvh,0.7rem)]">
-          {arsenalItems.slice(0, 4).map((it, idx) => {
-            const style = ITEM_ICONS[it.id] || Object.values(ITEM_ICONS)[idx % 4];
-            return (
+        {/* Rejilla 2x2 de Productos */}
+        <div className="p-2 sm:p-2.5 bg-marble-card">
+          <div className="grid grid-cols-2 gap-1.5 sm:gap-2">
+            {displayProducts.map((p, idx) => (
               <div
-                key={it.id || idx}
-                className="bg-slate-900/90 border border-slate-800 hover:border-amber-500/50 rounded-xl p-[clamp(0.45rem,1.05dvh,0.75rem)] flex flex-col justify-between gap-[clamp(0.3rem,0.75dvh,0.55rem)] transition-all shadow-md min-h-0"
+                key={p.id || idx}
+                className="flex items-center justify-between p-2 rounded-md bg-gradient-to-b from-[#162A4A] to-[#0F1E36] border border-[#C5A059]/60 shadow-sm text-white"
               >
                 <div className="flex items-center gap-2 min-w-0">
-                  <div className={`w-[clamp(1.5rem,min(1.9vw,3.8dvh),2rem)] h-[clamp(1.5rem,min(1.9vw,3.8dvh),2rem)] rounded-lg border flex items-center justify-center text-[clamp(11px,min(0.9vw,1.8dvh),14px)] shrink-0 ${style.bg} ${style.color}`}>
-                    <i className={`fa-solid ${it.icon || style.icon}`}></i>
+                  <div className="w-6 h-6 rounded bg-[#091528] border border-[#C5A059]/50 flex items-center justify-center shrink-0 text-[#F3E5AB]">
+                    <i className={`fa-solid ${p.icon || 'fa-bottle-water'} text-[10px]`}></i>
                   </div>
-                  <p className="text-[clamp(0.72rem,min(0.92vw,1.88dvh),0.9rem)] font-extrabold text-white leading-tight truncate">
-                    {it.name}
-                  </p>
-                </div>
-
-                <div className="flex items-center justify-between gap-1 pt-[clamp(0.25rem,0.55dvh,0.4rem)] border-t border-slate-800/80">
-                  <span className="text-[clamp(8.5px,min(0.68vw,1.4dvh),11px)] font-bold text-slate-400 truncate">
-                    {it.stock !== undefined && it.stock <= 0 ? 'Agotado' : 'Disponible'}
+                  <span className="font-cinzel text-[10px] sm:text-[11px] font-bold text-white truncate">
+                    {p.name}
                   </span>
-                  <strong className="font-zeus text-[clamp(0.82rem,min(1.12vw,2.25dvh),1.1rem)] font-black text-emerald-400 leading-none shrink-0">
-                    ${it.price}
-                  </strong>
                 </div>
+                <span className="font-cinzel text-xs font-black text-[#D4AF37] ml-1 shrink-0">
+                  ${p.price}
+                </span>
               </div>
-            );
-          })}
+            ))}
+          </div>
+
+          {/* Subtítulo informativo */}
+          <p className="text-[9.5px] text-[#718096] text-center font-medium mt-2 leading-tight">
+            {card1Desc || 'Pregunta por tu Scoop de Pre-entreno Hype, Creatina y Proteína por servicio.'}
+          </p>
         </div>
-
-        <p className="text-[clamp(9.5px,min(0.75vw,1.55dvh),12px)] text-slate-400 text-center font-medium truncate pt-[clamp(0.25rem,0.65dvh,0.45rem)] border-t border-slate-800/80 shrink-0">
-          {card1Desc || 'Pide tu pre-entreno Rayo de Zeus, proteína o hidratación fría al ingresar.'}
-        </p>
       </div>
-
-      <style>{`
-        @keyframes countdownBar {
-          from { width: 100%; }
-          to { width: 0%; }
-        }
-      `}</style>
     </aside>
   );
 }

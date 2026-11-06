@@ -1,10 +1,10 @@
 import React, { useEffect, useRef } from 'react';
-import { ZeusEmblem } from '../common/ZeusSvg';
+import { TempleFrame } from '../common/GreekTempleComponents';
 
 export default function PromoHeroBanner({
-  badge = 'DECRETOS & PROMOCIONES DEL OLIMPO',
-  title = 'PROMO DÚO TITANES 2 X $700 MXN',
-  desc = 'Entrena en el Templo de Zeus. ¡Disciplina y poder divino!',
+  badge = 'PROMO DESTACADA DEL MES',
+  title = 'MENSUALIDAD ZEUS - $400 MXN',
+  desc = 'Acceso total durante 30 días de entrenamiento sin límites en el Templo del Olimpo.',
   progressKey,
   duration = 10000,
   isAutoplay = true,
@@ -23,103 +23,109 @@ export default function PromoHeroBanner({
   }, [title, desc, badge]);
 
   return (
-    <div
-      ref={boxRef}
-      className="relative flex-[1.15] min-h-0 overflow-hidden flex flex-row items-center justify-between gap-[clamp(1rem,2.2vw,2.5rem)] bg-gradient-to-r from-[#070b14]/95 via-[#090e1a]/92 to-sky-950/40 border-l-4 border-l-sky-400 border border-sky-500/20 px-[clamp(1.1rem,2.2vw,2.25rem)] py-[clamp(0.75rem,2dvh,1.6rem)] rounded-2xl xl:rounded-3xl backdrop-blur-xl shadow-[0_10px_35px_rgba(0,0,0,0.75)] transition-all duration-300"
-    >
-      {/* Resplandor ambiental decorativo */}
-      <div className="absolute -top-24 -left-24 w-64 h-64 bg-sky-500/10 rounded-full blur-3xl pointer-events-none"></div>
-      <div className="absolute -bottom-24 right-12 w-56 h-56 bg-amber-500/10 rounded-full blur-3xl pointer-events-none"></div>
+    <div ref={boxRef} className="flex-[1.15] min-h-0 flex flex-col transition-all duration-300">
+      <TempleFrame
+        className="h-full shadow-xl"
+        innerClassName="bg-olympus-storm text-white flex flex-col justify-between p-3.5 sm:p-5 relative overflow-hidden"
+        size="md"
+        columnWidth="w-4 sm:w-6 md:w-7"
+        topLintel={
+          <div className="w-full flex items-center justify-between gap-2 px-1">
+            <div className="flex items-center gap-2">
+              <span className="bg-[#D4AF37] text-[#0F1E36] font-cinzel text-[10px] sm:text-xs font-black uppercase px-2.5 py-0.5 rounded-full shadow-sm">
+                <i className="fa-solid fa-crown text-[9px] mr-1"></i> {badge}
+              </span>
+              <span className="hidden sm:inline-flex items-center gap-1.5 text-[10px] text-[#0F1E36] font-bold uppercase tracking-wider">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#10b981] animate-ping"></span>
+                CARTELERA OFICIAL EN VIVO
+              </span>
+            </div>
 
-      <div className="relative z-10 flex-1 min-w-0 flex flex-col justify-center gap-[clamp(0.35rem,1.05dvh,0.75rem)] h-full overflow-hidden">
-        {/* Fila superior: Badges + Indicador de cartelera */}
-        <div className="flex flex-wrap items-center justify-between gap-2 shrink-0">
-          <div className="flex flex-wrap items-center gap-2.5 min-w-0">
-            <span className="bg-gradient-to-r from-sky-600 to-indigo-600 text-white text-[clamp(10px,min(0.82vw,1.7dvh),14px)] font-black uppercase px-3 py-1 rounded-lg tracking-wider inline-flex items-center gap-2 shadow-md shadow-sky-900/40 border border-sky-400/40 truncate max-w-full">
-              <i className="fa-solid fa-bolt-lightning text-amber-300 text-[0.9em] shrink-0"></i>
-              <span className="truncate">{badge}</span>
-              <i className="fa-solid fa-bolt-lightning text-amber-300 text-[0.9em] shrink-0"></i>
+            {/* Paginación de Promos */}
+            {totalPromos > 1 && (
+              <div className="flex items-center gap-1 bg-[#0F1E36]/10 px-2 py-0.5 rounded-full">
+                {Array.from({ length: totalPromos }).map((_, idx) => (
+                  <button
+                    key={idx}
+                    type="button"
+                    onClick={() => onSelectPromo && onSelectPromo(idx)}
+                    className={`h-1.5 rounded-full transition-all cursor-pointer ${
+                      idx === currentIndex ? 'w-4 bg-[#D4AF37]' : 'w-1.5 bg-[#997A2C]/40'
+                    }`}
+                    title={`Promoción ${idx + 1}`}
+                  />
+                ))}
+              </div>
+            )}
+          </div>
+        }
+        bottomLintel={
+          <div className="w-full flex items-center justify-between text-[10px] text-[#997A2C] font-bold px-2 py-0.5">
+            <span className="font-cinzel tracking-wider">TEMPLO SAGRADO DE ZEUS • OFERTA OFICIAL</span>
+            <span className="font-cinzel text-[#0F1E36]">100% LIBRE DE CONTRATO</span>
+          </div>
+        }
+      >
+        {/* Rayo Divino Épico en el fondo derecho */}
+        <div className="absolute -right-2 sm:right-6 top-1/2 -translate-y-1/2 select-none pointer-events-none opacity-85">
+          <svg className="w-24 h-24 sm:w-36 sm:h-36 md:w-44 md:h-44 lightning-glow" viewBox="0 0 100 100" fill="none">
+            <path
+              d="M58 5 L22 52 L48 52 L36 95 L78 44 L52 44 Z"
+              fill="url(#gold-lightning-grad)"
+              stroke="#FFF"
+              strokeWidth="1.5"
+            />
+            <defs>
+              <linearGradient id="gold-lightning-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor="#FFFFFF" />
+                <stop offset="30%" stopColor="#FFF275" />
+                <stop offset="70%" stopColor="#FFD700" />
+                <stop offset="100%" stopColor="#D4AF37" />
+              </linearGradient>
+            </defs>
+          </svg>
+        </div>
+
+        {/* Contenido Central del Banner */}
+        <div className="relative z-10 max-w-2xl sm:max-w-3xl pr-14 sm:pr-24 flex flex-col justify-center gap-1.5 sm:gap-2">
+          <h2 className="font-cinzel text-xl sm:text-2xl md:text-3xl lg:text-4xl font-black text-white tracking-wide uppercase leading-tight drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]">
+            {title}
+          </h2>
+
+          <p className="text-xs sm:text-sm md:text-base text-[#F4F3EF]/90 font-medium leading-relaxed drop-shadow">
+            {desc}
+          </p>
+
+          {/* Badges inferiores */}
+          <div className="flex flex-wrap items-center gap-2 pt-1.5 sm:pt-2">
+            <span className="inline-flex items-center gap-1.5 bg-[#0F1E36]/80 border border-[#C5A059]/70 text-[#F3E5AB] text-[10px] sm:text-xs font-bold px-2.5 py-0.5 rounded-full shadow-sm">
+              <i className="fa-solid fa-bolt-lightning text-[#FFD700] text-[9px]"></i>
+              Activación Inmediata
             </span>
-
-            <span className="text-[clamp(10px,min(0.78vw,1.6dvh),13px)] text-slate-200 font-extrabold uppercase tracking-widest hidden sm:inline-flex items-center gap-2 bg-white/5 border border-white/10 px-3 py-1 rounded-lg whitespace-nowrap">
-              <span className="w-2 h-2 rounded-full bg-sky-400 shadow-[0_0_8px_rgba(56,189,248,0.9)] animate-pulse shrink-0"></span>
-              CARTELERA OFICIAL EN VIVO
+            <span className="inline-flex items-center gap-1.5 bg-[#0F1E36]/80 border border-[#C5A059]/70 text-[#F3E5AB] text-[10px] sm:text-xs font-bold px-2.5 py-0.5 rounded-full shadow-sm">
+              <i className="fa-solid fa-dumbbell text-[#D4AF37] text-[9px]"></i>
+              Acceso Total 1 Pase por Sesión
+            </span>
+            <span className="inline-flex items-center gap-1.5 bg-[#0F1E36]/80 border border-[#10b981]/60 text-[#34d399] text-[10px] sm:text-xs font-bold px-2.5 py-0.5 rounded-full shadow-sm">
+              <i className="fa-solid fa-circle-check text-[9px]"></i>
+              En venta en recepción
             </span>
           </div>
-
-          {/* Indicador de promoción activa */}
-          {totalPromos > 1 && (
-            <div className="hidden md:flex items-center gap-1.5 bg-black/60 border border-slate-800 px-2.5 py-1 rounded-full shrink-0">
-              {Array.from({ length: totalPromos }).map((_, idx) => (
-                <button
-                  key={idx}
-                  type="button"
-                  onClick={() => onSelectPromo && onSelectPromo(idx)}
-                  className={`h-2 rounded-full transition-all duration-300 cursor-pointer ${
-                    idx === currentIndex
-                      ? 'w-6 bg-sky-400 shadow-[0_0_8px_rgba(56,189,248,0.8)]'
-                      : 'w-2 bg-slate-700 hover:bg-slate-500'
-                  }`}
-                  title={`Promoción ${idx + 1}`}
-                />
-              ))}
-            </div>
-          )}
         </div>
 
-        {/* Título Principal Grande y Contundente */}
-        <h2 className="font-zeus text-[clamp(1.35rem,min(2.7vw,5.6dvh),3.35rem)] font-black text-white leading-[1.1] uppercase tracking-wide line-clamp-2 break-words drop-shadow-[0_4px_12px_rgba(0,0,0,0.95)]">
-          {title}
-        </h2>
-
-        {/* Descripción con alta presencia visual */}
-        <p className="text-[clamp(0.85rem,min(1.18vw,2.45dvh),1.35rem)] text-slate-200 font-medium leading-snug line-clamp-2 max-w-4xl">
-          {desc}
-        </p>
-
-        {/* Barra táctica inferior de beneficios para cohesión visual */}
-        <div className="hidden sm:flex flex-wrap items-center gap-2.5 pt-[clamp(0.2rem,0.6dvh,0.45rem)] shrink-0">
-          <span className="inline-flex items-center gap-1.5 bg-slate-900/90 border border-slate-800 text-slate-300 text-[clamp(9.5px,min(0.75vw,1.55dvh),12.5px)] font-bold px-2.5 py-1 rounded-lg">
-            <i className="fa-solid fa-bolt-lightning text-amber-400"></i>
-            Activación inmediata
-          </span>
-          <span className="inline-flex items-center gap-1.5 bg-slate-900/90 border border-slate-800 text-slate-300 text-[clamp(9.5px,min(0.75vw,1.55dvh),12.5px)] font-bold px-2.5 py-1 rounded-lg">
-            <i className="fa-solid fa-dumbbell text-sky-400"></i>
-            Acceso total al Santuario
-          </span>
-          <span className="inline-flex items-center gap-1.5 bg-emerald-950/60 border border-emerald-500/40 text-emerald-300 text-[clamp(9.5px,min(0.75vw,1.55dvh),12.5px)] font-bold px-2.5 py-1 rounded-lg">
-            <i className="fa-solid fa-circle-check text-emerald-400"></i>
-            Sin costo de inscripción
-          </span>
-        </div>
-      </div>
-
-      {/* Emblema Lateral Grande con Anillo Táctico */}
-      <div className="hidden sm:flex items-center justify-center shrink-0 relative z-10">
-        <div className="w-[clamp(4.25rem,min(7.8vw,16dvh),8.75rem)] h-[clamp(4.25rem,min(7.8vw,16dvh),8.75rem)] rounded-full bg-gradient-to-b from-sky-950/70 to-[#070b14]/90 border-2 border-sky-400/40 flex items-center justify-center shadow-[0_0_40px_rgba(56,189,248,0.3)]">
-          <ZeusEmblem className="w-[74%] h-[74%] drop-shadow-[0_0_20px_rgba(56,189,248,0.65)]" />
-        </div>
-      </div>
-
-      {/* Barra de Progreso de Auto-Rotación */}
-      {isAutoplay && (
-        <div className="absolute bottom-0 left-0 right-0 h-1.5 bg-slate-950/90 overflow-hidden">
-          <div
-            key={progressKey}
-            className="h-full bg-gradient-to-r from-sky-500 via-indigo-500 to-amber-400"
-            style={{
-              animation: `slideProgress ${duration}ms linear infinite`
-            }}
-          ></div>
-        </div>
-      )}
-
-      <style>{`
-        @keyframes slideProgress {
-          from { width: 0%; }
-          to { width: 100%; }
-        }
-      `}</style>
+        {/* Barra de progreso de auto-rotación */}
+        {isAutoplay && (
+          <div className="absolute bottom-0 left-0 right-0 h-1 bg-[#0F1E36]/60 overflow-hidden">
+            <div
+              key={progressKey}
+              className="h-full bg-gradient-to-r from-[#D4AF37] via-[#FFF275] to-[#D4AF37]"
+              style={{
+                animation: `slideProgress ${duration}ms linear infinite`
+              }}
+            ></div>
+          </div>
+        )}
+      </TempleFrame>
     </div>
   );
 }

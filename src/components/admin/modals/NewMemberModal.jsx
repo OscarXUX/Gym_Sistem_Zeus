@@ -69,7 +69,7 @@ export default function NewMemberModal({ isOpen, onClose, onRegister }) {
     const sx = (srcWidth - minSide) / 2;
     const sy = (srcHeight - minSide) / 2;
 
-    ctx.fillStyle = '#070b14';
+    ctx.fillStyle = '#FAF9F5';
     ctx.fillRect(0, 0, 300, 300);
     ctx.drawImage(sourceElement, sx, sy, minSide, minSide, 0, 0, 300, 300);
 
@@ -129,19 +129,19 @@ export default function NewMemberModal({ isOpen, onClose, onRegister }) {
   };
 
   return (
-    <div className="fixed inset-0 bg-black/85 backdrop-blur-sm z-[110] flex items-center justify-center p-3 sm:p-4 animate-fadeIn overflow-hidden">
-      <div className="bg-[#090e1a] border border-sky-500/30 rounded-3xl w-full max-w-lg shadow-2xl relative my-auto max-h-[90dvh] flex flex-col overflow-hidden">
+    <div className="fixed inset-0 bg-black/75 backdrop-blur-sm z-[110] flex items-center justify-center p-3 sm:p-4 animate-fadeIn overflow-hidden font-body text-slate-800">
+      <div className="bg-[#FAF9F5] border-2 border-[#C5A059] rounded-3xl w-full max-w-lg shadow-2xl relative my-auto max-h-[90dvh] flex flex-col overflow-hidden">
         {/* Cabecera Fija */}
-        <div className="p-4 sm:p-5 border-b border-slate-800/80 flex items-center justify-between shrink-0 bg-slate-950/90">
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-xl bg-sky-500/20 border border-sky-400/50 flex items-center justify-center text-sky-400 text-sm shadow-[0_0_10px_rgba(56,189,248,0.3)]">
-              <i className="fa-solid fa-user-plus"></i>
+        <div className="p-4 sm:p-5 border-b border-[#C5A059] flex items-center justify-between shrink-0 bg-[#0F1E36] text-white">
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-[#162A4A] to-[#0F1E36] border border-[#C5A059] flex items-center justify-center text-[#D4AF37] text-sm shadow-sm">
+              <i className="fa-solid fa-user-plus text-[#FFD700]"></i>
             </div>
             <div>
-              <h3 className="font-zeus text-sm sm:text-base font-black text-white leading-tight">
+              <h3 className="font-cinzel text-sm sm:text-base font-black text-white leading-tight">
                 Consagrar Nuevo Atleta
               </h3>
-              <p className="text-[11px] text-slate-400">Alta en SQLite, foto y cobro en tesorería</p>
+              <p className="text-[11px] text-slate-300">Alta en SQLite, foto y cobro en tesorería</p>
             </div>
           </div>
           <button
@@ -150,7 +150,7 @@ export default function NewMemberModal({ isOpen, onClose, onRegister }) {
               stopCameraStream();
               onClose();
             }}
-            className="w-8 h-8 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center text-sm cursor-pointer transition-colors"
+            className="w-8 h-8 rounded-xl bg-white/10 hover:bg-white/20 text-slate-300 hover:text-white flex items-center justify-center text-sm cursor-pointer transition-colors"
           >
             <i className="fa-solid fa-xmark"></i>
           </button>
@@ -163,8 +163,8 @@ export default function NewMemberModal({ isOpen, onClose, onRegister }) {
         <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-4 sm:p-5 space-y-4 scrollbar-thin">
           {/* VISTA PREVIA EN VIVO DE CÁMARA */}
           {isCameraActive && (
-            <div className="bg-slate-950 border-2 border-sky-500/70 rounded-2xl p-3 flex flex-col items-center gap-2.5 shadow-lg shadow-sky-950/40">
-              <div className="relative w-40 h-40 rounded-xl overflow-hidden bg-black shadow-inner">
+            <div className="bg-white border-2 border-[#C5A059] rounded-2xl p-3 flex flex-col items-center gap-2.5 shadow-md">
+              <div className="relative w-40 h-40 rounded-xl overflow-hidden bg-black shadow-inner border border-[#C5A059]">
                 <video
                   ref={videoRef}
                   autoPlay
@@ -177,14 +177,14 @@ export default function NewMemberModal({ isOpen, onClose, onRegister }) {
                 <button
                   type="button"
                   onClick={handleCaptureFromVideo}
-                  className="flex-1 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-black text-xs py-2 rounded-xl flex items-center justify-center gap-1.5 cursor-pointer shadow"
+                  className="flex-1 btn-gold-olympus font-cinzel font-black text-xs py-2 rounded-xl flex items-center justify-center gap-1.5 cursor-pointer shadow-sm"
                 >
-                  <i className="fa-solid fa-camera"></i> Capturar Foto
+                  <i className="fa-solid fa-camera text-[#0F1E36]"></i> Capturar Foto
                 </button>
                 <button
                   type="button"
                   onClick={stopCameraStream}
-                  className="bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs px-3 py-2 rounded-xl cursor-pointer"
+                  className="bg-[#EAE7DC] hover:bg-[#DCD8CC] text-[#0F1E36] font-bold text-xs px-3 py-2 rounded-xl cursor-pointer"
                 >
                   Cancelar
                 </button>
@@ -193,17 +193,17 @@ export default function NewMemberModal({ isOpen, onClose, onRegister }) {
           )}
 
           {/* SECCIÓN HERO: FOTO Y NOMBRE */}
-          <div className="bg-slate-900/60 border border-slate-800 rounded-2xl p-3 sm:p-4 flex items-center gap-3.5 backdrop-blur-md">
+          <div className="bg-white border border-[#C5A059] rounded-2xl p-3 sm:p-4 flex items-center gap-3.5 shadow-sm">
             {/* Foto Avatar con Opciones */}
             <div className="flex flex-col items-center gap-1 shrink-0">
               <div className="relative">
                 <img
                   src={photoBase64 || DEFAULT_AVATAR}
                   alt="Avatar"
-                  className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl object-cover border-2 border-sky-400/80 bg-slate-950 shadow-md"
+                  className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl object-cover border-2 border-[#C5A059] bg-[#EAE7DC] shadow-sm"
                 />
                 {photoBase64 && (
-                  <span className="absolute -bottom-1 -right-1 bg-emerald-500 text-white text-[9px] font-black px-1.5 py-0.2 rounded-md shadow">
+                  <span className="absolute -bottom-1 -right-1 bg-emerald-600 text-white text-[9px] font-black px-1.5 py-0.2 rounded-md shadow-sm">
                     OK
                   </span>
                 )}
@@ -212,7 +212,7 @@ export default function NewMemberModal({ isOpen, onClose, onRegister }) {
                 <button
                   type="button"
                   onClick={startCamera}
-                  className="bg-slate-800 hover:bg-sky-500 text-slate-200 hover:text-white p-1.5 rounded-lg text-xs cursor-pointer transition-colors"
+                  className="bg-[#FAF9F5] hover:bg-[#0F1E36] hover:text-[#F3E5AB] text-[#0F1E36] border border-[#C5A059] p-1.5 rounded-lg text-xs cursor-pointer transition-colors shadow-sm"
                   title="Tomar Foto con Cámara"
                 >
                   <i className="fa-solid fa-camera"></i>
@@ -220,7 +220,7 @@ export default function NewMemberModal({ isOpen, onClose, onRegister }) {
                 <button
                   type="button"
                   onClick={() => fileInputRef.current && fileInputRef.current.click()}
-                  className="bg-slate-800 hover:bg-slate-700 text-slate-200 p-1.5 rounded-lg text-xs cursor-pointer transition-colors"
+                  className="bg-[#FAF9F5] hover:bg-[#0F1E36] hover:text-[#F3E5AB] text-[#0F1E36] border border-[#C5A059] p-1.5 rounded-lg text-xs cursor-pointer transition-colors shadow-sm"
                   title="Subir Archivo de Imagen"
                 >
                   <i className="fa-solid fa-upload"></i>
@@ -238,7 +238,7 @@ export default function NewMemberModal({ isOpen, onClose, onRegister }) {
 
             {/* Nombre Completo y PIN */}
             <div className="flex-1 min-w-0 space-y-1">
-              <label className="text-[10px] font-black uppercase tracking-wider text-sky-400 block">
+              <label className="text-[10px] font-black uppercase font-cinzel tracking-wider text-[#0F1E36] block">
                 Nombre Completo del Atleta *
               </label>
               <input
@@ -246,18 +246,18 @@ export default function NewMemberModal({ isOpen, onClose, onRegister }) {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="Ej. Aquiles Morales"
-                className="w-full bg-slate-950 border border-slate-700 focus:border-sky-400 rounded-xl px-3 py-2 text-xs sm:text-sm text-white font-zeus font-black tracking-wide focus:outline-none transition-colors"
+                className="w-full bg-[#FAF9F5] border border-[#C5A059] focus:border-[#0F1E36] rounded-xl px-3 py-2 text-xs sm:text-sm text-[#0F1E36] font-cinzel font-black tracking-wide focus:outline-none transition-colors"
                 autoFocus
                 required
               />
-              <span className="text-[10px] text-slate-400 block truncate">
+              <span className="text-[10px] text-slate-500 block truncate">
                 Usa la cámara o sube archivo para el registro sagrado
               </span>
             </div>
           </div>
 
           {cameraError && (
-            <p className="text-[11px] text-amber-300 text-center font-semibold bg-amber-950/30 border border-amber-800/40 py-1.5 px-2 rounded-xl">
+            <p className="text-[11px] text-amber-800 text-center font-semibold bg-amber-50 border border-amber-300 py-1.5 px-2 rounded-xl">
               {cameraError}
             </p>
           )}
@@ -265,7 +265,7 @@ export default function NewMemberModal({ isOpen, onClose, onRegister }) {
           {/* Teléfono y PIN/Folio Opcional */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <label className="text-[10px] font-black uppercase tracking-wider text-slate-400 block mb-1">
+              <label className="text-[10px] font-black uppercase font-cinzel tracking-wider text-slate-600 block mb-1">
                 Teléfono (WhatsApp)
               </label>
               <input
@@ -273,11 +273,11 @@ export default function NewMemberModal({ isOpen, onClose, onRegister }) {
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
                 placeholder="Ej. 55 1234 5678"
-                className="w-full bg-slate-900 border border-slate-800 focus:border-sky-400 rounded-xl px-3 py-2 text-xs text-white font-bold focus:outline-none transition-colors"
+                className="w-full bg-white border border-[#C5A059] focus:border-[#0F1E36] rounded-xl px-3 py-2 text-xs text-[#0F1E36] font-bold focus:outline-none transition-colors"
               />
             </div>
             <div>
-              <label className="text-[10px] font-black uppercase tracking-wider text-slate-400 block mb-1">
+              <label className="text-[10px] font-black uppercase font-cinzel tracking-wider text-slate-600 block mb-1">
                 PIN / Folio (Opcional)
               </label>
               <input
@@ -286,20 +286,20 @@ export default function NewMemberModal({ isOpen, onClose, onRegister }) {
                 onChange={(e) => setCustomId(e.target.value)}
                 placeholder="Autogenerado (ej. 089)"
                 maxLength={6}
-                className="w-full bg-slate-900 border border-slate-800 focus:border-sky-400 rounded-xl px-3 py-2 text-xs text-sky-400 placeholder-slate-600 font-zeus font-bold focus:outline-none transition-colors"
+                className="w-full bg-white border border-[#C5A059] focus:border-[#0F1E36] rounded-xl px-3 py-2 text-xs text-[#0F1E36] placeholder-slate-400 font-cinzel font-bold focus:outline-none transition-colors"
               />
             </div>
           </div>
 
           {/* Selector de Plan Oficial */}
           <div>
-            <label className="text-[10px] font-black uppercase tracking-wider text-slate-400 block mb-1">
+            <label className="text-[10px] font-black uppercase font-cinzel tracking-wider text-slate-600 block mb-1">
               Decreto / Plan Oficial de Acceso
             </label>
             <select
               value={planOption}
               onChange={(e) => setPlanOption(e.target.value)}
-              className="w-full bg-slate-900 border border-slate-800 focus:border-sky-400 rounded-xl px-3 py-2.5 text-xs text-white font-bold focus:outline-none cursor-pointer"
+              className="w-full bg-white border border-[#C5A059] focus:border-[#0F1E36] rounded-xl px-3 py-2.5 text-xs text-[#0F1E36] font-bold focus:outline-none cursor-pointer"
             >
               <option value="Mensualidad|$400|30">Mensualidad Olimpo $400 MXN - 30 días</option>
               <option value="Promo Dúo|2x$700|30">Promo Dúo Olímpico 2 x $700 MXN - 30 días</option>
@@ -308,20 +308,20 @@ export default function NewMemberModal({ isOpen, onClose, onRegister }) {
           </div>
 
           {/* Barra de Acciones Fija */}
-          <div className="flex gap-2 pt-3 border-t border-slate-800/80">
+          <div className="flex gap-2 pt-3 border-t border-[#C5A059]/30">
             <button
               type="button"
               onClick={() => {
                 stopCameraStream();
                 onClose();
               }}
-              className="flex-1 bg-slate-900 hover:bg-slate-800 text-slate-300 font-bold text-xs py-2.5 rounded-xl transition-all cursor-pointer text-center"
+              className="flex-1 bg-white hover:bg-[#F3EFE6] border border-[#C5A059] text-slate-700 font-bold text-xs py-2.5 rounded-xl transition-all cursor-pointer text-center"
             >
               Cancelar
             </button>
             <button
               type="submit"
-              className="flex-1 bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 active:scale-95 text-white font-black text-xs py-2.5 rounded-xl uppercase tracking-wider shadow-lg shadow-sky-950/50 transition-all cursor-pointer text-center border border-sky-400/30"
+              className="flex-1 btn-gold-olympus font-cinzel font-black text-xs py-2.5 rounded-xl uppercase tracking-wider shadow-sm transition-all cursor-pointer text-center"
             >
               Consagrar & Cobrar
             </button>

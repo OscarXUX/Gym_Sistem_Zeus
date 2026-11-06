@@ -2,30 +2,30 @@ import React from 'react';
 
 export default function HeaderSwitch({ currentView, onChangeView }) {
   return (
-    <div className="inline-flex items-center bg-stone-900 border border-stone-800 rounded-xl p-0.5 text-[10px] font-bold shrink-0 shadow-inner">
+    <div className="inline-flex items-center bg-[#0F1E36] border border-[#C5A059] rounded-lg p-0.5 text-[11px] font-bold shrink-0 shadow-md">
       <button
         type="button"
         onClick={() => onChangeView && onChangeView('admin')}
-        className={`px-2 py-1 rounded-lg transition-all flex items-center gap-1 cursor-pointer ${
+        className={`px-3 py-1 rounded-[6px] transition-all flex items-center gap-1.5 cursor-pointer font-cinzel ${
           currentView === 'admin'
-            ? 'bg-red-600 text-white shadow-[0_0_10px_rgba(220,38,38,0.4)]'
-            : 'text-stone-400 hover:text-white'
+            ? 'bg-gradient-to-r from-[#D4AF37] to-[#F3E5AB] text-[#0F1E36] font-black shadow-[0_2px_8px_rgba(212,175,55,0.4)]'
+            : 'text-[#F3E5AB]/70 hover:text-white'
         }`}
-        title="Vista Panel Admin"
+        title="Vista Panel Administrativo del Olimpo"
       >
-        <i className="fa-solid fa-tablet-screen-button text-[10px]"></i>
+        <i className="fa-solid fa-landmark text-[10px]"></i>
         <span>Admin</span>
       </button>
 
       <button
         type="button"
         onClick={() => onChangeView && onChangeView('monitor')}
-        className={`px-2 py-1 rounded-lg transition-all flex items-center gap-1 cursor-pointer ${
+        className={`px-3 py-1 rounded-[6px] transition-all flex items-center gap-1.5 cursor-pointer font-cinzel ${
           currentView === 'monitor'
-            ? 'bg-red-600 text-white shadow-[0_0_10px_rgba(220,38,38,0.4)]'
-            : 'text-stone-400 hover:text-white'
+            ? 'bg-gradient-to-r from-[#D4AF37] to-[#F3E5AB] text-[#0F1E36] font-black shadow-[0_2px_8px_rgba(212,175,55,0.4)]'
+            : 'text-[#F3E5AB]/70 hover:text-white'
         }`}
-        title="Cambiar a Monitor TV"
+        title="Cambiar a Monitor TV Kiosco"
       >
         <i className="fa-solid fa-tv text-[10px]"></i>
         <span>TV</span>

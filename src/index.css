@@ -1,18 +1,30 @@
 @import "tailwindcss";
 
 /* ========================================================================== */
-/* ZEUS GYM — APPLE & CLAUDE AESTHETIC ENGINE & DESIGN TOKENS                 */
+/* GYM ZEUS — OLIMPO CLÁSICO (HISTÓRICO Y ÉPICO) DESIGN ENGINE                */
+/* Architecture inspired by Greek temples, marble, gold & storm aesthetic     */
 /* ========================================================================== */
 
 @layer base {
   :root {
-    --canvas-deep: #070b14;
-    --canvas-surface: #090e1a;
-    --canvas-elevated: #0d1527;
-    --celestial-cyan: #38bdf8;
-    --lightning-gold: #fbbf24;
-    --olympus-emerald: #10b981;
-    --sacred-ruby: #f43f5e;
+    /* Paleta del Olimpo */
+    --olympus-storm-canvas: #070b14;
+    --olympus-storm-dark: #090e1a;
+    --olympus-lightning-gold: #ffd700;
+    --olympus-lightning-amber: #f59e0b;
+    --olympus-celestial-cyan: #38bdf8;
+    --olympus-navy-deep: #0F1E36;
+    --olympus-navy-light: #162A4A;
+    --olympus-navy-surface: #1E3458;
+    --olympus-gold: #D4AF37;
+    --olympus-gold-light: #F3E5AB;
+    --olympus-gold-dark: #997A2C;
+    --olympus-gold-border: #C5A059;
+    --olympus-marble: #F4F3EF;
+    --olympus-marble-card: #FAF9F6;
+    --olympus-marble-border: #E2E0D8;
+    --olympus-sky-deep: #14223B;
+    --olympus-sky-light: #2D436B;
   }
 
   html,
@@ -22,10 +34,8 @@
     -webkit-user-select: none;
     touch-action: manipulation;
     font-family: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    background-color: #070b14;
-    color: #f8fafc;
-    background-image: radial-gradient(circle at 50% -10%, #1e293b 0%, #0d1527 50%, #070b14 100%);
-    background-attachment: fixed;
+    background-color: #F4F3EF;
+    color: #1A202C;
     margin: 0;
     padding: 0;
     overflow-x: hidden;
@@ -43,167 +53,216 @@
 }
 
 /* ========================================================================== */
-/* TYPOGRAPHY TOKENS                                                          */
+/* TIPOGRAFÍAS DEL OLIMPO                                                     */
 /* ========================================================================== */
 
+.font-cinzel {
+  font-family: 'Cinzel', serif;
+  letter-spacing: 0.04em;
+}
+
 .font-zeus {
-  font-family: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  letter-spacing: -0.02em;
+  font-family: 'Cinzel', serif;
+  letter-spacing: 0.03em;
   font-weight: 800;
 }
 
-/* Legacy alias so any pending un-migrated components adopt sleek modern typography */
 .font-gears {
-  font-family: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  letter-spacing: -0.015em;
+  font-family: 'Cinzel', serif;
+  letter-spacing: 0.03em;
   font-weight: 700;
 }
 
-/* ========================================================================== */
-/* APPLE & CLAUDE GLASSMORPHISM UTILITIES                                     */
-/* ========================================================================== */
-
-.glass-panel {
-  background: rgba(13, 21, 39, 0.72);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.09);
-  box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.6), inset 0 1px 0 0 rgba(255, 255, 255, 0.1);
-}
-
-.glass-card {
-  background: rgba(15, 23, 42, 0.65);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5), inset 0 1px 0 0 rgba(255, 255, 255, 0.08);
-}
-
-.glass-surface-1 {
-  background: rgba(15, 23, 42, 0.75);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.glass-surface-2 {
-  background: rgba(30, 41, 59, 0.5);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-}
-
-.glass-pill {
-  background: rgba(56, 189, 248, 0.12);
-  border: 1px solid rgba(56, 189, 248, 0.25);
-  backdrop-filter: blur(8px);
-}
-
-.glass-pill-gold {
-  background: rgba(251, 191, 36, 0.12);
-  border: 1px solid rgba(251, 191, 36, 0.3);
-  backdrop-filter: blur(8px);
+.font-body {
+  font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
 }
 
 /* ========================================================================== */
-/* ZEUS DIVINE ANIMATIONS & PULSES                                            */
+/* TEXTURAS DE MÁRMOL Y TRAVERTINO (SVG DATA-URI EMBEDDED 100% OFFLINE)       */
 /* ========================================================================== */
 
-/* Celestial Aura Glow */
-.zeus-glow {
-  box-shadow: 0 0 30px rgba(56, 189, 248, 0.35), inset 0 0 15px rgba(56, 189, 248, 0.15);
-  animation: zeusGlowPulse 4s ease-in-out infinite alternate;
+.bg-marble-travertine {
+  background-color: #F4F3EF;
+  background-image: 
+    radial-gradient(ellipse at 50% 20%, rgba(255, 255, 255, 0.7) 0%, rgba(244, 243, 239, 0.95) 70%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='600' viewBox='0 0 600 600'%3E%3Cfilter id='marble-veins'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.007 0.004' numOctaves='4' seed='77' result='noise'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0.88   0 0 0 0 0.86   0 0 0 0 0.82   0 0 0 0.38 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23marble-veins)' fill='%23F4F3EF'/%3E%3Cpath d='M-50,150 Q150,80 320,240 T650,280 M-20,420 Q180,350 400,520 T650,480' stroke='%23DDD9CE' stroke-width='1.5' fill='none' opacity='0.55'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 600px 600px;
 }
 
-@keyframes zeusGlowPulse {
-  0% {
-    box-shadow: 0 0 20px rgba(56, 189, 248, 0.25), inset 0 0 8px rgba(56, 189, 248, 0.1);
-    border-color: rgba(56, 189, 248, 0.3);
-  }
-  100% {
-    box-shadow: 0 0 40px rgba(56, 189, 248, 0.5), inset 0 0 20px rgba(56, 189, 248, 0.25);
-    border-color: rgba(56, 189, 248, 0.7);
-  }
+.bg-marble-card {
+  background-color: #FAF9F6;
+  background-image: 
+    linear-gradient(180deg, rgba(255, 255, 255, 0.9) 0%, rgba(245, 243, 237, 0.9) 100%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400' viewBox='0 0 400 400'%3E%3Cpath d='M-10,80 Q120,40 220,160 T420,180 M0,280 Q140,240 280,350 T410,320' stroke='%23E2E0D8' stroke-width='1' fill='none' opacity='0.45'/%3E%3C/svg%3E");
+  border: 1px solid #DCD7C9;
 }
 
-/* Lightning Strike & Flash Pulse */
-.lightning-pulse {
-  animation: lightningStrike 2s cubic-bezier(0.25, 1, 0.5, 1) infinite;
+.admin-mesh-bg {
+  background-color: #F4F3EF;
+  background-image: 
+    radial-gradient(ellipse at 50% 0%, rgba(255, 255, 255, 0.85) 0%, rgba(244, 243, 239, 0.95) 60%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='600' viewBox='0 0 600 600'%3E%3Cfilter id='marble-noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.006 0.004' numOctaves='4' seed='88' result='noise'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0.88   0 0 0 0 0.86   0 0 0 0 0.82   0 0 0 0.35 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23marble-noise)' fill='%23F4F3EF'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 600px 600px;
+}
+
+/* ========================================================================== */
+/* CIELO TORMENTOSO ÉPICO (BANNERS Y TARJETAS DEL OLIMPO)                     */
+/* ========================================================================== */
+
+.bg-olympus-storm {
+  background: 
+    linear-gradient(135deg, rgba(15, 30, 54, 0.96) 0%, rgba(26, 46, 78, 0.92) 45%, rgba(42, 67, 107, 0.88) 75%, rgba(18, 33, 58, 0.96) 100%),
+    radial-gradient(circle at 85% 30%, rgba(255, 215, 0, 0.18) 0%, transparent 45%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='200' viewBox='0 0 400 200'%3E%3Cpath d='M30,120 Q80,80 150,110 T300,90 T390,130 Q330,170 240,150 T80,160 Z' fill='rgba(255,255,255,0.06)' filter='blur(15px)'/%3E%3C/svg%3E");
+  background-size: cover;
+  box-shadow: inset 0 0 30px rgba(10, 18, 32, 0.6);
+}
+
+.bg-olympus-navy {
+  background: linear-gradient(180deg, #0F1E36 0%, #162A4A 100%);
+  border-bottom: 1.5px solid #C5A059;
+}
+
+/* ========================================================================== */
+/* CORNISAS, DINTELES Y ARQUITECTURA DE TEMPLO GRIEGO                         */
+/* ========================================================================== */
+
+.temple-lintel-top {
+  background: linear-gradient(180deg, #FFFFFF 0%, #F5F3EC 40%, #E6E2D4 90%, #D4CEBE 100%);
+  border-top: 1.5px solid #D4AF37;
+  border-bottom: 1.5px solid #C5A059;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+.temple-lintel-bottom {
+  background: linear-gradient(180deg, #E6E2D4 0%, #F5F3EC 60%, #FFFFFF 100%);
+  border-top: 1.5px solid #C5A059;
+  border-bottom: 1.5px solid #D4AF37;
+  box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+.temple-card-frame {
+  background: #FAF9F6;
+  border: 1px solid #C5A059;
+  box-shadow: 0 4px 16px rgba(15, 30, 54, 0.08), 0 1px 3px rgba(0, 0, 0, 0.05);
+  border-radius: 8px;
+}
+
+/* ========================================================================== */
+/* BOTONES, BADGES Y ACENTOS ORO IMPERIAL                                     */
+/* ========================================================================== */
+
+.btn-gold-olympus {
+  background: linear-gradient(135deg, #F5D77F 0%, #D4AF37 50%, #B38E22 100%);
+  border: 1px solid #F3E5AB;
+  color: #0F1E36;
+  font-family: 'Cinzel', serif;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  box-shadow: 0 3px 10px rgba(179, 142, 34, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.65);
+  transition: all 0.2s ease-in-out;
+}
+
+.btn-gold-olympus:hover {
+  background: linear-gradient(135deg, #FCE8A6 0%, #E2BE48 50%, #C49F30 100%);
+  box-shadow: 0 4px 15px rgba(212, 175, 55, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.85);
+  transform: translateY(-1px);
+}
+
+.btn-navy-olympus {
+  background: linear-gradient(180deg, #162A4A 0%, #0F1E36 100%);
+  border: 1px solid #C5A059;
+  color: #F3E5AB;
+  font-family: 'Cinzel', serif;
+  font-weight: 700;
+  box-shadow: 0 2px 8px rgba(15, 30, 54, 0.3);
+  transition: all 0.2s ease-in-out;
+}
+
+.btn-navy-olympus:hover {
+  background: linear-gradient(180deg, #1E3458 0%, #14243F 100%);
+  border-color: #D4AF37;
+  color: #FFFFFF;
+}
+
+.badge-gold-temple {
+  background: linear-gradient(180deg, rgba(212, 175, 55, 0.22) 0%, rgba(153, 122, 44, 0.15) 100%);
+  border: 1px solid #C5A059;
+  color: #F3E5AB;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
+}
+
+.badge-navy-temple {
+  background: #0F1E36;
+  border: 1px solid #C5A059;
+  color: #D4AF37;
+}
+
+.text-gold-gradient {
+  background: linear-gradient(180deg, #FFFFFF 0%, #F5D77F 45%, #D4AF37 80%, #997A2C 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.5));
+}
+
+.text-gold-solid {
+  color: #D4AF37;
+}
+
+/* ========================================================================== */
+/* ANIMACIONES DEL RAYO Y VIBRACIÓN SAGRADA                                   */
+/* ========================================================================== */
+
+.lightning-glow {
+  filter: drop-shadow(0 0 8px rgba(255, 215, 0, 0.8)) drop-shadow(0 0 18px rgba(212, 175, 55, 0.5));
+  animation: lightningStrike 2.5s ease-in-out infinite;
 }
 
 @keyframes lightningStrike {
   0%, 100% {
-    opacity: 0.9;
-    filter: drop-shadow(0 0 6px rgba(251, 191, 36, 0.6));
-  }
-  50% {
-    opacity: 1;
-    filter: drop-shadow(0 0 22px rgba(251, 191, 36, 0.95)) drop-shadow(0 0 35px rgba(56, 189, 248, 0.8));
-  }
-}
-
-/* Olympus Sacred Breathing Pulse */
-.olympus-pulse {
-  animation: olympusBreathing 3.5s ease-in-out infinite;
-}
-
-@keyframes olympusBreathing {
-  0%, 100% {
+    opacity: 0.92;
     transform: scale(1);
-    opacity: 0.85;
+    filter: drop-shadow(0 0 6px rgba(255, 215, 0, 0.7));
   }
   50% {
-    transform: scale(1.03);
     opacity: 1;
+    transform: scale(1.02);
+    filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.95)) drop-shadow(0 0 35px rgba(243, 229, 171, 0.8));
   }
 }
 
-/* Rotation for subtle orbital celestial rings */
-.gear-spin {
-  animation: celestialSpin 24s linear infinite;
-}
-
-@keyframes celestialSpin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-/* Scanner Ring Pulse (Cyan/Gold celestial wave) */
 .pulse-ring {
   animation: pulse-ring 2.2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
 }
 
 @keyframes pulse-ring {
   0% {
-    transform: scale(0.92);
+    transform: scale(0.94);
     opacity: 0.85;
-    box-shadow: 0 0 15px rgba(56, 189, 248, 0.4);
+    box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
   }
   50% {
-    transform: scale(1.12);
+    transform: scale(1.08);
     opacity: 0.25;
-    box-shadow: 0 0 35px rgba(56, 189, 248, 0.7);
+    box-shadow: 0 0 30px rgba(212, 175, 55, 0.7);
   }
   100% {
-    transform: scale(0.92);
+    transform: scale(0.94);
     opacity: 0.85;
-    box-shadow: 0 0 15px rgba(56, 189, 248, 0.4);
+    box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
   }
 }
 
-/* Modal Pop (Apple Spring-like cubic bezier) */
 .modal-enter {
-  animation: modalPop 0.32s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: modalPop 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 @keyframes modalPop {
   0% {
     opacity: 0;
-    transform: scale(0.92) translateY(16px);
+    transform: scale(0.94) translateY(14px);
   }
   100% {
     opacity: 1;
@@ -226,7 +285,6 @@
   }
 }
 
-/* Celestial Flash for Announcements & Quick Actions */
 .pulse-flash {
   animation: flashZeus 1.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -234,95 +292,52 @@
 @keyframes flashZeus {
   0%, 100% {
     box-shadow: none;
-    border-color: rgba(56, 189, 248, 0.4);
+    border-color: #C5A059;
   }
   50% {
-    box-shadow: 0 0 45px rgba(56, 189, 248, 0.65), 0 0 20px rgba(251, 191, 36, 0.4);
-    border-color: #38bdf8;
-    background-color: rgba(56, 189, 248, 0.12);
+    box-shadow: 0 0 35px rgba(212, 175, 55, 0.55), 0 0 15px rgba(243, 229, 171, 0.4);
+    border-color: #D4AF37;
   }
 }
 
-/* Equalizer audio/pulse bar - Celestial cyan & gold */
+/* Ecualizador de Audio Olimpo */
 .eq-bar {
   width: 3px;
   border-radius: 2px;
-  background: linear-gradient(180deg, #38bdf8 0%, #fbbf24 100%);
+  background: linear-gradient(180deg, #F3E5AB 0%, #D4AF37 100%);
   animation: eqBounce 0.85s ease-in-out infinite alternate;
 }
-.eq-bar:nth-child(1) {
-  height: 6px;
-  animation-delay: 0s;
-}
-.eq-bar:nth-child(2) {
-  height: 14px;
-  animation-delay: 0.18s;
-}
-.eq-bar:nth-child(3) {
-  height: 8px;
-  animation-delay: 0.36s;
-}
-.eq-bar:nth-child(4) {
-  height: 12px;
-  animation-delay: 0.12s;
-}
+.eq-bar:nth-child(1) { height: 6px; animation-delay: 0s; }
+.eq-bar:nth-child(2) { height: 14px; animation-delay: 0.18s; }
+.eq-bar:nth-child(3) { height: 8px; animation-delay: 0.36s; }
+.eq-bar:nth-child(4) { height: 12px; animation-delay: 0.12s; }
 
 @keyframes eqBounce {
-  0% {
-    transform: scaleY(0.35);
-    opacity: 0.7;
-  }
-  100% {
-    transform: scaleY(1.2);
-    opacity: 1;
-  }
+  0% { transform: scaleY(0.35); opacity: 0.7; }
+  100% { transform: scaleY(1.2); opacity: 1; }
 }
 
-/* ========================================================================== */
-/* SCROLLBAR REFINEMENT (APPLE MINIMALIST CELESTIAL SKY)                      */
-/* ========================================================================== */
-
+/* Barra de desplazamiento clásica */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 7px;
+  height: 7px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #070b14;
+  background: #E8E5DD;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #0369a1;
-  border-radius: 9999px;
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  background: #C5A059;
+  border-radius: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.4);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #38bdf8;
-  box-shadow: 0 0 10px rgba(56, 189, 248, 0.6);
+  background: #D4AF37;
 }
 
 @keyframes slideProgress {
-  0% {
-    width: 0%;
-  }
-  100% {
-    width: 100%;
-  }
-}
-
-/* ========================================================================== */
-/* FONDO DE ADMINISTRACIÓN: CELESTIAL SAPPHIRE & STARLIGHT MESH               */
-/* Deep storm midnight canvas with subtle divine sapphire & amber aura        */
-/* ========================================================================== */
-.admin-mesh-bg {
-  background-color: #070b14;
-  background-image:
-    radial-gradient(circle at 50% -10%, rgba(56, 189, 248, 0.14) 0%, rgba(30, 58, 138, 0.1) 40%, transparent 70%),
-    radial-gradient(circle at 95% 95%, rgba(251, 191, 36, 0.06) 0%, transparent 45%),
-    radial-gradient(circle at 5% 50%, rgba(14, 165, 233, 0.08) 0%, transparent 50%),
-    linear-gradient(160deg, #0f172a 0%, #090e1a 50%, #070b14 100%);
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-attachment: fixed;
+  0% { width: 0%; }
+  100% { width: 100%; }
 }

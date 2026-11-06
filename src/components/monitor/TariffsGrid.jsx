@@ -1,81 +1,91 @@
 import React from 'react';
+import { GreekColumn } from '../common/GreekTempleComponents';
 
 export default function TariffsGrid({
-  tariffsHeader = 'DECRETOS & TARIFAS DEL OLIMPO',
+  tariffsHeader = 'TARIFAS OFICIALES DEL OLIMPO',
   tariffs = [],
   selectedIndex = 0,
   onSelectTariff
 }) {
-  const cleanHeader = String(tariffsHeader || 'DECRETOS & TARIFAS DEL OLIMPO')
-    .replace(/TARIFAS OFICIALES DE LA LEGI[OÓ]N/gi, 'DECRETOS & TARIFAS DEL OLIMPO')
+  const cleanHeader = String(tariffsHeader || 'TARIFAS OFICIALES DEL OLIMPO')
+    .replace(/TARIFAS OFICIALES DE LA LEGI[OÓ]N/gi, 'TARIFAS OFICIALES DEL OLIMPO')
     .replace(/LEGI\uFFFDN/gi, 'OLIMPO')
     .replace(/LEGI[OÓ]N/gi, 'OLIMPO')
     .replace(/\uFFFD/g, 'Ó')
     .replace(/\s*\(TOCA UNA TARJETA.*\)/i, '');
 
+  const defaultTariffs = [
+    { name: 'MENSUALIDAD', price: '$400', sub: 'PASES DE DÍAS TOTALES' },
+    { name: 'PROMO 2 GUERREROS', price: '2x$700', sub: '¡AHORRAS $100 MXN!' },
+    { name: 'QUINCENA', price: '$250', sub: '15 DÍAS DE BATALLA' },
+    { name: 'VISITA DEL DÍA', price: '$60', sub: 'PASE INDIVIDUAL' }
+  ];
+
+  const items = Array.isArray(tariffs) && tariffs.length > 0 ? tariffs : defaultTariffs;
+
   return (
-    <div className="space-y-[clamp(0.4rem,1dvh,0.75rem)] shrink-0">
-      <div className="flex items-center justify-between border-b border-slate-800/80 pb-[clamp(0.3rem,0.7dvh,0.5rem)]">
-        <div className="flex items-center gap-2 min-w-0">
-          <div className="w-[clamp(1.35rem,min(1.6vw,3.2dvh),1.75rem)] h-[clamp(1.35rem,min(1.6vw,3.2dvh),1.75rem)] rounded-lg bg-sky-500/20 border border-sky-400/50 flex items-center justify-center shrink-0 shadow-[0_0_10px_rgba(56,189,248,0.25)]">
-            <i className="fa-solid fa-bolt-lightning text-amber-400 text-[clamp(10px,min(0.8vw,1.65dvh),13px)]"></i>
-          </div>
-          <h3 className="font-zeus text-[clamp(0.75rem,min(0.98vw,2dvh),1rem)] font-black text-slate-100 uppercase tracking-wider truncate">
+    <div className="space-y-1.5 shrink-0">
+      {/* Encabezado de Sección */}
+      <div className="flex items-center justify-between border-b border-[#C5A059]/40 pb-1 px-1">
+        <div className="flex items-center gap-2">
+          <span className="w-2.5 h-2.5 rounded-full bg-[#D4AF37] shadow-[0_0_8px_rgba(212,175,55,0.8)] inline-block"></span>
+          <h3 className="font-cinzel text-xs sm:text-sm font-black text-[#0F1E36] uppercase tracking-wider">
             {cleanHeader}
           </h3>
         </div>
-        <span className="text-[clamp(10px,min(0.75vw,1.55dvh),13px)] font-bold text-slate-400 uppercase tracking-widest hidden sm:inline-flex items-center gap-1.5 shrink-0">
-          <span className="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.8)]"></span>
-          Inscripciones abiertas en Olimpo Central
+        <span className="text-[10px] sm:text-[11px] font-bold text-[#0F1E36] uppercase tracking-wider hidden sm:inline-flex items-center gap-1.5">
+          <span className="w-1.5 h-1.5 rounded-full bg-[#10b981] animate-ping"></span>
+          INSCRIPCIONES ABIERTAS EN RECEPCIÓN
         </span>
       </div>
 
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-[clamp(0.5rem,1.1vw,1rem)]">
-        {tariffs.map((t, idx) => {
+      {/* Grid de 4 Templos de Tarifas */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-2.5">
+        {items.map((t, idx) => {
           const isSelected = selectedIndex === idx;
-          const isLongPrice = String(t.price || '').length > 4;
 
           return (
             <div
               key={idx}
               onClick={() => onSelectTariff && onSelectTariff(idx)}
-              className={`overflow-hidden rounded-2xl px-[clamp(0.6rem,1.1vw,1.15rem)] py-[clamp(0.55rem,1.45dvh,1.15rem)] text-center backdrop-blur-md cursor-pointer transition-all duration-300 flex flex-col justify-between items-center relative ${
+              className={`flex flex-col rounded-md overflow-hidden cursor-pointer transition-all duration-300 shadow-md ${
                 isSelected
-                  ? 'bg-gradient-to-b from-sky-950/90 via-[#090e1a] to-[#070b14] border-2 border-sky-400 shadow-[0_0_25px_rgba(56,189,248,0.35)] ring-1 ring-sky-400/40'
-                  : 'bg-[#090e1a]/90 border border-slate-800/90 hover:border-sky-500/60 shadow-lg'
+                  ? 'border-2 border-[#D4AF37] ring-2 ring-[#F3E5AB]/60 shadow-[0_4px_16px_rgba(212,175,55,0.4)] scale-[1.02]'
+                  : 'border border-[#C5A059] hover:border-[#D4AF37] hover:shadow-lg'
               }`}
             >
-              {/* Fila superior de título e indicador de destacada */}
-              <div className="w-full flex items-center justify-center gap-1.5">
-                {isSelected && (
-                  <span className="w-2 h-2 rounded-full bg-amber-400 shadow-[0_0_8px_rgba(251,191,36,0.9)] animate-pulse shrink-0"></span>
-                )}
-                <p className="font-zeus text-[clamp(0.7rem,min(0.95vw,1.95dvh),0.98rem)] font-black text-slate-200 uppercase tracking-wider leading-tight truncate">
+              {/* Cornisa Superior del Templo */}
+              <div className="temple-lintel-top py-0.5 px-2 text-center">
+                <p className="font-cinzel text-[10px] sm:text-[11px] font-black text-[#0F1E36] uppercase tracking-wider truncate">
                   {t.name}
                 </p>
               </div>
 
-              <div className="my-[clamp(0.25rem,0.85dvh,0.65rem)] w-full">
-                <p
-                  className={`font-zeus font-black text-white leading-none tracking-tight drop-shadow-md ${
-                    isLongPrice
-                      ? 'text-[clamp(1.35rem,min(2.4vw,4.9dvh),2.75rem)] text-amber-300'
-                      : 'text-[clamp(1.5rem,min(2.75vw,5.6dvh),3.1rem)] text-white'
-                  }`}
-                >
-                  {t.price}
-                </p>
+              {/* Cuerpo del Templo flanqueado por Columnas Griegas */}
+              <div className="flex flex-row items-stretch min-h-[64px] sm:min-h-[76px] bg-olympus-storm relative">
+                {/* Columna Izquierda */}
+                <GreekColumn size="sm" width="w-2.5 sm:w-3" />
+
+                {/* Contenido Central: Precio y Beneficio */}
+                <div className="flex-1 flex flex-col items-center justify-center p-1 sm:p-2 text-center z-10">
+                  <p className="font-cinzel text-xl sm:text-2xl md:text-3xl font-black text-white leading-none tracking-tight drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
+                    {t.price}
+                  </p>
+                  <p className="text-[9px] sm:text-[10px] font-bold text-[#F3E5AB] uppercase tracking-wider mt-1 line-clamp-1 drop-shadow">
+                    {t.sub}
+                  </p>
+                </div>
+
+                {/* Columna Derecha */}
+                <GreekColumn size="sm" width="w-2.5 sm:w-3" />
               </div>
 
-              <span
-                className={`inline-block text-[clamp(9px,min(0.78vw,1.6dvh),12.5px)] font-black uppercase px-2.5 py-0.5 rounded-lg truncate max-w-full border ${
-                  isSelected
-                    ? 'bg-sky-500/20 border-sky-400/50 text-sky-200'
-                    : 'bg-slate-900/90 border-slate-800 text-slate-300'
-                }`}
-              >
-                {t.sub}
-              </span>
+              {/* Cornisa Inferior */}
+              <div className="temple-lintel-bottom py-0.5 text-center">
+                <span className="text-[8px] font-cinzel font-black tracking-widest text-[#997A2C] uppercase">
+                  ZEUS GYM
+                </span>
+              </div>
             </div>
           );
         })}

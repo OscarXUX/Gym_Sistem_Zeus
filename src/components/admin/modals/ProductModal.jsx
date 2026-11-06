@@ -44,50 +44,50 @@ export default function ProductModal({ isOpen, onClose, product, onSave }) {
   };
 
   return (
-    <div className="fixed inset-0 bg-black/85 backdrop-blur-sm z-[100] flex items-center justify-center p-4 animate-fadeIn">
-      <div className="bg-[#090e1a] border border-sky-500/30 rounded-3xl p-6 sm:p-8 w-full max-w-md shadow-2xl relative">
+    <div className="fixed inset-0 bg-black/75 backdrop-blur-sm z-[100] flex items-center justify-center p-4 animate-fadeIn font-body text-slate-800">
+      <div className="bg-[#FAF9F5] border-2 border-[#C5A059] rounded-3xl p-6 sm:p-8 w-full max-w-md shadow-2xl relative">
         <button
           onClick={onClose}
-          className="absolute top-5 right-5 text-slate-400 hover:text-white text-lg cursor-pointer"
+          className="absolute top-5 right-5 text-slate-400 hover:text-[#0F1E36] text-lg cursor-pointer"
         >
           <i className="fa-solid fa-xmark"></i>
         </button>
 
-        <h4 className="font-zeus text-lg font-black text-white mb-1">
+        <h4 className="font-cinzel text-lg font-black text-[#0F1E36] mb-1">
           {product ? 'Editar Producto / Existencias' : 'Nuevo Néctar / Suplemento'}
         </h4>
-        <p className="text-xs text-slate-400 mb-4">Administra precio, existencias e ícono del catálogo del Olimpo</p>
+        <p className="text-xs text-slate-600 mb-4">Administra precio, existencias e ícono del catálogo del Olimpo</p>
 
         <form onSubmit={handleSubmit} className="space-y-3.5">
           <div>
-            <label className="text-[10px] text-slate-400 uppercase font-bold block mb-1">Nombre</label>
+            <label className="text-[10px] text-slate-600 uppercase font-black font-cinzel block mb-1">Nombre</label>
             <input
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="Ej. Ambrosía Proteica o Rayo Pre-Entreno"
-              className="w-full bg-slate-950 border border-slate-800 focus:border-sky-400 rounded-xl px-3 py-2 text-xs text-white font-bold transition-colors"
+              className="w-full bg-white border border-[#C5A059] focus:border-[#0F1E36] rounded-xl px-3 py-2 text-xs text-[#0F1E36] font-bold transition-colors"
               required
             />
           </div>
 
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="text-[10px] text-slate-400 uppercase font-bold block mb-1">Categoría</label>
+              <label className="text-[10px] text-slate-600 uppercase font-black font-cinzel block mb-1">Categoría</label>
               <input
                 type="text"
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
-                className="w-full bg-slate-950 border border-slate-800 focus:border-sky-400 rounded-xl px-3 py-2 text-xs text-white transition-colors"
+                className="w-full bg-white border border-[#C5A059] focus:border-[#0F1E36] rounded-xl px-3 py-2 text-xs text-[#0F1E36] transition-colors font-medium"
               />
             </div>
             <div>
-              <label className="text-[10px] text-slate-400 uppercase font-bold block mb-1">Precio ($ MXN)</label>
+              <label className="text-[10px] text-slate-600 uppercase font-black font-cinzel block mb-1">Precio ($ MXN)</label>
               <input
                 type="number"
                 value={price}
                 onChange={(e) => setPrice(e.target.value)}
-                className="w-full bg-slate-950 border border-slate-800 focus:border-sky-400 rounded-xl px-3 py-2 text-xs text-emerald-400 font-zeus font-bold transition-colors"
+                className="w-full bg-white border border-[#C5A059] focus:border-[#0F1E36] rounded-xl px-3 py-2 text-xs text-[#0F1E36] font-cinzel font-black transition-colors"
                 required
               />
             </div>
@@ -95,21 +95,21 @@ export default function ProductModal({ isOpen, onClose, product, onSave }) {
 
           <div className="grid grid-cols-3 gap-2">
             <div>
-              <label className="text-[10px] text-slate-400 uppercase font-bold block mb-1">Stock</label>
+              <label className="text-[10px] text-slate-600 uppercase font-black font-cinzel block mb-1">Stock</label>
               <input
                 type="number"
                 value={stock}
                 onChange={(e) => setStock(e.target.value)}
-                className="w-full bg-slate-950 border border-slate-800 focus:border-sky-400 rounded-xl px-2.5 py-2 text-xs text-white font-bold transition-colors"
+                className="w-full bg-white border border-[#C5A059] focus:border-[#0F1E36] rounded-xl px-2.5 py-2 text-xs text-[#0F1E36] font-bold transition-colors font-cinzel"
                 required
               />
             </div>
             <div>
-              <label className="text-[10px] text-slate-400 uppercase font-bold block mb-1">Ícono</label>
+              <label className="text-[10px] text-slate-600 uppercase font-black font-cinzel block mb-1">Ícono</label>
               <select
                 value={icon}
                 onChange={(e) => setIcon(e.target.value)}
-                className="w-full bg-slate-950 border border-slate-800 focus:border-sky-400 rounded-xl px-2 py-2 text-xs text-white cursor-pointer"
+                className="w-full bg-white border border-[#C5A059] focus:border-[#0F1E36] rounded-xl px-2 py-2 text-xs text-[#0F1E36] cursor-pointer"
               >
                 <option value="fa-bolt-lightning">Rayo Divino</option>
                 <option value="fa-bottle-water">Agua Sagrada</option>
@@ -122,11 +122,11 @@ export default function ProductModal({ isOpen, onClose, product, onSave }) {
               </select>
             </div>
             <div>
-              <label className="text-[10px] text-slate-400 uppercase font-bold block mb-1">Color</label>
+              <label className="text-[10px] text-slate-600 uppercase font-black font-cinzel block mb-1">Color</label>
               <select
                 value={color}
                 onChange={(e) => setColor(e.target.value)}
-                className="w-full bg-slate-950 border border-slate-800 focus:border-sky-400 rounded-xl px-2 py-2 text-xs text-white font-bold cursor-pointer"
+                className="w-full bg-white border border-[#C5A059] focus:border-[#0F1E36] rounded-xl px-2 py-2 text-xs text-[#0F1E36] font-bold cursor-pointer"
               >
                 <option value="blue">Azul Celestial</option>
                 <option value="amber">Ámbar Rayo</option>
@@ -142,13 +142,13 @@ export default function ProductModal({ isOpen, onClose, product, onSave }) {
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 bg-slate-900 hover:bg-slate-800 text-slate-300 font-bold text-xs py-2.5 rounded-xl transition-all cursor-pointer"
+              className="flex-1 bg-white hover:bg-[#F3EFE6] border border-[#C5A059] text-slate-700 font-bold text-xs py-2.5 rounded-xl transition-all cursor-pointer"
             >
               Cancelar
             </button>
             <button
               type="submit"
-              className="flex-1 bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 text-white font-black text-xs py-2.5 rounded-xl uppercase tracking-wider transition-all cursor-pointer shadow-lg shadow-sky-950/50 border border-sky-400/30"
+              className="flex-1 btn-gold-olympus font-cinzel font-black text-xs py-2.5 rounded-xl uppercase tracking-wider transition-all cursor-pointer shadow-sm"
             >
               Guardar
             </button>

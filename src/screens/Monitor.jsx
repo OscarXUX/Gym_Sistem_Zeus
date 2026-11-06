@@ -587,7 +587,7 @@ export default function Monitor({ currentView = 'monitor', onChangeView }) {
   };
 
   return (
-    <div className="fixed inset-0 w-full h-full overflow-hidden flex flex-col bg-[#070b14] antialiased select-none">
+    <div className="fixed inset-0 w-full h-full overflow-hidden flex flex-col bg-marble-travertine antialiased select-none">
       {/* Toast de Decretos del Olimpo */}
       <CommanderToastAlert
         alert={commanderAlert}
@@ -604,20 +604,11 @@ export default function Monitor({ currentView = 'monitor', onChangeView }) {
       />
 
       {/* Main Layout Adaptativo 100% Responsivo */}
-      <main className="flex-1 min-h-0 w-full flex flex-col lg:flex-row bg-[#070b14] overflow-y-auto lg:overflow-hidden relative">
+      <main className="flex-1 min-h-0 w-full flex flex-col lg:flex-row bg-marble-travertine overflow-y-auto lg:overflow-hidden relative">
         {/* Columna Izquierda: Cartelera Hero + Avisos + Decretos & Tarifas + Ticker */}
-        <div className="flex-1 min-w-0 lg:h-full relative flex flex-col justify-between lg:overflow-hidden">
-          {/* Fondo celestial de tormenta y marca de agua del Emblema de Zeus */}
-          <div
-            className="absolute inset-0 bg-cover bg-center transition-all duration-500 pointer-events-none"
-            style={{ backgroundImage: `url('${tvConfig.bgImage}')` }}
-          >
-            <div className="absolute inset-0 bg-gradient-to-t from-[#070b14] via-[#090e1a]/90 to-sky-950/30"></div>
-          </div>
-
-          <div className="absolute -right-12 -bottom-12 opacity-15 pointer-events-none animate-pulse">
-            <ZeusEmblem className="w-48 h-48 xl:w-72 xl:h-72 drop-shadow-[0_0_35px_rgba(56,189,248,0.5)]" />
-          </div>
+        <div className="flex-1 min-w-0 lg:h-full relative flex flex-col justify-between lg:overflow-hidden bg-marble-travertine">
+          {/* Suave sombra decorativa en el fondo del templo */}
+          <div className="absolute inset-0 bg-gradient-to-b from-white/30 via-transparent to-black/5 pointer-events-none"></div>
 
           <div className="relative z-10 flex-1 min-h-0 flex flex-col justify-between px-[clamp(0.65rem,1.5vw,1.5rem)] py-[clamp(0.45rem,1.2dvh,1rem)] gap-[clamp(0.45rem,1.15dvh,1rem)] lg:overflow-hidden">
             <PromoHeroBanner
@@ -667,15 +658,15 @@ export default function Monitor({ currentView = 'monitor', onChangeView }) {
         />
       </main>
 
-      {/* Píldora Flotante Elegante de Controles de Simulación (Estilo Apple / Claude) */}
+      {/* Píldora Flotante Elegante de Controles de Simulación (Estilo Olimpo Clásico) */}
       <aside aria-label="Controles de Simulación del Olimpo" className="fixed bottom-14 right-4 z-[95] select-none">
         <div
           onMouseEnter={() => setIsSimPillOpen(true)}
           onMouseLeave={() => setIsSimPillOpen(false)}
           className={`transition-all duration-300 rounded-2xl backdrop-blur-2xl border shadow-2xl ${
             isSimPillOpen
-              ? 'bg-[#090e1a]/95 border-amber-400/50 p-3 w-72 sm:w-80 shadow-[0_10px_40px_rgba(0,0,0,0.85)] ring-1 ring-amber-400/30'
-              : 'bg-[#090e1a]/85 border-amber-400/30 px-3.5 py-2 shadow-[0_4px_25px_rgba(251,191,36,0.25)] hover:border-amber-400/70'
+              ? 'bg-[#0F1E36]/95 border-[#D4AF37] p-3 w-72 sm:w-80 shadow-[0_10px_40px_rgba(15,30,54,0.6)] ring-1 ring-[#D4AF37]/50'
+              : 'bg-[#0F1E36]/90 border-[#C5A059] px-3.5 py-2 shadow-[0_4px_25px_rgba(212,175,55,0.3)] hover:border-[#D4AF37]'
           }`}
         >
           {!isSimPillOpen ? (
@@ -795,42 +786,42 @@ export default function Monitor({ currentView = 'monitor', onChangeView }) {
         >
           <div
             onClick={(e) => e.stopPropagation()}
-            className="bg-[#090e1a]/95 border-2 border-sky-400/60 rounded-3xl p-6 w-full max-w-sm shadow-[0_0_50px_rgba(56,189,248,0.35)] relative backdrop-blur-2xl"
+            className="w-full max-w-sm rounded-2xl p-6 shadow-2xl relative border-2 border-[#C5A059] bg-[#FAF9F6] text-[#0F1E36] animate-scaleUp"
           >
             <button
               onClick={() => setIsPinModalOpen(false)}
-              className="absolute top-4 right-4 text-slate-400 hover:text-white text-lg cursor-pointer"
+              className="absolute top-4 right-4 text-[#997A2C] hover:text-[#0F1E36] text-lg cursor-pointer"
             >
               <i className="fa-solid fa-xmark"></i>
             </button>
 
             <div className="text-center mb-4">
-              <h3 className="font-zeus text-lg font-black text-white uppercase tracking-wider">
+              <h3 className="font-cinzel text-lg font-black text-[#0F1E36] uppercase tracking-wider">
                 Acceso por PIN / Folio
               </h3>
-              <p className="text-xs text-slate-400 mt-0.5">
+              <p className="text-xs text-[#718096] mt-0.5">
                 Teclea tu número de atleta (ej. 042, 088, 019) y presiona Entrar
               </p>
             </div>
 
             {/* Pantalla del PIN */}
-            <div className="bg-black/90 border-2 border-slate-800 rounded-2xl py-3 px-4 mb-4 text-center">
-              <span className="font-zeus text-3xl font-black tracking-[0.25em] text-emerald-400">
+            <div className="bg-[#0F1E36] border-2 border-[#C5A059] rounded-xl py-3 px-4 mb-4 text-center shadow-inner">
+              <span className="font-cinzel text-3xl font-black tracking-[0.25em] text-[#D4AF37]">
                 {pinBuffer ? '*'.repeat(pinBuffer.length) : '---'}
               </span>
-              <p className="text-[10px] text-slate-500 font-zeus mt-1">
+              <p className="text-[10px] text-[#F3E5AB] font-cinzel mt-1">
                 {pinBuffer ? `Folio: #${pinBuffer}` : 'Esperando dígitos...'}
               </p>
             </div>
 
             {/* Teclado Numérico 3x4 */}
-            <div className="grid grid-cols-3 gap-2.5 mb-4">
+            <div className="grid grid-cols-3 gap-2 mb-4">
               {['1', '2', '3', '4', '5', '6', '7', '8', '9'].map((digit) => (
                 <button
                   key={digit}
                   type="button"
                   onClick={() => updatePinBuffer((pinBufferRef.current + digit).slice(0, 6))}
-                  className="bg-slate-900/90 hover:bg-slate-800 active:scale-95 border border-slate-700 text-white font-zeus text-xl font-black py-3.5 rounded-2xl cursor-pointer shadow-md"
+                  className="bg-gradient-to-b from-[#162A4A] to-[#0F1E36] hover:from-[#1E3458] hover:to-[#142646] active:scale-95 border border-[#C5A059]/70 text-[#F3E5AB] font-cinzel text-xl font-black py-3 rounded-xl cursor-pointer shadow-md"
                 >
                   {digit}
                 </button>
@@ -838,21 +829,21 @@ export default function Monitor({ currentView = 'monitor', onChangeView }) {
               <button
                 type="button"
                 onClick={() => updatePinBuffer('')}
-                className="bg-rose-950/60 hover:bg-rose-900 active:scale-95 border border-rose-700/60 text-rose-300 font-bold text-xs py-3.5 rounded-2xl cursor-pointer"
+                className="bg-[#2c1015] hover:bg-[#3d161d] active:scale-95 border border-[#f43f5e]/60 text-[#fb7185] font-bold text-xs py-3 rounded-xl cursor-pointer"
               >
                 Limpiar
               </button>
               <button
                 type="button"
                 onClick={() => updatePinBuffer((pinBufferRef.current + '0').slice(0, 6))}
-                className="bg-slate-900/90 hover:bg-slate-800 active:scale-95 border border-slate-700 text-white font-zeus text-xl font-black py-3.5 rounded-2xl cursor-pointer shadow-md"
+                className="bg-gradient-to-b from-[#162A4A] to-[#0F1E36] hover:from-[#1E3458] hover:to-[#142646] active:scale-95 border border-[#C5A059]/70 text-[#F3E5AB] font-cinzel text-xl font-black py-3 rounded-xl cursor-pointer shadow-md"
               >
                 0
               </button>
               <button
                 type="button"
                 onClick={() => updatePinBuffer(pinBufferRef.current.slice(0, -1))}
-                className="bg-slate-900/90 hover:bg-slate-800 active:scale-95 border border-slate-700 text-slate-300 font-bold text-sm py-3.5 rounded-2xl cursor-pointer"
+                className="bg-[#162A4A] hover:bg-[#1E3458] active:scale-95 border border-[#C5A059]/70 text-[#F3E5AB] font-bold text-sm py-3 rounded-xl cursor-pointer"
               >
                 <i className="fa-solid fa-delete-left"></i>
               </button>
@@ -865,15 +856,15 @@ export default function Monitor({ currentView = 'monitor', onChangeView }) {
                   setIsPinModalOpen(false);
                   handleSensorTouch();
                 }}
-                className="bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-300 font-bold text-xs px-3.5 py-3 rounded-xl cursor-pointer"
+                className="bg-[#E2E8F0] hover:bg-[#CBD5E1] border border-[#CBD5E1] text-[#0F1E36] font-cinzel font-bold text-xs px-3.5 py-2.5 rounded-xl cursor-pointer shadow-sm"
                 title="Simular lectura de huella"
               >
-                <i className="fa-solid fa-fingerprint mr-1 text-sky-400"></i> Huella Demo
+                <i className="fa-solid fa-fingerprint mr-1 text-[#D4AF37]"></i> Demo
               </button>
               <button
                 type="button"
                 onClick={() => submitPinScan(pinBuffer)}
-                className="flex-1 bg-emerald-600 hover:bg-emerald-500 active:scale-95 text-white font-zeus font-black text-sm py-3 rounded-xl uppercase tracking-wider cursor-pointer shadow-lg shadow-emerald-950"
+                className="flex-1 btn-gold-olympus active:scale-95 text-[#0F1E36] font-cinzel font-black text-sm py-2.5 rounded-xl uppercase tracking-wider cursor-pointer shadow-md"
               >
                 Entrar <i className="fa-solid fa-arrow-right-to-bracket ml-1"></i>
               </button>
