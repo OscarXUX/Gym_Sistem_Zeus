@@ -58,7 +58,7 @@ export default function GuerrerosActivosTab({ members = [], onToggleInside, onBa
       </div>
 
       {activeInside.length === 0 ? (
-        <div className="bg-[#FAF9F5] border border-[#C5A059] rounded-3xl p-12 text-center text-slate-500 italic shadow-sm">
+        <div className="olympus-card olympus-card--marble rounded-3xl p-12 text-center text-slate-500 italic">
           No hay atletas registrados dentro del Olimpo actualmente.
         </div>
       ) : viewFormat === 'grid' ? (
@@ -66,14 +66,14 @@ export default function GuerrerosActivosTab({ members = [], onToggleInside, onBa
           {activeInside.map((f) => (
             <div
               key={f.id}
-              className="bg-[#FAF9F5] border border-[#C5A059] hover:border-[#0F1E36] rounded-2xl p-4 flex flex-col items-center text-center relative group transition-all shadow-sm"
+              className="olympus-card olympus-card--marble border-t-[3px] border-t-[#D4AF37] rounded-2xl p-4 flex flex-col items-center text-center relative group transition-all"
             >
               {/* Indicador de Vitalidad */}
               <div className="absolute top-3 right-3 w-3 h-3 bg-emerald-500 rounded-full border-2 border-white shadow-sm animate-pulse"></div>
               <img
                 src={f.photo || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80'}
                 alt={f.name}
-                className="w-14 h-14 sm:w-16 sm:h-16 rounded-full object-cover border-2 border-[#C5A059] mb-3 shadow group-hover:scale-105 transition-transform"
+                className="w-14 h-14 sm:w-16 sm:h-16 rounded-full object-cover border-2 border-[#D4AF37] mb-3 shadow group-hover:scale-105 transition-transform"
               />
               <p className="font-cinzel font-bold text-[#0F1E36] text-xs sm:text-sm leading-tight truncate w-full">{f.name}</p>
               <p className="text-[10px] text-slate-500 font-cinzel font-bold mt-1 flex items-center gap-1">
@@ -95,7 +95,7 @@ export default function GuerrerosActivosTab({ members = [], onToggleInside, onBa
           {activeInside.map((f) => (
             <div
               key={f.id}
-              className="bg-[#FAF9F5] border border-[#C5A059] hover:border-[#0F1E36] rounded-xl p-3.5 flex items-center justify-between transition-all shadow-sm"
+              className="olympus-card olympus-card--marble border-t-[3px] border-t-[#D4AF37] rounded-xl p-3.5 flex items-center justify-between transition-all"
             >
               <div className="flex items-center gap-3 min-w-0">
                 <img

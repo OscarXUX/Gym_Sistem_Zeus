@@ -297,7 +297,7 @@ export default function ComunicacionesTab({
       {/* SECCIÓN 1: CARRUSEL DE DECRETOS                                  */}
       {/* ================================================================ */}
       {activeSubTab === 'notices' && (
-        <div className="bg-[#FAF9F5] border border-[#C5A059] rounded-2xl p-4 sm:p-5 shadow-sm space-y-4">
+        <div className="olympus-card olympus-card--marble rounded-2xl p-4 sm:p-5 space-y-4">
           {/* Header de la sección */}
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 border-b border-[#C5A059]/30 pb-3">
             <div>
@@ -527,7 +527,7 @@ export default function ComunicacionesTab({
       {/* SECCIÓN 2: TRANSMISOR RÁPIDO DE RAYO FLASH                       */}
       {/* ================================================================ */}
       {activeSubTab === 'broadcast' && (
-        <div className="bg-[#FAF9F5] border border-[#C5A059] rounded-2xl p-4 sm:p-5 shadow-sm space-y-4">
+        <div className="olympus-card olympus-card--marble rounded-2xl p-4 sm:p-5 space-y-4">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 border-b border-[#C5A059]/30 pb-3">
             <div className="flex items-center gap-2.5">
               <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-[#0F1E36] to-[#162A4A] border border-[#C5A059] flex items-center justify-center text-[#D4AF37] shrink-0">
@@ -613,7 +613,7 @@ export default function ComunicacionesTab({
       {/* SECCIÓN 3: TARIFAS & CARTELERA                                   */}
       {/* ================================================================ */}
       {activeSubTab === 'tariffs' && (
-        <div className="bg-[#FAF9F5] border border-[#C5A059] rounded-2xl p-4 sm:p-5 shadow-sm space-y-4">
+        <div className="olympus-card olympus-card--marble rounded-2xl p-4 sm:p-5 space-y-4">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 border-b border-[#C5A059]/30 pb-3">
             <div className="flex items-center gap-2.5">
               <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-[#0F1E36] to-[#162A4A] border border-[#C5A059] flex items-center justify-center text-[#D4AF37] shrink-0">
@@ -712,7 +712,7 @@ export default function ComunicacionesTab({
       {/* SECCIÓN 4: PANTALLA & APARIENCIA                                 */}
       {/* ================================================================ */}
       {activeSubTab === 'appearance' && (
-        <div className="bg-[#FAF9F5] border border-[#C5A059] rounded-2xl p-4 sm:p-5 shadow-sm space-y-4">
+        <div className="olympus-card olympus-card--marble rounded-2xl p-4 sm:p-5 space-y-4">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 border-b border-[#C5A059]/30 pb-3">
             <div className="flex items-center gap-2.5">
               <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-[#0F1E36] to-[#162A4A] border border-[#C5A059] flex items-center justify-center text-[#D4AF37] shrink-0">

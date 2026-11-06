@@ -44,21 +44,24 @@ export default function ProductModal({ isOpen, onClose, product, onSave }) {
   };
 
   return (
-    <div className="fixed inset-0 bg-black/75 backdrop-blur-sm z-[100] flex items-center justify-center p-4 animate-fadeIn font-body text-slate-800">
-      <div className="bg-[#FAF9F5] border-2 border-[#C5A059] rounded-3xl p-6 sm:p-8 w-full max-w-md shadow-2xl relative">
-        <button
-          onClick={onClose}
-          className="absolute top-5 right-5 text-slate-400 hover:text-[#0F1E36] text-lg cursor-pointer"
-        >
-          <i className="fa-solid fa-xmark"></i>
-        </button>
+    <div className="fixed inset-0 olympus-modal-backdrop z-[100] flex items-center justify-center p-4 animate-fadeIn font-body text-slate-800">
+      <div className="olympus-modal-frame rounded-3xl w-full max-w-md relative overflow-hidden">
+        <div className="bg-gradient-to-r from-[#0F1E36] via-[#162A4A] to-[#0F1E36] border-b-2 border-[#D4AF37] px-6 py-4 flex items-center justify-between text-white">
+          <div>
+            <h4 className="font-cinzel text-base sm:text-lg font-black text-white">
+              {product ? 'Editar Producto / Existencias' : 'Nuevo Néctar / Suplemento'}
+            </h4>
+            <p className="text-[11px] text-slate-300">Administra precio, existencias e ícono del catálogo del Olimpo</p>
+          </div>
+          <button
+            onClick={onClose}
+            className="w-8 h-8 rounded-xl bg-white/10 hover:bg-white/20 text-slate-300 hover:text-white flex items-center justify-center text-sm cursor-pointer transition-colors"
+          >
+            <i className="fa-solid fa-xmark"></i>
+          </button>
+        </div>
 
-        <h4 className="font-cinzel text-lg font-black text-[#0F1E36] mb-1">
-          {product ? 'Editar Producto / Existencias' : 'Nuevo Néctar / Suplemento'}
-        </h4>
-        <p className="text-xs text-slate-600 mb-4">Administra precio, existencias e ícono del catálogo del Olimpo</p>
-
-        <form onSubmit={handleSubmit} className="space-y-3.5">
+        <form onSubmit={handleSubmit} className="p-6 space-y-3.5">
           <div>
             <label className="text-[10px] text-slate-600 uppercase font-black font-cinzel block mb-1">Nombre</label>
             <input

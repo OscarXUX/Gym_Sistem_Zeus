@@ -39,37 +39,40 @@ export default function CashCutModal({
   const logsList = summary?.recent_logs || [];
 
   return (
-    <div className="fixed inset-0 bg-black/75 backdrop-blur-sm z-[120] flex items-center justify-center p-3 sm:p-5 animate-fadeIn overflow-y-auto font-body text-slate-800">
-      <div className="bg-[#FAF9F5] border-2 border-[#C5A059] rounded-3xl p-5 sm:p-7 w-full max-w-3xl shadow-2xl relative my-auto max-h-[92dvh] overflow-y-auto">
-        <button
-          onClick={onClose}
-          className="absolute top-5 right-5 text-slate-400 hover:text-[#0F1E36] text-lg cursor-pointer"
-        >
-          <i className="fa-solid fa-xmark"></i>
-        </button>
-
-        {/* Encabezado */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-5 pr-8 border-b border-[#C5A059]/30 pb-4">
+    <div className="fixed inset-0 olympus-modal-backdrop z-[120] flex items-center justify-center p-3 sm:p-5 animate-fadeIn overflow-y-auto font-body text-slate-800">
+      <div className="olympus-modal-frame rounded-3xl w-full max-w-3xl relative my-auto max-h-[92dvh] flex flex-col overflow-hidden">
+        {/* Encabezado Templo */}
+        <div className="bg-gradient-to-r from-[#0F1E36] via-[#162A4A] to-[#0F1E36] border-b-2 border-[#D4AF37] px-5 sm:px-7 py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shrink-0 text-white">
           <div className="flex items-center gap-3">
-            <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-[#0F1E36] to-[#162A4A] border border-[#C5A059] flex items-center justify-center text-[#D4AF37] text-xl shadow-sm">
+            <div className="w-11 h-11 rounded-2xl bg-[#0F1E36] border border-[#D4AF37] flex items-center justify-center text-[#FFD700] text-xl shadow-[inset_0_2px_4px_rgba(0,0,0,0.4)]">
               <i className="fa-solid fa-cash-register"></i>
             </div>
             <div>
-              <h3 className="font-cinzel text-lg sm:text-xl font-black text-[#0F1E36] uppercase">
+              <h3 className="font-cinzel text-base sm:text-xl font-black text-white uppercase">
                 Corte de Tesorería del Olimpo (SQLite)
               </h3>
-              <p className="text-xs text-slate-600">
-                Fecha operativa: <strong className="text-[#0F1E36]">{summary?.date || 'Hoy'}</strong> · Auditoría sagrada en tiempo real
+              <p className="text-xs text-slate-300">
+                Fecha operativa: <strong className="text-[#F3E5AB]">{summary?.date || 'Hoy'}</strong> · Auditoría sagrada en tiempo real
               </p>
             </div>
           </div>
-          <button
-            onClick={fetchCashCut}
-            className="self-start sm:self-auto bg-white hover:bg-[#F3EFE6] border border-[#C5A059] text-[#0F1E36] text-xs font-bold px-3 py-1.5 rounded-xl flex items-center gap-1.5 cursor-pointer transition-colors shadow-sm"
-          >
-            <i className={`fa-solid fa-rotate text-[#997A2C] ${loading ? 'animate-spin' : ''}`}></i> Actualizar
-          </button>
+          <div className="flex items-center gap-2 self-end sm:self-auto">
+            <button
+              onClick={fetchCashCut}
+              className="bg-white/10 hover:bg-white/20 border border-[#D4AF37]/50 text-[#F3E5AB] text-xs font-bold px-3 py-1.5 rounded-xl flex items-center gap-1.5 cursor-pointer transition-colors"
+            >
+              <i className={`fa-solid fa-rotate text-[#FFD700] ${loading ? 'animate-spin' : ''}`}></i> Actualizar
+            </button>
+            <button
+              onClick={onClose}
+              className="w-8 h-8 rounded-xl bg-white/10 hover:bg-white/20 text-slate-300 hover:text-white flex items-center justify-center text-sm cursor-pointer transition-colors"
+            >
+              <i className="fa-solid fa-xmark"></i>
+            </button>
+          </div>
         </div>
+
+        <div className="p-5 sm:p-7 overflow-y-auto flex-1">
 
         {/* Tarjetas Financieras de Desglose */}
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 mb-6">
@@ -204,6 +207,7 @@ export default function CashCutModal({
           >
             Cerrar Corte de Tesorería
           </button>
+        </div>
         </div>
       </div>
     </div>

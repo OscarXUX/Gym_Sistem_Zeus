@@ -1,30 +1,57 @@
 @import "tailwindcss";
 
 /* ========================================================================== */
-/* GYM ZEUS — OLIMPO CLÁSICO (HISTÓRICO Y ÉPICO) DESIGN ENGINE                */
-/* Architecture inspired by Greek temples, marble, gold & storm aesthetic     */
+/* GYM ZEUS — OLIMPO CLÁSICO (POLYMORPHIC & MULTI-LAYER DEPTH ENGINE)         */
+/* Principal UI/UX Architecture: 60-30-10 Color Theory, 3D Stone & Storm Sky  */
 /* ========================================================================== */
 
 @layer base {
   :root {
-    /* Paleta del Olimpo */
+    /* Progressive Color Space Interpolation (modern-web-guidance: visual-effects) */
+    --in-oklab: ;
+    --in-oklch: ;
+
+    /* Paleta del Olimpo & Tokens Semánticos (60-30-10 Rule) */
     --olympus-storm-canvas: #070b14;
     --olympus-storm-dark: #090e1a;
     --olympus-lightning-gold: #ffd700;
     --olympus-lightning-amber: #f59e0b;
     --olympus-celestial-cyan: #38bdf8;
+
+    /* 30% Estructura e Identidad (Azul Olimpo Profundo) */
+    --olympus-navy-abyss: #0B1528;
     --olympus-navy-deep: #0F1E36;
     --olympus-navy-light: #162A4A;
     --olympus-navy-surface: #1E3458;
+
+    /* 60% Superficies Neutras Luminosas (Mármol Blanco / Marfil) */
+    --olympus-marble: #F4F2EB;
+    --olympus-marble-warm: #EAE6DC;
+    --olympus-marble-card: #F8F7F4;
+    --olympus-marble-border: #DCD7C9;
+
+    /* 10% Acentos de Acción y Jerarquía (Oro Imperial & Semánticos UX) */
     --olympus-gold: #D4AF37;
     --olympus-gold-light: #F3E5AB;
-    --olympus-gold-dark: #997A2C;
+    --olympus-gold-dark: #AA8220;
+    --olympus-gold-shadow: #997A2C;
     --olympus-gold-border: #C5A059;
-    --olympus-marble: #F4F3EF;
-    --olympus-marble-card: #FAF9F6;
-    --olympus-marble-border: #E2E0D8;
-    --olympus-sky-deep: #14223B;
-    --olympus-sky-light: #2D436B;
+
+    --olympus-emerald-ux: #0D9488;
+    --olympus-emerald-bright: #10B981;
+    --olympus-amber-ux: #F59E0B;
+    --olympus-crimson-ux: #E11D48;
+    --olympus-crimson-bright: #EF4444;
+
+    /* Escala Tipográfica Polimórfica */
+    --olympus-view-scale: 1;
+  }
+
+  @supports (background: linear-gradient(in oklab, white, black)) {
+    :root {
+      --in-oklab: in oklab;
+      --in-oklch: in oklch;
+    }
   }
 
   html,
@@ -34,8 +61,8 @@
     -webkit-user-select: none;
     touch-action: manipulation;
     font-family: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    background-color: #F4F3EF;
-    color: #1A202C;
+    background-color: #F4F2EB;
+    color: #0F1E36;
     margin: 0;
     padding: 0;
     overflow-x: hidden;
@@ -50,6 +77,33 @@
     user-select: text;
     -webkit-user-select: text;
   }
+}
+
+/* ========================================================================== */
+/* PILAR 1: POLIMORFISMO DE LAYOUT ([data-view-mode="admin" | "tv"])          */
+/* ========================================================================== */
+
+[data-view-mode="tv"] {
+  --olympus-view-scale: 1.15;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden !important;
+}
+
+[data-view-mode="tv"] .tv-hide-sidebar {
+  width: 0 !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  transform: translateX(-100%);
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+[data-view-mode="tv"] .tv-scale-text {
+  font-size: calc(1em * var(--olympus-view-scale, 1.15));
+}
+
+[data-view-mode="admin"] {
+  --olympus-view-scale: 1;
 }
 
 /* ========================================================================== */
@@ -78,115 +132,367 @@
 }
 
 /* ========================================================================== */
-/* TEXTURAS DE MÁRMOL Y TRAVERTINO (SVG DATA-URI EMBEDDED 100% OFFLINE)       */
+/* PILAR 1 & 2: SISTEMA DE TARJETAS POLIMÓRFICAS (.olympus-card) & 3D DEPTH   */
+/* ========================================================================== */
+
+.olympus-card {
+  position: relative;
+  border-radius: 10px;
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.22s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.22s ease;
+}
+
+/* Variante 1: .olympus-card--temple (Banners y Tarifas con Cielo Tormentoso) */
+.olympus-card--temple {
+  background: #0A1324;
+  border: 1.5px solid #C5A059;
+  box-shadow:
+    0 12px 28px -6px rgba(9, 18, 36, 0.38),
+    0 4px 10px -2px rgba(9, 18, 36, 0.24),
+    inset 0 1px 0 rgba(255, 255, 255, 0.35);
+  overflow: hidden;
+}
+
+/* Variante 2: .olympus-card--marble (Control Acceso, KPIs, Tablas, Modales) */
+.olympus-card--marble {
+  background-color: #F4F2EB;
+  background-image:
+    linear-gradient(180deg var(--in-oklab), rgba(255, 255, 255, 0.92) 0%, rgba(244, 242, 235, 0.96) 65%, rgba(234, 230, 220, 0.98) 100%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='320' height='320' viewBox='0 0 320 320'%3E%3Cpath d='M-10,55 Q95,25 175,120 T330,145 M0,210 Q110,175 215,260 T330,235' stroke='%23DDD8CA' stroke-width='1.1' fill='none' opacity='0.45'/%3E%3C/svg%3E");
+  border: 1.5px solid #C5A059;
+  box-shadow:
+    0 12px 28px -6px rgba(9, 18, 36, 0.35),
+    0 4px 10px -2px rgba(9, 18, 36, 0.2),
+    inset 0 2px 1px rgba(255, 255, 255, 0.85),
+    inset 0 -3px 6px rgba(160, 150, 130, 0.35);
+}
+
+/* Variante 3: .olympus-card--glass (Pills, Badges internos, Controles oscuros) */
+.olympus-card--glass {
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  background: rgba(15, 30, 54, 0.75);
+  border: 1px solid rgba(212, 175, 55, 0.35);
+  box-shadow:
+    0 4px 12px rgba(0, 0, 0, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.14);
+}
+
+/* Variante 4: Mini-Tarjeta de Suplemento en Mármol Claro con Bisel 3D */
+.olympus-supplement-card {
+  background: linear-gradient(180deg var(--in-oklab), #FFFFFF 0%, #F8F7F4 65%, #EFECE4 100%);
+  border: 1px solid #D5C7A3;
+  box-shadow:
+    0 4px 10px -2px rgba(9, 18, 36, 0.12),
+    inset 0 1.5px 0 rgba(255, 255, 255, 0.95),
+    inset 0 -2px 3px rgba(160, 150, 130, 0.22);
+  border-radius: 8px;
+}
+
+/* ========================================================================== */
+/* PILAR 1.3: POLIMORFISMO DE ESTADO EN CONTROL BIOMÉTRICO Y RELÉ             */
+/* ========================================================================== */
+
+/* Estado Reposo / Esperando: Halo Dorado Imperial Pulsante (#D4AF37) */
+[data-biometric-state="idle"] .biometric-halo {
+  border-color: #D4AF37;
+  box-shadow:
+    0 0 24px rgba(212, 175, 55, 0.55),
+    0 0 45px rgba(212, 175, 55, 0.25),
+    inset 0 2px 6px rgba(255, 255, 255, 0.8),
+    inset 0 -4px 8px rgba(153, 122, 44, 0.45);
+}
+
+/* Estado Acceso Concedido / Socio Activo: Resplandor Esmeralda Divino (#10B981) */
+[data-biometric-state="granted"] {
+  border-color: #10B981 !important;
+  box-shadow:
+    0 12px 32px -4px rgba(16, 185, 129, 0.38),
+    0 0 22px rgba(16, 185, 129, 0.45),
+    inset 0 0 18px rgba(16, 185, 129, 0.14) !important;
+}
+
+[data-biometric-state="granted"] .biometric-halo {
+  border-color: #10B981;
+  box-shadow:
+    0 0 28px rgba(16, 185, 129, 0.8),
+    0 0 55px rgba(16, 185, 129, 0.4),
+    inset 0 2px 6px rgba(255, 255, 255, 0.85);
+}
+
+/* Estado Acceso Denegado / Vencido / Bloqueo: Resplandor Carmesí (#EF4444) */
+[data-biometric-state="denied"] {
+  border-color: #EF4444 !important;
+  box-shadow:
+    0 12px 32px -4px rgba(239, 68, 68, 0.42),
+    0 0 24px rgba(239, 68, 68, 0.5),
+    inset 0 0 18px rgba(239, 68, 68, 0.15) !important;
+}
+
+[data-biometric-state="denied"] .biometric-halo {
+  border-color: #EF4444;
+  box-shadow:
+    0 0 28px rgba(239, 68, 68, 0.85),
+    0 0 55px rgba(239, 68, 68, 0.45),
+    inset 0 2px 6px rgba(255, 255, 255, 0.85);
+}
+
+/* Estado Aviso Por Vencer: Resplandor Ámbar (#F59E0B) */
+[data-biometric-state="warning"] {
+  border-color: #F59E0B !important;
+  box-shadow:
+    0 12px 32px -4px rgba(245, 158, 11, 0.38),
+    0 0 20px rgba(245, 158, 11, 0.45),
+    inset 0 0 15px rgba(245, 158, 11, 0.14) !important;
+}
+
+/* ========================================================================== */
+/* SUPERFICIES DE MÁRMOL TRAVERTINO (60% REGLA 60-30-10)                      */
 /* ========================================================================== */
 
 .bg-marble-travertine {
-  background-color: #F4F3EF;
-  background-image: 
-    radial-gradient(ellipse at 50% 20%, rgba(255, 255, 255, 0.7) 0%, rgba(244, 243, 239, 0.95) 70%),
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400' viewBox='0 0 400 400'%3E%3Cpath d='M-20,60 Q120,30 240,140 T420,160 M-10,240 Q130,190 260,320 T420,290 M100,-20 Q160,180 290,260 T350,420' stroke='%23D5D0C2' stroke-width='1.2' fill='none' opacity='0.35'/%3E%3Cpath d='M40,110 Q140,80 210,180 T380,210' stroke='%23C7C0B0' stroke-width='0.8' fill='none' opacity='0.25'/%3E%3C/svg%3E");
+  background-color: #F4F2EB;
+  background-image:
+    radial-gradient(ellipse at 50% 15%, rgba(255, 255, 255, 0.82) 0%, rgba(244, 242, 235, 0.94) 65%, rgba(234, 230, 220, 0.98) 100%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400' viewBox='0 0 400 400'%3E%3Cpath d='M-20,60 Q120,30 240,140 T420,160 M-10,240 Q130,190 260,320 T420,290 M100,-20 Q160,180 290,260 T350,420' stroke='%23D5CFC0' stroke-width='1.2' fill='none' opacity='0.38'/%3E%3Cpath d='M40,110 Q140,80 210,180 T380,210' stroke='%23C7C0B0' stroke-width='0.8' fill='none' opacity='0.28'/%3E%3C/svg%3E");
   background-repeat: repeat;
   background-size: 400px 400px;
 }
 
 .bg-marble-card {
-  background-color: #FAF9F6;
-  background-image: 
-    linear-gradient(180deg, rgba(255, 255, 255, 0.95) 0%, rgba(250, 249, 246, 0.95) 100%),
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300' viewBox='0 0 300 300'%3E%3Cpath d='M-10,60 Q90,30 160,120 T310,140 M0,200 Q100,170 200,250 T310,230' stroke='%23E2E0D8' stroke-width='1' fill='none' opacity='0.35'/%3E%3C/svg%3E");
-  border: 1px solid #DCD7C9;
+  background-color: #F8F7F4;
+  background-image:
+    linear-gradient(180deg var(--in-oklab), rgba(255, 255, 255, 0.95) 0%, rgba(244, 242, 235, 0.96) 75%, rgba(234, 230, 220, 0.98) 100%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300' viewBox='0 0 300 300'%3E%3Cpath d='M-10,60 Q90,30 160,120 T310,140 M0,200 Q100,170 200,250 T310,230' stroke='%23DFDBD0' stroke-width='1' fill='none' opacity='0.4'/%3E%3C/svg%3E");
 }
 
 .admin-mesh-bg {
-  background-color: #F4F3EF;
-  background-image: 
-    radial-gradient(ellipse at 50% 0%, rgba(255, 255, 255, 0.85) 0%, rgba(244, 243, 239, 0.95) 60%),
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400' viewBox='0 0 400 400'%3E%3Cpath d='M-20,90 Q110,40 220,150 T420,170 M-10,270 Q130,220 270,340 T420,310' stroke='%23DDD9CE' stroke-width='1' fill='none' opacity='0.3'/%3E%3C/svg%3E");
+  background-color: #F4F2EB;
+  background-image:
+    radial-gradient(ellipse at 50% 0%, rgba(255, 255, 255, 0.88) 0%, rgba(244, 242, 235, 0.95) 60%, rgba(234, 230, 220, 0.98) 100%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400' viewBox='0 0 400 400'%3E%3Cpath d='M-20,90 Q110,40 220,150 T420,170 M-10,270 Q130,220 270,340 T420,310' stroke='%23DDD8CA' stroke-width='1.1' fill='none' opacity='0.34'/%3E%3C/svg%3E");
   background-repeat: repeat;
   background-size: 400px 400px;
 }
 
 /* ========================================================================== */
-/* CIELO TORMENTOSO ÉPICO (BANNERS Y TARJETAS DEL OLIMPO)                     */
+/* PILAR 2.2: PROFUNDIDAD ATMOSFÉRICA EN CIELOS (3 PLANOS DE PROFUNDIDAD)     */
 /* ========================================================================== */
 
 .bg-olympus-storm {
-  background: 
-    linear-gradient(135deg, rgba(15, 30, 54, 0.97) 0%, rgba(26, 46, 78, 0.94) 45%, rgba(42, 67, 107, 0.90) 75%, rgba(18, 33, 58, 0.97) 100%),
-    radial-gradient(circle at 85% 30%, rgba(255, 215, 0, 0.16) 0%, transparent 45%);
-  box-shadow: inset 0 0 30px rgba(10, 18, 32, 0.6);
+  background-color: #0A1324;
+  background-image:
+    /* Plano 3 (Destello de Rayo Dorado Superior Derecho) */
+    radial-gradient(circle at 82% 24%, rgba(255, 215, 0, 0.24) 0%, rgba(212, 175, 55, 0.08) 28%, transparent 55%),
+    /* Plano 2 (Capas de Nubes Dramáticas Luminosas en la Base Derecha e Izquierda) */
+    radial-gradient(ellipse 65% 55% at 88% 92%, rgba(255, 255, 255, 0.22) 0%, rgba(190, 212, 242, 0.14) 38%, transparent 70%),
+    radial-gradient(ellipse 55% 45% at 62% 98%, rgba(74, 107, 156, 0.42) 0%, transparent 68%),
+    radial-gradient(ellipse 50% 40% at 15% 96%, rgba(74, 107, 156, 0.28) 0%, transparent 65%),
+    /* Plano 1 (Cielo Nocturno Profundo del Olimpo) */
+    radial-gradient(circle at 75% 30%, #2C4A7E 0%, #13223E 60%, #0A1324 100%);
+  box-shadow:
+    inset 0 3px 12px rgba(0, 0, 0, 0.55),
+    inset 0 -4px 14px rgba(10, 19, 36, 0.5);
+  isolation: isolate;
 }
 
 .bg-olympus-navy {
-  background: linear-gradient(180deg, #0F1E36 0%, #162A4A 100%);
+  background: linear-gradient(180deg var(--in-oklab), #0B1528 0%, #0F1E36 50%, #162A4A 100%);
   border-bottom: 1.5px solid #C5A059;
 }
 
+/* Resplandor Volumétrico del Rayo en Primer Plano */
+.lightning-volumetric {
+  filter: drop-shadow(0 0 18px rgba(255, 215, 0, 0.85)) drop-shadow(0 0 40px rgba(212, 175, 55, 0.5));
+  will-change: transform, opacity;
+}
+
 /* ========================================================================== */
-/* CORNISAS, DINTELES Y ARQUITECTURA DE TEMPLO GRIEGO                         */
+/* PILAR 2.1 & 4.1: CORNISAS ESCULPIDAS, ZÓCALOS 8PX Y COLUMNAS CILÍNDRICAS 3D*/
 /* ========================================================================== */
 
 .temple-lintel-top {
-  background: linear-gradient(180deg, #FFFFFF 0%, #F5F3EC 40%, #E6E2D4 90%, #D4CEBE 100%);
-  border-top: 1.5px solid #D4AF37;
-  border-bottom: 1.5px solid #C5A059;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  background: linear-gradient(180deg var(--in-oklab), #FFFFFF 0%, #F7F5EE 32%, #E8E3D5 78%, #CDC6B4 100%);
+  border-top: 1.5px solid #F3E5AB;
+  border-bottom: 1.5px solid #B58E3E;
+  box-shadow:
+    0 4px 10px rgba(0, 0, 0, 0.28),
+    inset 0 2px 1px rgba(255, 255, 255, 0.92),
+    inset 0 -2px 3px rgba(145, 132, 108, 0.45);
 }
 
 .temple-lintel-bottom {
-  background: linear-gradient(180deg, #E6E2D4 0%, #F5F3EC 60%, #FFFFFF 100%);
+  background: linear-gradient(180deg var(--in-oklab), #F5F2E9 0%, #E5DFD0 55%, #C9C1AE 100%);
   border-top: 1.5px solid #C5A059;
-  border-bottom: 1.5px solid #D4AF37;
-  box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  border-bottom: 1.5px solid #997A2C;
+  box-shadow:
+    0 -3px 8px rgba(0, 0, 0, 0.25),
+    inset 0 1.5px 0 rgba(255, 255, 255, 0.88),
+    inset 0 -2px 3px rgba(120, 108, 85, 0.45);
+}
+
+/* Fuste Cilíndrico 3D con Estrías Dóricas/Jónicas y Proyección de Sombra */
+.olympus-column-shaft {
+  background:
+    repeating-linear-gradient(
+      90deg,
+      rgba(150, 140, 120, 0.22) 0px,
+      rgba(255, 255, 255, 0.35) 2px,
+      rgba(160, 150, 130, 0.18) 4px
+    ),
+    linear-gradient(90deg, #D5D0C5 0%, #FFFFFF 35%, #F4F3EF 65%, #BEB8AA 100%);
+  box-shadow:
+    inset 2px 0 3px rgba(255, 255, 255, 0.7),
+    inset -2px 0 4px rgba(90, 82, 68, 0.45);
+}
+
+.olympus-column-left {
+  box-shadow: 6px 0 15px rgba(0, 0, 0, 0.45);
+}
+
+.olympus-column-right {
+  box-shadow: -6px 0 15px rgba(0, 0, 0, 0.45);
 }
 
 .temple-card-frame {
-  background: #FAF9F6;
-  border: 1px solid #C5A059;
-  box-shadow: 0 4px 16px rgba(15, 30, 54, 0.08), 0 1px 3px rgba(0, 0, 0, 0.05);
-  border-radius: 8px;
+  background: #F4F2EB;
+  border: 1.5px solid #C5A059;
+  box-shadow:
+    0 12px 28px -6px rgba(9, 18, 36, 0.35),
+    0 4px 10px -2px rgba(9, 18, 36, 0.2),
+    inset 0 2px 1px rgba(255, 255, 255, 0.85),
+    inset 0 -3px 6px rgba(160, 150, 130, 0.35);
+  border-radius: 10px;
 }
 
 /* ========================================================================== */
-/* BOTONES, BADGES Y ACENTOS ORO IMPERIAL                                     */
+/* PILAR 3 & 5: BOTONES TÁCTILES 3D, ORO IMPERIAL (10%) Y TABLAS ELEVADAS     */
 /* ========================================================================== */
 
 .btn-gold-olympus {
-  background: linear-gradient(135deg, #F5D77F 0%, #D4AF37 50%, #B38E22 100%);
-  border: 1px solid #F3E5AB;
-  color: #0F1E36;
+  background: linear-gradient(135deg var(--in-oklab), #F3E5AB 0%, #D4AF37 50%, #AA8220 100%);
+  border: 1px solid #F9F0C7;
+  border-bottom: 3px solid #7D5D11;
+  color: #0B1528;
   font-family: 'Cinzel', serif;
   font-weight: 800;
   letter-spacing: 0.04em;
-  box-shadow: 0 3px 10px rgba(179, 142, 34, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.65);
-  transition: all 0.2s ease-in-out;
+  box-shadow:
+    0 6px 16px -3px rgba(170, 130, 32, 0.45),
+    0 2px 5px rgba(9, 18, 36, 0.25),
+    inset 0 1.5px 0 rgba(255, 255, 255, 0.78);
+  transition: all 0.16s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .btn-gold-olympus:hover {
-  background: linear-gradient(135deg, #FCE8A6 0%, #E2BE48 50%, #C49F30 100%);
-  box-shadow: 0 4px 15px rgba(212, 175, 55, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.85);
+  background: linear-gradient(135deg var(--in-oklab), #FFF3C4 0%, #E3BF42 50%, #B88E26 100%);
+  box-shadow:
+    0 8px 20px -3px rgba(212, 175, 55, 0.6),
+    0 3px 7px rgba(9, 18, 36, 0.3),
+    inset 0 1.5px 0 rgba(255, 255, 255, 0.92);
   transform: translateY(-1px);
 }
 
+.btn-gold-olympus:active {
+  transform: translateY(1.5px);
+  border-bottom-width: 1px;
+  box-shadow: 0 2px 6px rgba(170, 130, 32, 0.35), inset 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
 .btn-navy-olympus {
-  background: linear-gradient(180deg, #162A4A 0%, #0F1E36 100%);
+  background: linear-gradient(180deg var(--in-oklab), #162A4A 0%, #0F1E36 65%, #0B1528 100%);
   border: 1px solid #C5A059;
+  border-bottom: 3px solid #060C18;
   color: #F3E5AB;
   font-family: 'Cinzel', serif;
   font-weight: 700;
-  box-shadow: 0 2px 8px rgba(15, 30, 54, 0.3);
-  transition: all 0.2s ease-in-out;
+  box-shadow:
+    0 6px 14px -3px rgba(11, 21, 40, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18);
+  transition: all 0.16s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .btn-navy-olympus:hover {
-  background: linear-gradient(180deg, #1E3458 0%, #14243F 100%);
+  background: linear-gradient(180deg var(--in-oklab), #1E365E 0%, #142645 65%, #0D1930 100%);
   border-color: #D4AF37;
   color: #FFFFFF;
+  transform: translateY(-1px);
+}
+
+.btn-navy-olympus:active {
+  transform: translateY(1.5px);
+  border-bottom-width: 1px;
+}
+
+/* Pill Metálica Dorada para la Tarifa Principal ($400) */
+.pill-gold-3d {
+  background: linear-gradient(135deg var(--in-oklab), #F3E5AB 0%, #D4AF37 52%, #AA8220 100%);
+  border: 1px solid #FFF5CC;
+  color: #0B1528;
+  box-shadow:
+    0 3px 10px rgba(0, 0, 0, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.85),
+    inset 0 -1.5px 2px rgba(125, 93, 17, 0.55);
+}
+
+/* Pill Glassmorphism Azul Oscuro con Borde Dorado para las otras 3 Tarifas */
+.pill-glass-olympus {
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  background: rgba(11, 21, 40, 0.78);
+  border: 1px solid rgba(212, 175, 55, 0.55);
+  color: #F3E5AB;
+  box-shadow:
+    0 3px 10px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+
+/* Buscadores e Inputs con Efecto Hundido Táctil (Pilar 5.2) */
+.input-tactile-sunken {
+  background-color: #FFFFFF;
+  border: 1.5px solid #C5A059;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.08), 0 1px 0 rgba(255, 255, 255, 0.8);
+  transition: all 0.18s ease;
+}
+
+.input-tactile-sunken:focus {
+  border-color: #D4AF37;
+  box-shadow:
+    inset 0 2px 4px rgba(0, 0, 0, 0.06),
+    0 0 0 3px rgba(212, 175, 55, 0.28);
+  outline: none;
+}
+
+/* Filas de Tabla con Elevación al Pasar el Mouse (Pilar 5.2) */
+.olympus-table-row {
+  transition: transform 0.16s ease, box-shadow 0.16s ease, background-color 0.16s ease;
+}
+
+.olympus-table-row:hover {
+  transform: translateY(-1px);
+  background-color: #F8F6F0 !important;
+  box-shadow: 0 4px 12px rgba(15, 30, 54, 0.09);
+  position: relative;
+  z-index: 2;
+}
+
+/* Ventanas Modales con Marco de Templo y Sombra Profunda (Pilar 5.4) */
+.olympus-modal-backdrop {
+  background-color: rgba(7, 11, 20, 0.76);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+.olympus-modal-frame {
+  background-color: #F4F2EB;
+  border: 2px solid #D4AF37;
+  box-shadow:
+    0 25px 50px -12px rgba(0, 0, 0, 0.5),
+    0 0 30px rgba(212, 175, 55, 0.2),
+    inset 0 2px 1px rgba(255, 255, 255, 0.85);
 }
 
 .badge-gold-temple {
-  background: linear-gradient(180deg, rgba(212, 175, 55, 0.22) 0%, rgba(153, 122, 44, 0.15) 100%);
+  background: linear-gradient(180deg, rgba(212, 175, 55, 0.25) 0%, rgba(153, 122, 44, 0.18) 100%);
   border: 1px solid #C5A059;
   color: #F3E5AB;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
@@ -210,23 +516,23 @@
 }
 
 /* ========================================================================== */
-/* ANIMACIONES DEL RAYO Y VIBRACIÓN SAGRADA                                   */
+/* ANIMACIONES DEL RAYO Y VIBRACIÓN SAGRADA (GPU ACCELERATED)                 */
 /* ========================================================================== */
 
 .lightning-glow {
-  filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.75));
-  animation: lightningStrike 2.5s ease-in-out infinite;
+  filter: drop-shadow(0 0 18px rgba(255, 215, 0, 0.85)) drop-shadow(0 0 40px rgba(212, 175, 55, 0.5));
+  animation: lightningStrike 2.6s ease-in-out infinite;
   will-change: transform, opacity;
 }
 
 @keyframes lightningStrike {
   0%, 100% {
-    opacity: 0.9;
+    opacity: 0.92;
     transform: scale(1);
   }
   50% {
     opacity: 1;
-    transform: scale(1.02);
+    transform: scale(1.03);
   }
 }
 
@@ -283,7 +589,6 @@
 
 @keyframes flashZeus {
   0%, 100% {
-    box-shadow: none;
     border-color: #C5A059;
   }
   50% {
@@ -332,4 +637,18 @@
 @keyframes slideProgress {
   0% { width: 0%; }
   100% { width: 100%; }
+}
+
+/* Forced Colors Mode Fallback (modern-web-guidance: color) */
+@media (forced-colors: active) {
+  .olympus-card--temple,
+  .olympus-card--marble,
+  .olympus-card--glass,
+  .btn-gold-olympus,
+  .btn-navy-olympus {
+    border: 2px solid CanvasText;
+  }
+  .text-gold-gradient {
+    -webkit-text-fill-color: CanvasText;
+  }
 }

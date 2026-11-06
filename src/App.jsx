@@ -37,12 +37,17 @@ export default function App() {
     return () => window.removeEventListener('popstate', handlePopState);
   }, []);
 
+  const viewMode = currentView === 'admin' ? 'admin' : 'tv';
+
   return (
-    <div className="w-full h-full min-h-screen bg-[#070b14] text-slate-100 relative">
+    <div
+      data-view-mode={viewMode}
+      className="w-full h-full min-h-screen bg-[#F4F2EB] text-[#0F1E36] relative"
+    >
       {/* Definiciones Vectoriales del Olimpo y Rayo de Zeus */}
       <ZeusDefs />
 
-      {/* Pantalla Activa */}
+      {/* Pantalla Activa Polimórfica */}
       {currentView === 'admin' ? (
         <AdminPanel currentView={currentView} onChangeView={handleChangeView} />
       ) : (

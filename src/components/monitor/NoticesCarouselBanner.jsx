@@ -4,9 +4,9 @@ import { TempleFrame } from '../common/GreekTempleComponents';
 const DEFAULT_FALLBACK_NOTICES = [
   {
     id: 'n1',
-    badge: 'CÓDIGO DE HONOR - ZEUS GYM',
+    badge: 'CÓDIGO DE HONOR - REGLAS',
     title: 'DESCARGA TUS BARRAS Y ACOMODA EL EQUIPO',
-    desc: 'Si tuviste la fuerza para levantarlo, ten la disciplina de guardarlo. Regresa mancuernas y discos a su lugar.',
+    desc: 'Si tuviste la fuerza para levantarlo, ten la disciplina de guardarlo. Regresa mancuernas y discos a sus racks.',
     icon: 'fa-dumbbell'
   },
   {
@@ -51,9 +51,10 @@ export default function NoticesCarouselBanner({
     }
   }
 
-  const safeNotices = Array.isArray(parsedNotices) && parsedNotices.length > 0
-    ? parsedNotices
-    : DEFAULT_FALLBACK_NOTICES;
+  const safeNotices =
+    Array.isArray(parsedNotices) && parsedNotices.length > 0
+      ? parsedNotices
+      : DEFAULT_FALLBACK_NOTICES;
 
   useEffect(() => {
     if (currentIndex >= safeNotices.length) {
@@ -80,7 +81,8 @@ export default function NoticesCarouselBanner({
     }
   }, [currentIndex]);
 
-  const currentNotice = safeNotices[currentIndex] || safeNotices[0] || DEFAULT_FALLBACK_NOTICES[0];
+  const currentNotice =
+    safeNotices[currentIndex] || safeNotices[0] || DEFAULT_FALLBACK_NOTICES[0];
 
   const handleNext = (e) => {
     if (e) e.stopPropagation();
@@ -108,38 +110,55 @@ export default function NoticesCarouselBanner({
       className="flex-1 min-h-0 flex flex-col transition-all duration-300"
     >
       <TempleFrame
-        className="h-full shadow-xl"
-        innerClassName="bg-olympus-storm text-white flex flex-col justify-between p-3.5 sm:p-4 relative overflow-hidden"
+        className="h-full"
+        innerClassName="bg-olympus-storm text-white flex flex-col justify-center px-4 sm:px-6 py-3 relative overflow-hidden"
         size="md"
         columnWidth="w-4 sm:w-6 md:w-7"
-        topLintel={
-          <div className="w-full flex items-center justify-between gap-2 px-1">
-            <span className="font-cinzel text-[10px] sm:text-xs font-black text-[#0F1E36] tracking-wider uppercase">
-              REGLAMENTO & DISCIPLINA DEL TEMPLO
-            </span>
-            <span className="text-[10px] text-[#997A2C] font-bold">
-              CONVIVENCIA DE ATLETAS
-            </span>
-          </div>
-        }
-        bottomLintel={false}
+        topLintel={null}
+        bottomLintel={null}
+        showClouds={true}
       >
-        <div className="relative z-10 flex items-center gap-3 sm:gap-4 h-full">
-          {/* Caja con Icono en Relieve Clásico */}
-          <div className="w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 rounded-xl bg-gradient-to-br from-[#162A4A] to-[#0F1E36] border-2 border-[#C5A059] flex items-center justify-center shrink-0 shadow-lg text-[#F3E5AB]">
-            <i className={`fa-solid ${currentNotice.icon || 'fa-dumbbell'} text-xl sm:text-2xl md:text-3xl`}></i>
+        {/* Rayos volumétricos en primer plano derecho */}
+        <div className="absolute right-6 top-1 select-none pointer-events-none z-[2] opacity-85">
+          <svg className="w-20 h-20 sm:w-28 sm:h-28 lightning-volumetric" viewBox="0 0 100 100" fill="none">
+            <path
+              d="M62 6 L34 46 L54 46 L42 88 L78 40 L57 40 Z"
+              fill="url(#notice-bolt-grad)"
+              stroke="#FFF"
+              strokeWidth="1.2"
+            />
+            <defs>
+              <linearGradient id="notice-bolt-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor="#FFFFFF" />
+                <stop offset="40%" stopColor="#FFF275" />
+                <stop offset="100%" stopColor="#D4AF37" />
+              </linearGradient>
+            </defs>
+          </svg>
+        </div>
+
+        <div className="relative z-10 flex items-center gap-3.5 sm:gap-5 h-full">
+          {/* Medallón Cuadrado con Relieve 3D para Ícono */}
+          <div
+            className="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl bg-gradient-to-br from-[#1B3156] via-[#11203A] to-[#0A1324] border-2 border-[#C5A059] flex items-center justify-center shrink-0 text-[#F3E5AB]"
+            style={{
+              boxShadow:
+                '0 8px 20px rgba(0, 0, 0, 0.45), inset 0 1.5px 1px rgba(255, 255, 255, 0.25), inset 0 -2px 4px rgba(0, 0, 0, 0.5)'
+            }}
+          >
+            <i className={`fa-solid ${currentNotice.icon || 'fa-dumbbell'} text-xl sm:text-2xl drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)]`}></i>
           </div>
 
-          {/* Textos del Aviso */}
+          {/* Textos del Decreto */}
           <div className="flex-1 min-w-0 flex flex-col justify-center gap-1">
             <div className="flex items-center justify-between gap-2">
-              <span className="bg-[#D4AF37]/20 border border-[#C5A059] text-[#F3E5AB] font-cinzel text-[9px] sm:text-[11px] font-bold uppercase px-2.5 py-0.5 rounded-full truncate">
-                <i className="fa-solid fa-scroll text-[9px] mr-1 text-[#D4AF37]"></i>
-                {currentNotice.badge || 'CÓDIGO DE HONOR - ZEUS GYM'}
+              <span className="pill-gold-3d font-cinzel text-[9px] sm:text-[10.5px] font-black uppercase px-2.5 py-0.5 rounded-full truncate tracking-wider inline-flex items-center gap-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#0B1528]"></span>
+                <span>{currentNotice.badge || 'CÓDIGO DE HONOR - REGLAS'}</span>
               </span>
 
-              {/* Controles de Carrusel (Dots y flechas) */}
-              <div className="flex items-center gap-1.5 bg-[#0F1E36]/80 border border-[#C5A059]/60 px-2 py-0.5 rounded-full shrink-0">
+              {/* Controles de Carrusel Glassmorphism */}
+              <div className="olympus-card--glass flex items-center gap-1.5 px-2.5 py-0.5 rounded-full shrink-0">
                 {safeNotices.length > 1 && (
                   <div className="flex items-center gap-1">
                     {safeNotices.map((_, idx) => (
@@ -148,18 +167,20 @@ export default function NoticesCarouselBanner({
                         type="button"
                         onClick={(e) => handleSelectDot(idx, e)}
                         className={`h-1.5 rounded-full transition-all cursor-pointer ${
-                          idx === currentIndex ? 'w-3.5 bg-[#D4AF37]' : 'w-1.5 bg-[#C5A059]/40'
+                          idx === currentIndex
+                            ? 'w-3.5 bg-[#D4AF37] shadow-[0_0_6px_#FFD700]'
+                            : 'w-1.5 bg-white/35 hover:bg-white/60'
                         }`}
                         title={`Aviso ${idx + 1}`}
                       />
                     ))}
                   </div>
                 )}
-                <div className="flex items-center gap-0.5 ml-1">
+                <div className="flex items-center gap-1 ml-1">
                   <button
                     type="button"
                     onClick={handlePrev}
-                    className="w-4 h-4 rounded-full text-[#F3E5AB] hover:text-white flex items-center justify-center text-[8px] cursor-pointer"
+                    className="w-4 h-4 rounded-full bg-white/10 hover:bg-white/25 text-[#F3E5AB] hover:text-white flex items-center justify-center text-[8px] cursor-pointer transition-colors"
                     title="Anterior"
                   >
                     <i className="fa-solid fa-chevron-left"></i>
@@ -167,7 +188,7 @@ export default function NoticesCarouselBanner({
                   <button
                     type="button"
                     onClick={handleNext}
-                    className="w-4 h-4 rounded-full text-[#F3E5AB] hover:text-white flex items-center justify-center text-[8px] cursor-pointer"
+                    className="w-4 h-4 rounded-full bg-white/10 hover:bg-white/25 text-[#F3E5AB] hover:text-white flex items-center justify-center text-[8px] cursor-pointer transition-colors"
                     title="Siguiente"
                   >
                     <i className="fa-solid fa-chevron-right"></i>
@@ -176,11 +197,11 @@ export default function NoticesCarouselBanner({
               </div>
             </div>
 
-            <h3 className="font-cinzel text-base sm:text-lg md:text-xl font-black text-white leading-tight uppercase line-clamp-1 drop-shadow">
+            <h3 className="font-cinzel text-base sm:text-lg md:text-xl font-black text-white leading-tight uppercase line-clamp-1 drop-shadow-[0_2px_6px_rgba(0,0,0,0.85)]">
               {currentNotice.title}
             </h3>
 
-            <p className="text-xs sm:text-sm text-[#F4F3EF]/90 font-medium leading-snug line-clamp-2 drop-shadow-sm">
+            <p className="text-xs sm:text-sm text-[#F4F2EB]/95 font-medium leading-snug line-clamp-2 drop-shadow-[0_1px_3px_rgba(0,0,0,0.8)]">
               {currentNotice.desc}
             </p>
           </div>
@@ -188,7 +209,7 @@ export default function NoticesCarouselBanner({
 
         {/* Barra de progreso */}
         {autoPlay && safeNotices.length > 1 && !isPaused && (
-          <div className="absolute bottom-0 left-0 right-0 h-1 bg-[#0F1E36]/70 overflow-hidden">
+          <div className="absolute bottom-0 left-0 right-0 h-[3px] bg-[#0B1528]/70 overflow-hidden z-20">
             <div
               key={progressKey}
               className="h-full bg-gradient-to-r from-[#C5A059] via-[#F3E5AB] to-[#D4AF37]"

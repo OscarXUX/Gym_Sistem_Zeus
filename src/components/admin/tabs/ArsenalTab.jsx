@@ -133,7 +133,7 @@ export default function ArsenalTab({
       {/* ================================================================ */}
       <div
         onClick={onOpenCashCut}
-        className="bg-[#FAF9F5] border-2 border-[#C5A059] hover:border-[#0F1E36] p-4 sm:p-5 rounded-3xl relative overflow-hidden group cursor-pointer transition-all shadow-md"
+        className="olympus-card olympus-card--marble border-t-[3px] border-t-[#D4AF37] p-4 sm:p-5 rounded-3xl relative overflow-hidden group cursor-pointer transition-all"
         title="Toca para ver Corte de Caja completo"
       >
         <i className="fa-solid fa-sack-dollar absolute -right-3 -bottom-3 text-7xl sm:text-8xl text-[#C5A059]/15 group-hover:text-[#C5A059]/25 transition-all pointer-events-none"></i>
@@ -154,7 +154,7 @@ export default function ArsenalTab({
           <span className="text-[#C5A059]">•</span>
           <span>Rayos Veloz: <strong className="text-[#0F1E36] font-bold">${Number(cashBreakdown.visits || 0).toLocaleString('es-MX')}</strong></span>
           <span className="text-[#C5A059]">•</span>
-          <span>Néctar & Suplementos: <strong className="text-[#0F1E36] font-bold">${Number(cashBreakdown.store || 0).toLocaleString('es-MX')}</strong></span>
+          <span>Néctar & Suplementos: <strong className="text-[#0D9488] font-extrabold">${Number(cashBreakdown.store || 0).toLocaleString('es-MX')}</strong></span>
           <span className="text-[#C5A059]">•</span>
           <span>Entradas: <strong className="text-[#0F1E36] font-bold">{todayEntries ?? 0}</strong></span>
         </div>
@@ -202,7 +202,7 @@ export default function ArsenalTab({
       {/* ================================================================ */}
       {/* 4. POS RÁPIDA: NÉCTAR DEL OLIMPO EN 1-TOQUE                      */}
       {/* ================================================================ */}
-      <div className="bg-[#FAF9F5] border border-[#C5A059] rounded-3xl p-4 sm:p-5 shadow-sm space-y-3">
+      <div className="olympus-card olympus-card--marble rounded-3xl p-4 sm:p-5 space-y-3">
         <div className="flex items-center justify-between border-b border-[#C5A059]/30 pb-2.5">
           <div className="flex items-center gap-2">
             <span className="w-2.5 h-2.5 rounded-full bg-amber-500 animate-ping"></span>
@@ -216,46 +216,48 @@ export default function ArsenalTab({
           </span>
         </div>
 
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3.5">
-          {OFFICIAL_TOUCH_ITEMS.map((touchItem) => {
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3.5">
+          {OFFICIAL_TOUCH_ITEMS.map((touchItem, idx) => {
             const liveItem = arsenalItems.find((x) => x.id === touchItem.id) || touchItem;
             const isFlashing = flashId === touchItem.id;
+            const iconBoxClasses = [
+              'bg-gradient-to-br from-[#0284C7] to-[#0369A1] text-white border-[#38BDF8]/50',
+              'bg-gradient-to-br from-[#E11D48] to-[#9F1239] text-white border-[#FDA4AF]/50',
+              'bg-gradient-to-br from-[#D97706] to-[#92400E] text-white border-[#FDE68A]/50',
+              'bg-gradient-to-br from-[#7C3AED] to-[#4C1D95] text-white border-[#C4B5FD]/50'
+            ][idx % 4];
 
             return (
               <button
                 key={touchItem.id}
                 type="button"
                 onClick={() => handleOneTouchSale(touchItem)}
-                className={`relative overflow-hidden rounded-2xl p-3.5 text-left border-2 transition-all cursor-pointer active:scale-95 flex flex-col justify-between min-h-[135px] sm:min-h-[145px] shadow-sm group ${
-                  isFlashing
-                    ? 'bg-emerald-100 border-emerald-500 scale-[1.02] shadow-md'
-                    : 'bg-white hover:bg-[#F3EFE6] border-[#C5A059]'
+                className={`olympus-supplement-card p-3.5 text-left transition-all cursor-pointer active:scale-95 flex flex-col justify-between gap-2.5 group ${
+                  isFlashing ? 'ring-2 ring-emerald-500 scale-[1.02]' : ''
                 }`}
               >
-                {/* Ícono de fondo */}
-                <i
-                  className={`fa-solid ${touchItem.icon} absolute -left-4 -bottom-4 text-[6.5rem] sm:text-[7.5rem] text-[#C5A059]/15 transition-transform group-hover:scale-110 pointer-events-none select-none`}
-                ></i>
-
-                {/* Fila Superior: Precio */}
-                <div className="flex justify-end w-full relative z-10">
-                  <span className="font-cinzel text-2xl sm:text-3xl font-black text-[#0F1E36] leading-none">
-                    ${touchItem.price}
-                  </span>
-                </div>
-
-                {/* Fila Inferior: Nombre y Stock */}
-                <div className="relative z-10 flex items-end justify-between w-full pt-1">
-                  <div className="min-w-0 pr-1.5">
-                    <p className="font-cinzel font-black text-[#0F1E36] text-xs sm:text-sm leading-tight truncate">
+                {/* Fila 1 (Superior): Ícono cuadrado 3D de color + Nombre completo en texto oscuro (#0F1E36) */}
+                <div className="flex items-center gap-2.5 w-full">
+                  <div
+                    className={`w-9 h-9 rounded-xl border flex items-center justify-center shrink-0 shadow-[0_4px_8px_rgba(0,0,0,0.2),inset_0_1px_1px_rgba(255,255,255,0.4)] ${iconBoxClasses}`}
+                  >
+                    <i className={`fa-solid ${touchItem.icon} text-xs`}></i>
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <span className="font-bold text-[#0F1E36] text-xs sm:text-[13px] leading-snug break-words block">
                       {touchItem.name}
-                    </p>
-                    <span className="text-[10px] text-slate-500 font-medium block truncate mt-0.5">
-                      {touchItem.desc}
+                    </span>
+                    <span className="text-[10px] text-slate-500 font-medium block">
+                      Stock: {liveItem.stock ?? 20}
                     </span>
                   </div>
-                  <span className="text-[10px] font-bold text-[#0F1E36] bg-[#EAE7DC] border border-[#C5A059]/40 px-2 py-0.5 rounded-md shrink-0 font-cinzel">
-                    Stock: {liveItem.stock ?? 20}
+                </div>
+
+                {/* Fila 2 (Inferior): "Disponible" en gris a la izquierda + Precio en Verde Esmeralda (#0D9488) a la derecha */}
+                <div className="flex items-center justify-between w-full pt-2 border-t border-[#C5A059]/25">
+                  <span className="text-[10px] text-slate-500 font-semibold">Disponible</span>
+                  <span className="font-cinzel text-base sm:text-lg font-extrabold text-[#0D9488] leading-none">
+                    ${touchItem.price}
                   </span>
                 </div>
               </button>
@@ -267,7 +269,7 @@ export default function ArsenalTab({
       {/* ================================================================ */}
       {/* 5. CÁPSULAS DE FILTROS, BUSCADOR Y MODO DE VISTA                 */}
       {/* ================================================================ */}
-      <div className="bg-[#FAF9F5] border border-[#C5A059] rounded-3xl p-4 space-y-3 shadow-sm">
+      <div className="olympus-card olympus-card--marble rounded-3xl p-4 space-y-3">
         {/* Fila 1: Cápsulas de Categorías */}
         <div className="flex items-center gap-1.5 flex-wrap">
           <button
@@ -341,7 +343,7 @@ export default function ArsenalTab({
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Buscar en el catálogo del Olimpo..."
-              className="w-full bg-white border border-[#C5A059] focus:border-[#0F1E36] rounded-xl pl-3.5 pr-8 py-2 text-xs text-[#0F1E36] font-bold focus:outline-none transition-colors"
+              className="w-full input-tactile-sunken rounded-xl pl-3.5 pr-8 py-2 text-xs text-[#0F1E36] font-bold transition-all"
             />
             {searchQuery && (
               <button
@@ -491,11 +493,11 @@ export default function ArsenalTab({
       {/* 7. VISTA 2: NÉCTAR & SUPLEMENTOS — TABLA / FILAS                 */}
       {/* ================================================================ */}
       {viewMode === 'table' && (
-        <div className="bg-[#FAF9F5] border border-[#C5A059] rounded-3xl overflow-hidden shadow-sm">
+        <div className="olympus-card olympus-card--marble rounded-3xl overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="border-b border-[#C5A059] bg-[#0F1E36] text-[10px] font-black font-cinzel text-[#F3E5AB] uppercase tracking-wider">
+                <tr className="border-b-2 border-[#D4AF37] bg-gradient-to-r from-[#0F1E36] via-[#162A4A] to-[#0F1E36] text-[10px] font-black font-cinzel text-[#F3E5AB] uppercase tracking-wider">
                   <th className="px-4 sm:px-6 py-3.5">Producto</th>
                   <th className="px-6 py-3.5 hidden md:table-cell">Categoría</th>
                   <th className="px-4 sm:px-6 py-3.5">Precio</th>
@@ -521,10 +523,10 @@ export default function ArsenalTab({
                         : 'bg-rose-100 text-rose-800 border-rose-300';
 
                     return (
-                      <tr key={item.id} className="hover:bg-[#F3EFE6] transition-colors bg-white">
+                      <tr key={item.id} className="olympus-table-row bg-white">
                         <td className="px-4 sm:px-6 py-3.5">
                           <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-xl bg-[#FAF9F5] border border-[#C5A059] flex items-center justify-center text-[#997A2C] shrink-0 shadow-sm text-base">
+                            <div className="w-10 h-10 rounded-xl bg-[#FAF9F5] border border-[#C5A059] flex items-center justify-center text-[#997A2C] shrink-0 shadow-[inset_0_2px_4px_rgba(15,30,54,0.12)] text-base">
                               <i className={`fa-solid ${item.icon || 'fa-bottle-water'}`}></i>
                             </div>
                             <div className="min-w-0">
@@ -543,7 +545,7 @@ export default function ArsenalTab({
                         </td>
 
                         <td className="px-4 sm:px-6 py-3.5">
-                          <span className="font-cinzel text-sm sm:text-base font-black text-[#0F1E36]">
+                          <span className="font-cinzel text-sm sm:text-base font-extrabold text-[#0D9488]">
                             ${item.price}
                           </span>
                         </td>

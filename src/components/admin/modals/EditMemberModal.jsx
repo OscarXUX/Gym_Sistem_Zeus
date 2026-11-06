@@ -65,10 +65,10 @@ export default function EditMemberModal({ isOpen, onClose, member, onSave, onDel
   };
 
   return (
-    <div className="fixed inset-0 bg-black/75 backdrop-blur-sm z-[110] flex items-center justify-center p-3 sm:p-4 animate-fadeIn overflow-hidden font-body text-slate-800">
-      <div className="bg-[#FAF9F5] border-2 border-[#C5A059] rounded-3xl w-full max-w-lg shadow-2xl relative my-auto max-h-[90dvh] flex flex-col overflow-hidden">
+    <div className="fixed inset-0 olympus-modal-backdrop z-[110] flex items-center justify-center p-3 sm:p-4 animate-fadeIn overflow-hidden font-body text-slate-800">
+      <div className="olympus-modal-frame rounded-3xl w-full max-w-lg relative my-auto max-h-[90dvh] flex flex-col overflow-hidden">
         {/* Cabecera Fija */}
-        <div className="p-4 sm:p-5 border-b border-[#C5A059] flex items-center justify-between shrink-0 bg-[#0F1E36] text-white">
+        <div className="p-4 sm:p-5 border-b-2 border-[#D4AF37] flex items-center justify-between shrink-0 bg-gradient-to-r from-[#0F1E36] via-[#162A4A] to-[#0F1E36] text-white">
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-[#162A4A] to-[#0F1E36] border border-[#C5A059] flex items-center justify-center text-[#D4AF37] text-sm shadow-sm">
               <i className="fa-solid fa-user-pen text-[#FFD700]"></i>

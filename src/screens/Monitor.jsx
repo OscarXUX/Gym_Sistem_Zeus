@@ -15,14 +15,14 @@ import { ZeusEmblem } from '../components/common/ZeusSvg';
 
 /**
  * MONITOR DEL OLIMPO — TEMPLO DE ZEUS
- * Pantalla TV Kiosco Kiosk para Demostración y Simulación de Alto Nivel
+ * Pantalla TV Kiosco para Demostración y Simulación de Alto Nivel
  */
 
 const DEFAULT_PROMOS = [
   {
-    badge: 'DECRETOS & PROMOCIONES DEL OLIMPO',
-    title: 'MEMBRESÍA OLIMPO — $400 MXN',
-    desc: 'Acceso total durante 30 días de entrenamiento divino en el Templo de Zeus.'
+    badge: 'PROMO DESTACADA DEL MES',
+    title: 'MENSUALIDAD ZEUS - $400 MXN',
+    desc: 'Acceso total durante 30 días de entrenamiento sin límites en el Templo del Olimpo.'
   },
   {
     badge: 'DECRETOS & PROMOCIONES DEL OLIMPO',
@@ -145,50 +145,103 @@ export default function Monitor({ currentView = 'monitor', onChangeView }) {
   // Buffer de entrada por PIN / Lector HID y Modal Numérico
   const [pinBuffer, setPinBuffer] = useState('');
   const [isPinModalOpen, setIsPinModalOpen] = useState(false);
-  const [isSimPillOpen, setIsSimPillOpen] = useState(false);
   const pinBufferRef = useRef('');
   const pinTimeoutRef = useRef(null);
 
   // Configuración de TV con Temática del Olimpo
   const [tvConfig, setTvConfig] = useState({
-    musicTitle: 'ZEUS EPIC SOUNDTRACK',
-    promoBadge: 'DECRETOS & PROMOCIONES DEL OLIMPO',
-    promoTitle: 'PROMO DÚO TITANES 2 X $700 MXN',
-    promoDesc: 'Entrena en el Templo de Zeus. ¡Disciplina y poder divino!',
-    tariffsHeader: 'DECRETOS & TARIFAS DEL OLIMPO',
+    musicTitle: 'HEAVY WORKOUT MIX',
+    promoBadge: 'PROMO DESTACADA DEL MES',
+    promoTitle: 'MENSUALIDAD ZEUS - $400 MXN',
+    promoDesc: 'Acceso total durante 30 días de entrenamiento sin límites en el Templo del Olimpo.',
+    tariffsHeader: 'TARIFAS OFICIALES DEL OLIMPO',
     tariffs: [
-      { name: 'Membresía Olimpo', price: '$400', sub: 'Acceso Total 30 días', promoTitle: 'MEMBRESÍA OLIMPO — $400 MXN', promoDesc: 'Acceso total durante 30 días de entrenamiento divino en el Templo de Zeus.' },
-      { name: 'Dúo Titanes', price: '2x$700', sub: '¡Ahorras $100 MXN!', promoTitle: 'PROMO DÚO TITANES 2 X $700 MXN', promoDesc: 'Entrena con tu compañero de armas del Olimpo y alcancen la gloria de los dioses.' },
-      { name: 'Quincena Celestial', price: '$250', sub: '15 días de disciplina', promoTitle: 'QUINCENA CELESTIAL — $250 MXN', promoDesc: '15 días de disciplina y fuerza divina. ¡Poder absoluto en el Templo de Zeus!' },
-      { name: 'Pase Diario Zeus', price: '$60', sub: 'Pase individual', promoTitle: 'PASE DIARIO ZEUS — $60 MXN', promoDesc: 'Pase individual de acceso completo por un día. ¡Entrena con la fuerza del rayo!' }
+      {
+        name: 'MENSUALIDAD',
+        price: '$400',
+        sub: 'ACCESO TOTAL 30 DÍAS',
+        promoTitle: 'MENSUALIDAD ZEUS - $400 MXN',
+        promoDesc: 'Acceso total durante 30 días de entrenamiento sin límites en el Templo del Olimpo.'
+      },
+      {
+        name: 'PROMO 2 ATLETAS',
+        price: '2x$700',
+        sub: '¡AHORRAS $100 MXN!',
+        promoTitle: 'PROMO DÚO TITANES 2 X $700 MXN',
+        promoDesc: 'Entrena con tu compañero de armas del Olimpo y alcancen la gloria de los dioses.'
+      },
+      {
+        name: 'QUINCENA',
+        price: '$250',
+        sub: '15 DÍAS DE DISCIPLINA',
+        promoTitle: 'QUINCENA CELESTIAL — $250 MXN',
+        promoDesc: '15 días de disciplina y fuerza divina. ¡Poder absoluto en el Templo de Zeus!'
+      },
+      {
+        name: 'VISITA DEL DÍA',
+        price: '$60',
+        sub: 'PASE INDIVIDUAL',
+        promoTitle: 'PASE DIARIO ZEUS — $60 MXN',
+        promoDesc: 'Pase individual de acceso completo por un día. ¡Entrena con la fuerza del rayo!'
+      }
     ],
     gymNotices: [
-      { id: 'n1', badge: 'CÓDIGO OLÍMPICO • HIGIENE DEL SANTUARIO', title: 'USO OBLIGATORIO DE TOALLA', desc: 'Por higiene y respeto a tus compañeros de entrenamiento, es obligatorio portar toalla personal para limpiar bancos y máquinas al terminar.', icon: 'fa-spray-can-sparkles', theme: 'amber' },
-      { id: 'n2', badge: 'DECRETO SAGRADO • DISCIPLINA OLÍMPICA', title: 'DESCARGA TUS BARRAS Y ACOMODA EL EQUIPO', desc: 'Si tuviste la fuerza para levantarlo, ten la disciplina de guardarlo. Regresa mancuernas y discos a sus racks en el Templo.', icon: 'fa-dumbbell', theme: 'blue' },
-      { id: 'n3', badge: 'SEGURIDAD DEL OLIMPO • PREVENCIÓN', title: 'CALZADO Y VESTIMENTA DEPORTIVA', desc: 'Por tu seguridad en sala de pesas, está estrictamente prohibido entrenar descalzo, en sandalias o con calzado no deportivo.', icon: 'fa-shoe-prints', theme: 'emerald' },
-      { id: 'n4', badge: 'HORARIOS DEL SANTUARIO • TEMPLO DE ZEUS', title: 'HORARIOS DEL TEMPLO DE ZEUS', desc: 'Lunes a Viernes: 6:00 AM – 10:00 PM | Sábados: 7:00 AM – 2:00 PM. ¡Honor, fuerza y disciplina en el Templo de Zeus!', icon: 'fa-clock', theme: 'amber' }
+      {
+        id: 'n1',
+        badge: 'CÓDIGO DE HONOR - REGLAS',
+        title: 'DESCARGA TUS BARRAS Y ACOMODA EL EQUIPO',
+        desc: 'Si tuviste la fuerza para levantarlo, ten la disciplina de guardarlo. Regresa mancuernas y discos a sus racks.',
+        icon: 'fa-dumbbell',
+        theme: 'blue'
+      },
+      {
+        id: 'n2',
+        badge: 'CÓDIGO OLÍMPICO • HIGIENE DEL SANTUARIO',
+        title: 'USO OBLIGATORIO DE TOALLA',
+        desc: 'Por higiene y respeto a tus compañeros de entrenamiento, es obligatorio portar toalla personal para limpiar bancos y máquinas al terminar.',
+        icon: 'fa-spray-can-sparkles',
+        theme: 'amber'
+      },
+      {
+        id: 'n3',
+        badge: 'SEGURIDAD DEL OLIMPO • PREVENCIÓN',
+        title: 'CALZADO Y VESTIMENTA DEPORTIVA',
+        desc: 'Por tu seguridad en sala de pesas, está estrictamente prohibido entrenar descalzo, en sandalias o con calzado no deportivo.',
+        icon: 'fa-shoe-prints',
+        theme: 'emerald'
+      },
+      {
+        id: 'n4',
+        badge: 'HORARIOS DEL SANTUARIO • TEMPLO DE ZEUS',
+        title: 'HORARIOS DEL TEMPLO DE ZEUS',
+        desc: 'Lunes a Viernes: 6:00 AM – 10:00 PM | Sábados: 7:00 AM – 2:00 PM. ¡Honor, fuerza y disciplina en el Templo de Zeus!',
+        icon: 'fa-clock',
+        theme: 'amber'
+      }
     ],
-    sensorTitle: 'Coloca tu huella en el sensor para entrar',
+    sensorTitle: 'COLOCA TU HUELLA',
     sensorSub: 'El sistema mostrará tus días restantes de forma automática en pantalla',
     sensorBtn: 'PIN O HUELLA',
-    card1Title: 'NÉCTAR & ELÍXIRES EXPRESS',
-    card1Desc: 'Pregunta por tu Scoop de Pre-entreno Rayo de Zeus, Creatina y Proteína por servicio.',
+    card1Title: 'SUPLEMENTOS EN RECEPCIÓN',
+    card1Desc: 'Pregunta por tu Scoop de Pre-entreno Hype, Creatina y Proteína por servicio.',
     card2Title: 'CÓDIGO OLÍMPICO',
     card2Desc: 'Descarga tus barras al terminar y porta tu toalla. ¡Honor en el Templo de Zeus!',
-    footerTicker: 'CÓDIGO OLÍMPICO // ¡Honor, fuerza y disciplina en el Templo de Zeus! • Horarios: Lun-Vie 6am a 10pm, Sáb 7am a 2pm',
-    bgImage: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=1400&q=80'
+    footerTicker:
+      'Visita $60  ✦  Mensualidad $400 | Promo 2x$700 | Quincena $250 | Visita $60  ✦  Mensualidad $400 | Promo 2x$700 | Quincena $250',
+    bgImage:
+      'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=1400&q=80'
   });
 
   const [arsenalItems, setArsenalItems] = useState([
-    { id: 'p1', name: 'Agua Glaciar 1L', price: 20, stock: 24, icon: 'fa-bottle-water' },
-    { id: 'p2', name: 'Pre-Entreno Rayo de Zeus', price: 35, stock: 18, icon: 'fa-bolt-lightning' },
-    { id: 'p3', name: 'Néctar Proteico Whey', price: 30, stock: 15, icon: 'fa-jar' },
-    { id: 'p4', name: 'Electrolitos del Olimpo', price: 15, stock: 20, icon: 'fa-wine-bottle' }
+    { id: 'p1', name: 'Agua 1L', price: 20, stock: 24, icon: 'fa-bottle-water' },
+    { id: 'p2', name: 'Pre-Entreno Hype', price: 35, stock: 18, icon: 'fa-bolt-lightning' },
+    { id: 'p3', name: 'Proteína Whey', price: 30, stock: 15, icon: 'fa-jar' },
+    { id: 'p4', name: 'Electrolitos', price: 15, stock: 20, icon: 'fa-wine-bottle' }
   ]);
 
   // Rotación de Promos
   const [promos, setPromos] = useState(DEFAULT_PROMOS);
-  const [currentPromoIndex, setCurrentPromoIndex] = useState(1);
+  const [currentPromoIndex, setCurrentPromoIndex] = useState(0);
   const [isPromoAutoplay, setIsPromoAutoplay] = useState(true);
   const [progressKey, setProgressKey] = useState(0);
 
@@ -222,7 +275,10 @@ export default function Monitor({ currentView = 'monitor', onChangeView }) {
     if (isSystemLocked) {
       setAccessCard(MEMBERS_DATA.expired);
       playSound('error');
-      showCommanderToast('PORTAL CERRADO', 'El simulador de acceso se encuentra en BLOQUEO TOTAL DE EMERGENCIA.');
+      showCommanderToast(
+        'PORTAL CERRADO',
+        'El simulador de acceso se encuentra en BLOQUEO TOTAL DE EMERGENCIA.'
+      );
       updatePinBuffer('');
       setIsPinModalOpen(false);
       return;
@@ -272,7 +328,10 @@ export default function Monitor({ currentView = 'monitor', onChangeView }) {
       socket.emit('EMERGENCY_LOCKDOWN', { isLocked: nextLock });
       if (nextLock) {
         playSound('error');
-        showCommanderToast('⚡ BLOQUEO TOTAL DE EMERGENCIA', 'Portal del Olimpo cerrado herméticamente.');
+        showCommanderToast(
+          '⚡ BLOQUEO TOTAL DE EMERGENCIA',
+          'Portal del Olimpo cerrado herméticamente.'
+        );
       } else {
         playSound('success');
         showCommanderToast('⚡ PORTAL RESTABLECIDO', 'Simulador de acceso activo y en línea.');
@@ -430,8 +489,8 @@ export default function Monitor({ currentView = 'monitor', onChangeView }) {
       if (Array.isArray(cfg.tariffs)) {
         setPromos(
           cfg.tariffs.map((t) => ({
-            badge: cfg.promoBadge || 'DECRETOS & PROMOCIONES DEL OLIMPO',
-            title: t.promoTitle || `${t.name.toUpperCase()} — ${t.price} MXN`,
+            badge: cfg.promoBadge || 'PROMO DESTACADA DEL MES',
+            title: t.promoTitle || `${t.name.toUpperCase()} - ${t.price} MXN`,
             desc: t.promoDesc || t.sub
           }))
         );
@@ -458,7 +517,10 @@ export default function Monitor({ currentView = 'monitor', onChangeView }) {
     socket.on('LOCKDOWN_STATUS', (isLocked) => {
       setIsSystemLocked(isLocked);
       if (isLocked) {
-        showCommanderToast('⚡ ALERTA DEL OLIMPO: BLOQUEO DE EMERGENCIA', 'El portal sagrado ha sido cerrado por el Administrador. Ningún ingreso permitido.');
+        showCommanderToast(
+          '⚡ ALERTA DEL OLIMPO: BLOQUEO DE EMERGENCIA',
+          'El portal sagrado ha sido cerrado por el Administrador. Ningún ingreso permitido.'
+        );
         playSound('error');
       } else {
         setCommanderAlert({ visible: false, title: '', msg: '' });
@@ -483,7 +545,10 @@ export default function Monitor({ currentView = 'monitor', onChangeView }) {
     });
 
     socket.on('MEMBER_RENEWED', (data) => {
-      showCommanderToast('ATLETA RENOVADO', `${data.name || 'Un atleta'} ha renovado su plan (${data.plan || 'Membresía Olimpo'}). ¡Gloria en el Templo!`);
+      showCommanderToast(
+        'ATLETA RENOVADO',
+        `${data.name || 'Un atleta'} ha renovado su plan (${data.plan || 'Membresía Olimpo'}). ¡Gloria en el Templo!`
+      );
       playSound('success');
     });
 
@@ -508,7 +573,10 @@ export default function Monitor({ currentView = 'monitor', onChangeView }) {
           expireText = daysVal === 0 ? 'Vence hoy' : `En ${daysVal} día(s)`;
           customMsg = `¡Saludos <span class="text-white font-black">${payload.name}</span>! Tu plan <span class="underline font-black text-white">vence en ${daysVal} día(s)</span>. Renueva en Olimpo Central.`;
         } else if (statusType === 'expired') {
-          expireText = payload.plan === 'Sin Registro' ? 'Folio no registrado' : `Venció hace ${Math.abs(daysVal)}d`;
+          expireText =
+            payload.plan === 'Sin Registro'
+              ? 'Folio no registrado'
+              : `Venció hace ${Math.abs(daysVal)}d`;
           customMsg =
             payload.plan === 'Sin Registro'
               ? `El folio <span class="text-white font-black">#${payload.id}</span> no existe. Consulta en Olimpo Central.`
@@ -578,7 +646,10 @@ export default function Monitor({ currentView = 'monitor', onChangeView }) {
     if (isSystemLocked) {
       setAccessCard(MEMBERS_DATA.expired);
       playSound('error');
-      showCommanderToast('PORTAL CERRADO', 'El simulador de acceso se encuentra en BLOQUEO TOTAL DE EMERGENCIA.');
+      showCommanderToast(
+        'PORTAL CERRADO',
+        'El simulador de acceso se encuentra en BLOQUEO TOTAL DE EMERGENCIA.'
+      );
       return;
     }
     const options = ['active', 'warning', 'expired'];
@@ -587,30 +658,35 @@ export default function Monitor({ currentView = 'monitor', onChangeView }) {
   };
 
   return (
-    <div className="fixed inset-0 w-full h-full overflow-hidden flex flex-col bg-marble-travertine antialiased select-none">
+    <div
+      data-view-mode="tv"
+      className="fixed inset-0 w-screen h-screen overflow-hidden flex flex-col bg-marble-travertine antialiased select-none"
+    >
       {/* Toast de Decretos del Olimpo */}
       <CommanderToastAlert
         alert={commanderAlert}
         onClose={() => setCommanderAlert({ visible: false, title: '', msg: '' })}
       />
 
-      {/* Header Superior a lo ancho de toda la pantalla */}
+      {/* Header Superior con Simulador Olimpo Integrado (Jamás tapa las tarjetas de suplementos) */}
       <MonitorHeader
         musicTitle={tvConfig.musicTitle}
         todayCounter={todayCounter}
         isConnected={isConnected}
+        isSystemLocked={isSystemLocked}
         currentView={currentView}
         onChangeView={onChangeView}
+        onTriggerSimulation={triggerSimulation}
       />
 
-      {/* Main Layout Adaptativo 100% Responsivo */}
+      {/* Main Layout Adaptativo 100% Viewport sin Scrollbars */}
       <main className="flex-1 min-h-0 w-full flex flex-col lg:flex-row bg-marble-travertine overflow-y-auto lg:overflow-hidden relative">
         {/* Columna Izquierda: Cartelera Hero + Avisos + Decretos & Tarifas + Ticker */}
         <div className="flex-1 min-w-0 lg:h-full relative flex flex-col justify-between lg:overflow-hidden bg-marble-travertine">
-          {/* Suave sombra decorativa en el fondo del templo */}
-          <div className="absolute inset-0 bg-gradient-to-b from-white/30 via-transparent to-black/5 pointer-events-none"></div>
+          {/* Luz cenital sutil sobre el mármol */}
+          <div className="absolute inset-0 bg-gradient-to-b from-white/40 via-transparent to-black/5 pointer-events-none"></div>
 
-          <div className="relative z-10 flex-1 min-h-0 flex flex-col justify-between px-[clamp(0.65rem,1.5vw,1.5rem)] py-[clamp(0.45rem,1.2dvh,1rem)] gap-[clamp(0.45rem,1.15dvh,1rem)] lg:overflow-hidden">
+          <div className="relative z-10 flex-1 min-h-0 flex flex-col justify-between px-[clamp(0.65rem,1.4vw,1.35rem)] py-[clamp(0.4rem,1dvh,0.85rem)] gap-[clamp(0.4rem,1dvh,0.85rem)] lg:overflow-hidden">
             <PromoHeroBanner
               badge={currentPromo.badge}
               title={currentPromo.title}
@@ -624,10 +700,7 @@ export default function Monitor({ currentView = 'monitor', onChangeView }) {
             />
 
             {/* Carrusel Rotativo de Avisos Sagrados del Olimpo */}
-            <NoticesCarouselBanner
-              notices={tvConfig.gymNotices}
-              duration={6000}
-            />
+            <NoticesCarouselBanner notices={tvConfig.gymNotices} duration={6000} />
 
             <TariffsGrid
               tariffsHeader={tvConfig.tariffsHeader}
@@ -640,7 +713,7 @@ export default function Monitor({ currentView = 'monitor', onChangeView }) {
           <TickerFooter footerTicker={tvConfig.footerTicker} />
         </div>
 
-        {/* Columna Derecha: Módulo de Acceso & Bienvenida en Vivo + Néctar Express */}
+        {/* Columna Derecha: Módulo de Acceso Biométrico Polimórfico + Suplementos en Recepción */}
         <TvSidebarInfo
           isSystemLocked={isSystemLocked}
           isDoorOpen={isDoorOpen}
@@ -658,226 +731,82 @@ export default function Monitor({ currentView = 'monitor', onChangeView }) {
         />
       </main>
 
-      {/* Píldora Flotante Elegante de Controles de Simulación (Estilo Olimpo Clásico) */}
-      <aside aria-label="Controles de Simulación del Olimpo" className="fixed bottom-14 right-4 z-[95] select-none">
-        <div
-          onMouseEnter={() => setIsSimPillOpen(true)}
-          onMouseLeave={() => setIsSimPillOpen(false)}
-          className={`transition-all duration-300 rounded-2xl backdrop-blur-2xl border shadow-2xl ${
-            isSimPillOpen
-              ? 'bg-[#0F1E36]/95 border-[#D4AF37] p-3 w-72 sm:w-80 shadow-[0_10px_40px_rgba(15,30,54,0.6)] ring-1 ring-[#D4AF37]/50'
-              : 'bg-[#0F1E36]/90 border-[#C5A059] px-3.5 py-2 shadow-[0_4px_25px_rgba(212,175,55,0.3)] hover:border-[#D4AF37]'
-          }`}
-        >
-          {!isSimPillOpen ? (
-            <button
-              type="button"
-              onClick={() => setIsSimPillOpen(true)}
-              className="flex items-center gap-2 text-amber-300 cursor-pointer font-zeus font-black text-xs tracking-wider uppercase"
-              title="Abrir controles rápidos de simulación"
-            >
-              <i className="fa-solid fa-bolt-lightning text-amber-300 text-sm animate-pulse"></i>
-              <span>Simulador Olimpo</span>
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping ml-1"></span>
-            </button>
-          ) : (
-            <div className="space-y-2.5">
-              <div className="flex items-center justify-between border-b border-slate-800 pb-1.5">
-                <div className="flex items-center gap-1.5 text-amber-300 font-zeus font-black text-xs uppercase tracking-wider">
-                  <i className="fa-solid fa-bolt-lightning"></i>
-                  <span>Simulador Olimpo</span>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => setIsSimPillOpen(false)}
-                  className="w-5 h-5 rounded-full bg-white/10 hover:bg-white/20 text-slate-400 hover:text-white flex items-center justify-center text-[10px] cursor-pointer"
-                  title="Colapsar"
-                >
-                  <i className="fa-solid fa-xmark"></i>
-                </button>
-              </div>
-
-              <div className="grid grid-cols-2 gap-1.5 text-xs">
-                <button
-                  type="button"
-                  onClick={() => triggerSimulation('active')}
-                  className="flex items-center justify-between px-2.5 py-1.5 rounded-xl bg-emerald-950/70 hover:bg-emerald-900/90 border border-emerald-500/40 text-emerald-200 font-bold transition-all cursor-pointer active:scale-95"
-                >
-                  <span className="truncate">⚡ Activo</span>
-                  <kbd className="text-[10px] font-mono bg-black/60 px-1.5 py-0.5 rounded text-emerald-400 border border-emerald-500/30">A</kbd>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => triggerSimulation('warning')}
-                  className="flex items-center justify-between px-2.5 py-1.5 rounded-xl bg-amber-950/70 hover:bg-amber-900/90 border border-amber-500/40 text-amber-200 font-bold transition-all cursor-pointer active:scale-95"
-                >
-                  <span className="truncate">⚠️ Aviso</span>
-                  <kbd className="text-[10px] font-mono bg-black/60 px-1.5 py-0.5 rounded text-amber-400 border border-amber-500/30">W</kbd>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => triggerSimulation('expired')}
-                  className="flex items-center justify-between px-2.5 py-1.5 rounded-xl bg-rose-950/70 hover:bg-rose-900/90 border border-rose-500/40 text-rose-200 font-bold transition-all cursor-pointer active:scale-95"
-                >
-                  <span className="truncate">🚫 Vencido</span>
-                  <kbd className="text-[10px] font-mono bg-black/60 px-1.5 py-0.5 rounded text-rose-400 border border-rose-500/30">E</kbd>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => triggerSimulation('visit')}
-                  className="flex items-center justify-between px-2.5 py-1.5 rounded-xl bg-sky-950/70 hover:bg-sky-900/90 border border-sky-500/40 text-sky-200 font-bold transition-all cursor-pointer active:scale-95"
-                >
-                  <span className="truncate">⚡ Visita $60</span>
-                  <kbd className="text-[10px] font-mono bg-black/60 px-1.5 py-0.5 rounded text-sky-400 border border-sky-500/30">V</kbd>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => triggerSimulation('gate')}
-                  className="flex items-center justify-between px-2.5 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-200 font-bold transition-all cursor-pointer active:scale-95"
-                >
-                  <span className="truncate">🔓 Puerta</span>
-                  <kbd className="text-[10px] font-mono bg-black/60 px-1.5 py-0.5 rounded text-slate-300 border border-slate-600">O</kbd>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => triggerSimulation('lockdown')}
-                  className={`flex items-center justify-between px-2.5 py-1.5 rounded-xl border font-bold transition-all cursor-pointer active:scale-95 ${
-                    isSystemLocked
-                      ? 'bg-rose-900 border-rose-400 text-white shadow-[0_0_12px_rgba(244,63,94,0.6)] animate-pulse'
-                      : 'bg-slate-900 hover:bg-slate-800 border-slate-700 text-slate-300'
-                  }`}
-                >
-                  <span className="truncate">{isSystemLocked ? '🔒 Bloqueado' : '🛡️ Bloqueo'}</span>
-                  <kbd className="text-[10px] font-mono bg-black/60 px-1.5 py-0.5 rounded text-amber-300 border border-slate-600">L</kbd>
-                </button>
-              </div>
-
-              <div className="flex items-center justify-between pt-1 border-t border-slate-800 text-[11px] text-slate-400">
-                <button
-                  type="button"
-                  onClick={() => triggerSimulation('fullscreen')}
-                  className="hover:text-white cursor-pointer flex items-center gap-1"
-                >
-                  <i className="fa-solid fa-expand"></i> Pantalla (F)
-                </button>
-                <button
-                  type="button"
-                  onClick={() => triggerSimulation('view')}
-                  className="hover:text-white cursor-pointer flex items-center gap-1 text-sky-400"
-                >
-                  <i className="fa-solid fa-repeat"></i> Admin (M)
-                </button>
-              </div>
-            </div>
-          )}
-        </div>
-      </aside>
-
-      {/* Modal Táctil Limpio de Ingreso por PIN / Folio */}
+      {/* Modal Táctil con Marco de Templo para Ingreso por PIN / Folio (Pilar 5.4) */}
       {isPinModalOpen && (
         <div
           onClick={() => setIsPinModalOpen(false)}
-          className="fixed inset-0 bg-black/85 backdrop-blur-xl z-[190] flex items-center justify-center p-4 animate-fadeIn"
+          className="fixed inset-0 olympus-modal-backdrop z-[190] flex items-center justify-center p-4 animate-fadeIn"
         >
           <div
             onClick={(e) => e.stopPropagation()}
-            className="w-full max-w-sm rounded-2xl p-6 shadow-2xl relative border-2 border-[#C5A059] bg-[#FAF9F6] text-[#0F1E36] animate-scaleUp"
+            className="w-full max-w-sm rounded-2xl olympus-modal-frame overflow-hidden text-[#0F1E36] modal-enter"
           >
-            <button
-              onClick={() => setIsPinModalOpen(false)}
-              className="absolute top-4 right-4 text-[#997A2C] hover:text-[#0F1E36] text-lg cursor-pointer"
-            >
-              <i className="fa-solid fa-xmark"></i>
-            </button>
-
-            <div className="text-center mb-4">
-              <h3 className="font-cinzel text-lg font-black text-[#0F1E36] uppercase tracking-wider">
-                Acceso por PIN / Folio
-              </h3>
-              <p className="text-xs text-[#718096] mt-0.5">
-                Teclea tu número de atleta (ej. 042, 088, 019) y presiona Entrar
-              </p>
+            {/* Cabecera Azul Olimpo Profundo con Filete Dorado */}
+            <div className="bg-gradient-to-r from-[#0B1528] via-[#162A4A] to-[#0B1528] border-b-2 border-[#D4AF37] px-5 py-3.5 flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <i className="fa-solid fa-fingerprint text-[#D4AF37]"></i>
+                <h3 className="font-cinzel text-sm sm:text-base font-black text-white uppercase tracking-wider">
+                  Acceso por PIN / Folio
+                </h3>
+              </div>
+              <button
+                onClick={() => setIsPinModalOpen(false)}
+                className="w-7 h-7 rounded-full bg-white/10 hover:bg-white/20 text-[#F3E5AB] hover:text-white flex items-center justify-center text-sm cursor-pointer"
+              >
+                <i className="fa-solid fa-xmark"></i>
+              </button>
             </div>
 
-            {/* Pantalla del PIN */}
-            <div className="bg-[#0F1E36] border-2 border-[#C5A059] rounded-xl py-3 px-4 mb-4 text-center shadow-inner">
-              <span className="font-cinzel text-3xl font-black tracking-[0.25em] text-[#D4AF37]">
-                {pinBuffer ? '*'.repeat(pinBuffer.length) : '---'}
-              </span>
-              <p className="text-[10px] text-[#F3E5AB] font-cinzel mt-1">
-                {pinBuffer ? `Folio: #${pinBuffer}` : 'Esperando dígitos...'}
+            <div className="p-5">
+              <p className="text-xs text-[#475569] text-center mb-3 font-medium">
+                Ingresa tu código de socio (ej. 042, 019, 012)
               </p>
-            </div>
 
-            {/* Teclado Numérico 3x4 */}
-            <div className="grid grid-cols-3 gap-2 mb-4">
-              {['1', '2', '3', '4', '5', '6', '7', '8', '9'].map((digit) => (
+              {/* Visor del PIN con efecto hundido táctil */}
+              <div className="w-full h-14 rounded-xl input-tactile-sunken flex items-center justify-center mb-4">
+                <span className="font-cinzel text-2xl font-black tracking-[0.25em] text-[#0F1E36]">
+                  {pinBuffer || '— — —'}
+                </span>
+              </div>
+
+              {/* Teclado Numérico Táctil 3D */}
+              <div className="grid grid-cols-3 gap-2 mb-4">
+                {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((num) => (
+                  <button
+                    key={num}
+                    type="button"
+                    onClick={() => updatePinBuffer((pinBuffer + String(num)).slice(0, 6))}
+                    className="h-12 rounded-xl bg-white hover:bg-[#F8F6F0] active:translate-y-0.5 border border-[#C5A059] border-b-2 border-b-[#997A2C] font-cinzel text-lg font-black text-[#0F1E36] transition-all cursor-pointer shadow-sm"
+                  >
+                    {num}
+                  </button>
+                ))}
                 <button
-                  key={digit}
                   type="button"
-                  onClick={() => updatePinBuffer((pinBufferRef.current + digit).slice(0, 6))}
-                  className="bg-gradient-to-b from-[#162A4A] to-[#0F1E36] hover:from-[#1E3458] hover:to-[#142646] active:scale-95 border border-[#C5A059]/70 text-[#F3E5AB] font-cinzel text-xl font-black py-3 rounded-xl cursor-pointer shadow-md"
+                  onClick={() => updatePinBuffer('')}
+                  className="h-12 rounded-xl bg-rose-50 hover:bg-rose-100 border border-rose-300 border-b-2 border-b-rose-400 font-cinzel text-xs font-black text-rose-800 uppercase transition-all cursor-pointer"
                 >
-                  {digit}
+                  Borrar
                 </button>
-              ))}
-              <button
-                type="button"
-                onClick={() => updatePinBuffer('')}
-                className="bg-[#2c1015] hover:bg-[#3d161d] active:scale-95 border border-[#f43f5e]/60 text-[#fb7185] font-bold text-xs py-3 rounded-xl cursor-pointer"
-              >
-                Limpiar
-              </button>
-              <button
-                type="button"
-                onClick={() => updatePinBuffer((pinBufferRef.current + '0').slice(0, 6))}
-                className="bg-gradient-to-b from-[#162A4A] to-[#0F1E36] hover:from-[#1E3458] hover:to-[#142646] active:scale-95 border border-[#C5A059]/70 text-[#F3E5AB] font-cinzel text-xl font-black py-3 rounded-xl cursor-pointer shadow-md"
-              >
-                0
-              </button>
-              <button
-                type="button"
-                onClick={() => updatePinBuffer(pinBufferRef.current.slice(0, -1))}
-                className="bg-[#162A4A] hover:bg-[#1E3458] active:scale-95 border border-[#C5A059]/70 text-[#F3E5AB] font-bold text-sm py-3 rounded-xl cursor-pointer"
-              >
-                <i className="fa-solid fa-delete-left"></i>
-              </button>
-            </div>
-
-            <div className="flex gap-2">
-              <button
-                type="button"
-                onClick={() => {
-                  setIsPinModalOpen(false);
-                  handleSensorTouch();
-                }}
-                className="bg-[#E2E8F0] hover:bg-[#CBD5E1] border border-[#CBD5E1] text-[#0F1E36] font-cinzel font-bold text-xs px-3.5 py-2.5 rounded-xl cursor-pointer shadow-sm"
-                title="Simular lectura de huella"
-              >
-                <i className="fa-solid fa-fingerprint mr-1 text-[#D4AF37]"></i> Demo
-              </button>
-              <button
-                type="button"
-                onClick={() => submitPinScan(pinBuffer)}
-                className="flex-1 btn-gold-olympus active:scale-95 text-[#0F1E36] font-cinzel font-black text-sm py-2.5 rounded-xl uppercase tracking-wider cursor-pointer shadow-md"
-              >
-                Entrar <i className="fa-solid fa-arrow-right-to-bracket ml-1"></i>
-              </button>
+                <button
+                  type="button"
+                  onClick={() => updatePinBuffer((pinBuffer + '0').slice(0, 6))}
+                  className="h-12 rounded-xl bg-white hover:bg-[#F8F6F0] active:translate-y-0.5 border border-[#C5A059] border-b-2 border-b-[#997A2C] font-cinzel text-lg font-black text-[#0F1E36] transition-all cursor-pointer shadow-sm"
+                >
+                  0
+                </button>
+                <button
+                  type="button"
+                  onClick={() => submitPinScan(pinBuffer)}
+                  className="h-12 rounded-xl btn-gold-olympus text-xs uppercase cursor-pointer"
+                >
+                  Entrar
+                </button>
+              </div>
             </div>
           </div>
         </div>
       )}
-
-      {/* Modal Emergente Grande de Acceso Biométrico / PIN */}
-      <AccessPopupModal
-        accessData={accessCard}
-        onClose={() => setAccessCard(null)}
-      />
     </div>
   );
 }
