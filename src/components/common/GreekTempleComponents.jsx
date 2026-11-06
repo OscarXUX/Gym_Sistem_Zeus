@@ -206,3 +206,4 @@ export function GreekMeanderDivider({ className = '' }) {
 }
 
 export default GreekColumn;
+

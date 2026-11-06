@@ -36,22 +36,20 @@ export default function TorniqueteTab({
         {/* PANEL ESTADO VISUAL PORTAL SAGRADO */}
         <div className="bg-[#FAF9F5] border-2 border-[#C5A059] rounded-3xl p-6 sm:p-8 flex flex-col items-center justify-center text-center relative overflow-hidden shadow-md">
           <div
-            className={`w-28 h-28 sm:w-36 sm:h-36 rounded-full border-4 flex items-center justify-center mx-auto mb-4 transition-all ${
-              isTurnstileLocked
+            className={`w-28 h-28 sm:w-36 sm:h-36 rounded-full border-4 flex items-center justify-center mx-auto mb-4 transition-all ${isTurnstileLocked
                 ? 'border-rose-500 bg-rose-100 shadow-rose-300'
                 : isDoorOpen
-                ? 'border-emerald-500 bg-emerald-100 shadow-emerald-200'
-                : 'border-[#C5A059] bg-[#0F1E36] shadow-md'
-            }`}
+                  ? 'border-emerald-500 bg-emerald-100 shadow-emerald-200'
+                  : 'border-[#C5A059] bg-[#0F1E36] shadow-md'
+              }`}
           >
             <i
-              className={`text-4xl sm:text-5xl ${
-                isTurnstileLocked
+              className={`text-4xl sm:text-5xl ${isTurnstileLocked
                   ? 'fa-solid fa-lock text-rose-600 animate-pulse'
                   : isDoorOpen
-                  ? 'fa-solid fa-door-open text-emerald-600'
-                  : 'fa-solid fa-door-closed text-[#D4AF37]'
-              }`}
+                    ? 'fa-solid fa-door-open text-emerald-600'
+                    : 'fa-solid fa-door-closed text-[#D4AF37]'
+                }`}
             ></i>
           </div>
 
@@ -59,13 +57,12 @@ export default function TorniqueteTab({
             Portal Sagrado del Olimpo (Relevador 2 Canales)
           </p>
           <h3
-            className={`font-cinzel text-2xl sm:text-3xl font-black mt-1 relative z-10 ${
-              isTurnstileLocked
+            className={`font-cinzel text-2xl sm:text-3xl font-black mt-1 relative z-10 ${isTurnstileLocked
                 ? 'text-rose-700'
                 : isDoorOpen
-                ? 'text-emerald-700'
-                : 'text-[#0F1E36]'
-            }`}
+                  ? 'text-emerald-700'
+                  : 'text-[#0F1E36]'
+              }`}
           >
             {isTurnstileLocked ? 'BLOQUEO DIVINO' : isDoorOpen ? 'PORTAL LIBERADO' : 'SANTUARIO ARMADO'}
           </h3>
@@ -73,8 +70,8 @@ export default function TorniqueteTab({
             {isTurnstileLocked
               ? 'Paso prohibido e ignorado por el sistema'
               : isDoorOpen
-              ? 'Liberación por pulso de relevador virtual'
-              : 'Esperando huella digital o PIN del atleta'}
+                ? 'Liberación por pulso de relevador virtual'
+                : 'Esperando huella digital o PIN del atleta'}
           </p>
         </div>
 
@@ -110,11 +107,10 @@ export default function TorniqueteTab({
 
           <button
             onClick={onToggleLockdown}
-            className={`w-full p-4 sm:p-5 rounded-2xl flex items-center gap-4 transition-all group text-left cursor-pointer shadow-sm ${
-              isTurnstileLocked
+            className={`w-full p-4 sm:p-5 rounded-2xl flex items-center gap-4 transition-all group text-left cursor-pointer shadow-sm ${isTurnstileLocked
                 ? 'bg-rose-100 border-2 border-rose-500 text-rose-900'
                 : 'bg-[#FAF9F5] hover:bg-rose-50 border border-rose-300 text-rose-800'
-            }`}
+              }`}
           >
             <div className="w-12 h-12 rounded-xl bg-rose-600 text-white flex items-center justify-center text-xl shrink-0 group-hover:scale-105 transition-transform shadow-sm">
               <i className="fa-solid fa-lock"></i>
@@ -222,19 +218,17 @@ export default function TorniqueteTab({
             accessFeed.map((entry, idx) => (
               <div
                 key={idx}
-                className={`flex items-center justify-between p-3 rounded-xl border ${
-                  entry.isDenial
+                className={`flex items-center justify-between p-3 rounded-xl border ${entry.isDenial
                     ? 'bg-rose-50 border-rose-200'
                     : 'bg-emerald-50 border-emerald-200'
-                }`}
+                  }`}
               >
                 <div className="flex items-center gap-3">
                   <div
-                    className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${
-                      entry.isDenial
+                    className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${entry.isDenial
                         ? 'bg-rose-200 text-rose-800'
                         : 'bg-emerald-200 text-emerald-800'
-                    }`}
+                      }`}
                   >
                     <i className={`fa-solid ${entry.isDenial ? 'fa-ban' : 'fa-arrow-right-to-bracket'}`}></i>
                   </div>

@@ -31,6 +31,8 @@ export default function TickerFooter({
           display: inline-block;
           white-space: nowrap;
           animation: marquee 30s linear infinite;
+          will-change: transform;
+          contain: layout style;
         }
       `}</style>
     </footer>

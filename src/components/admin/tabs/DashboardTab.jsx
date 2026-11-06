@@ -7,6 +7,31 @@ const QUICK_NECTAR_BUTTONS = [
   { id: 'p4', name: 'Néctar Electrolitos', price: 15, icon: 'fa-wine-bottle', color: 'text-purple-600' }
 ];
 
+function LiveClockDisplay() {
+  const [timeStr, setTimeStr] = useState('12:00 PM');
+  const [dateStr, setDateStr] = useState('');
+
+  useEffect(() => {
+    const update = () => {
+      const now = new Date();
+      setTimeStr(now.toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit' }));
+      setDateStr(now.toLocaleDateString('es-MX', { day: 'numeric', month: 'short', year: 'numeric' }));
+    };
+    update();
+    const interval = setInterval(update, 1000);
+    return () => clearInterval(interval);
+  }, []);
+
+  return (
+    <div className="flex items-center gap-2 text-slate-700 font-semibold">
+      <i className="fa-regular fa-clock text-[#C5A059] text-sm"></i>
+      <span className="font-cinzel text-sm font-black text-[#0F1E36]">{timeStr}</span>
+      <span className="text-[#C5A059]">•</span>
+      <span className="text-[11px] text-slate-600 uppercase tracking-wider font-bold truncate">{dateStr}</span>
+    </div>
+  );
+}
+
 export default function DashboardTab({
   todayCash = 0,
   todayEntries = 0,
@@ -25,21 +50,8 @@ export default function DashboardTab({
   onSwitchTab,
   onOpenCashCut
 }) {
-  const [timeStr, setTimeStr] = useState('12:00 PM');
-  const [dateStr, setDateStr] = useState('');
   const [isTvModalOpen, setIsTvModalOpen] = useState(false);
   const [isTurnstileModalOpen, setIsTurnstileModalOpen] = useState(false);
-
-  useEffect(() => {
-    const update = () => {
-      const now = new Date();
-      setTimeStr(now.toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit' }));
-      setDateStr(now.toLocaleDateString('es-MX', { day: 'numeric', month: 'short', year: 'numeric' }));
-    };
-    update();
-    const interval = setInterval(update, 1000);
-    return () => clearInterval(interval);
-  }, []);
 
   const pct = Math.min(100, Math.round((todayCash / (dailyGoal || 2500)) * 100));
 
@@ -114,12 +126,7 @@ export default function DashboardTab({
       {/* TIRA DE FECHA, HORA Y META COMPACTA                              */}
       {/* ================================================================ */}
       <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2 bg-[#FAF9F5] border border-[#C5A059] rounded-xl px-4 py-2.5 text-xs shadow-sm">
-        <div className="flex items-center gap-2 text-slate-700 font-semibold">
-          <i className="fa-regular fa-clock text-[#C5A059] text-sm"></i>
-          <span className="font-cinzel text-sm font-black text-[#0F1E36]">{timeStr}</span>
-          <span className="text-[#C5A059]">•</span>
-          <span className="text-[11px] text-slate-600 uppercase tracking-wider font-bold truncate">{dateStr}</span>
-        </div>
+        <LiveClockDisplay />
 
         <div className="flex items-center justify-between sm:justify-end gap-3 border-t sm:border-t-0 border-[#C5A059]/30 pt-1.5 sm:pt-0">
           <span className="text-[11px] text-slate-600">
